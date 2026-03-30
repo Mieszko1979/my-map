@@ -5,20 +5,23 @@ var myPoints = [
         lng: 37.6184, 
         title: "День 1: Старт в Москве", 
         desc: "Проехал первые 20 км. Настроение отличное!", 
-        link: "https://www.komoot.com/tour/12345"
+        link: "https://www.komoot.com/tour/12345",
+        service: "Komoot" 
     },
     {
         lat: 55.8500, 
         lng: 38.4500, 
         title: "День 2: Ночевка у озера", 
         desc: "Wildcamping. Видел лося. Очень красиво.", 
-        link: "https://www.komoot.com/tour/67890"
+        link: "https://www.komoot.com/tour/67890",
+        service: "Komoot"
     },
     {
         lat: 55.7999, 
         lng: 37.6156, 
-        title: "День 3: Старт в ", 
-        desc: "Проехал первые 20 км. Настроение отличное!", 
-        link: "https://www.instagram.com/chissgo"
+        title: "День 3: Мой Инстаграм", 
+        desc: "Подписывайтесь, тут все сторис из поездки!", 
+        link: "https://www.instagram.com/chissgo",
+        service: "Instagram" 
     }
 ];
