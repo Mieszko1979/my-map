@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Трек на спутнике Google</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.7.0/gpx.min.js"></script>
+    <style>
+        html, body, #map { height: 100%; margin: 0; padding: 0; }
+        #info { position: absolute; top: 10px; right: 10px; z-index: 1000; background: rgba(255,255,255,0.9); padding: 12px; border-radius: 10px; font-family: sans-serif; box-shadow: 0 2px 15px rgba(0,0,0,0.3); line-height: 1.5; }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <div id="info">Загрузка данных...</div>
+    <script>
+        var map = L.map('map').setView([50, 80], 5);
+
+        // --- ПОДКЛЮЧАЕМ СПУТНИК GOOGLE ---
+        var googleSat = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{
+            maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3'],
+            attribution: '&copy; Google Maps'
+        }).addTo(map);
+
+        // Получаем имя файла из ссылки
+        var urlParams = new URLSearchParams(window.location.search);
+        var fileName = urlParams.get('file');
+
+        if (fileName) {
+            new L.GPX('tracks/' + fileName, {
+                async: true,
+                polyline_options: { color: '#ffea00', weight: 4, opacity: 0.9 } // Желтый трек лучше видно на спутнике
+            }).on('loaded', function(e) {
+                map.fitBounds(e.target.getBounds());
+                var g = e.target;
+                document.getElementById('info').innerHTML = 
+                    "<b style='font-size:16px;'>Данные за день:</b><br>" +
+                    "🏁 <b>Путь:</b> " + (g.get_distance()/1000).toFixed(1) + " км<br>" +
+                    "⛰️ <b>Набор:</b> " + g.get_elevation_gain().toFixed(0) + " м";
+            }).addTo(map);
+        } else {
+            document.getElementById('info').innerHTML = "Файл не указан";
+        }
+    </script>
+</body>
+</html>
