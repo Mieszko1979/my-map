@@ -3,7 +3,7 @@ var myPoints = [
     {
         lat: 55.7512, 
         lng: 37.6184, 
-        title: "День 1: Старт в Москве", 
+        title: "День 1", 
         desc: "Проехал первые 20 км. Настроение отличное!", 
         link: "https://www.komoot.com/tour/12345",
         service: "Komoot" 
