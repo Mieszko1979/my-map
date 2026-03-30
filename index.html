@@ -20,8 +20,8 @@
         .popup-box b { font-size: 16px; display: block; margin-bottom: 5px; }
         .btn-go {
             display: inline-block; background: #007bff; color: white !important;
-            text-decoration: none; padding: 10px 25px; border-radius: 20px;
-            margin-top: 10px; font-weight: bold;
+            text-decoration: none; padding: 12px 30px; border-radius: 25px;
+            margin-top: 10px; font-weight: bold; font-size: 16px;
         }
     </style>
 </head>
@@ -35,11 +35,10 @@
             myPoints.forEach(function(p, i) {
                 var icon = L.divIcon({ className: 'day-marker', html: (i + 1), iconSize: [26, 26], iconAnchor: [13, 13] });
                 
-                // --- ПРОВЕРКА ИСПРАВЛЕНА ТУТ ---
-                // Прямая ссылка на ваш файл (замените на свои данные, если они отличаются)
+                // Формируем максимально чистую ссылку на файл
                 var fileUrl = "https://mieszko1979.github.io/my-map/tracks/" + p.link;
                 
-                // Формируем ссылку для вьюера
+                // Кодируем ссылку так, чтобы gpx.studio сразу ее подхватывал
                 var studioUrl = "https://gpx.studio/?state=%7B%22urls%22%3A%5B%22" + encodeURIComponent(fileUrl) + "%22%5D%7D";
 
                 var popupHtml = '<div class="popup-box">' +
