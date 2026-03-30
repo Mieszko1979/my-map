@@ -29,11 +29,15 @@
         // ЦИКЛ: Берет каждую точку из файла points.js и ставит на карту
         myPoints.forEach(function(point) {
             var marker = L.marker([point.lat, point.lng]).addTo(map);
+            
+            // Если в points.js написано service, берем его. Если нет — пишем "Komoot"
+            var btnText = point.service ? point.service : "Komoot";
+
             var content = `
                 <div class="my-popup">
                     <b>${point.title}</b><br>
                     ${point.desc}<br>
-                    <a href="${point.link}" target="_blank">Посмотреть в Komoot</a>
+                    <a href="${point.link}" target="_blank">${btnText}</a>
                 </div>`;
             marker.bindPopup(content);
             marker.on('mouseover', function (e) { this.openPopup(); });
