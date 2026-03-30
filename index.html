@@ -4,20 +4,109 @@
     <title>Карта велопутешествия</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Подключаем Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- Подключаем файл с вашими точками -->
     <script src="points.js"></script>
+
     <style>
-        html, body { margin: 0; padding: 0; height: 100%; }
-        #map { width: 100vw; height: 100vh; background: #f8f9fa; }
-        .day-icon {
-            background: white; border: 2px solid #238aff; border-radius: 50%;
-            color: #238aff; font-family: Arial; font-weight: bold; font-size: 13px;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        html, body { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; }
+        #map { height: 100%; width: 100%; background: #f0f0f0; }
+        
+        /* Стиль кружков с номерами дней */
+        .day-marker {
+            background: #fff;
+            border: 2px solid #007bff;
+            border-radius: 50%;
+            color: #007bff;
+            font-weight: bold;
+            font-family: sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            font-size: 13px;
         }
-        .my-popup { font-family: sans-serif; font-size: 14px; text-align: center; }
-        .my-popup b { font-size: 16px; display: block; margin-bottom: 5px; }
+
+        /* Стиль всплывающего окна */
+        .leaflet-popup-content-wrapper { border-radius: 12px; padding: 5px; }
+        .popup-box { text-align: center; font-family: sans-serif; min-width: 160px; }
+        .popup-box b { font-size: 16px; display: block; margin-bottom: 5px; color: #333; }
+        .popup-box p { margin: 8px 0; color: #666; font-size: 14px; }
+        
         /* Кнопка "Жми" */
-        .my-popup a { 
-            display: inline-block; margin-top: 10px; paddin
+        .btn-go {
+            display: inline-block;
+            background: #007bff;
+            color: #fff !important;
+            text-decoration: none;
+            padding: 10px 30px;
+            border-radius: 25px;
+            margin-top: 10px;
+            font-weight: bold;
+            font-size: 16px;
+            box-shadow: 0 2px 4px rgba(0,123,255,0.3);
+        }
+        .btn-go:active { transform: scale(0.95); }
+    </style>
+</head>
+<body>
+
+    <div id="map"></div>
+
+    <script>
+        // Инициализация карты
+        var map = L.map('map', { zoomControl: false }).setView([50, 80], 4);
+        L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+        // Светлая подложка
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; CARTO'
+        }).addTo(map);
+
+        // Проверяем, есть ли данные в points.js
+        if (typeof myPoints !== 'undefined' && myPoints.length > 0) {
+            
+            myPoints.forEach(function(p, i) {
+                // Создаем иконку с номером дня
+                var icon = L.divIcon({
+                    className: 'day-marker',
+                    html: (i + 1),
+                    iconSize: [26, 26],
+                    iconAnchor: [13, 13]
+                });
+
+                // Формируем ссылку для вьюера gpx.studio
+                // Код сам берет адрес вашего сайта и добавляет папку tracks/
+                var loc = window.location.href.split('#')[0].split('?')[0];
+                if (!loc.endsWith('/')) loc += '/';
+                var fileUrl = loc + 'tracks/' + p.link;
+                
+                // Ссылка на gpx.studio
+                var studioUrl = "https://gpx.studio/?state=" + encodeURIComponent(JSON.stringify({urls:[fileUrl]}));
+
+                var popupHtml = '<div class="popup-box">' +
+                               '<b>' + p.title + '</b>' +
+                               '<p>' + p.desc + '</p>' +
+                               '<a href="' + studioUrl + '" class="btn-go" target="_blank">Жми</a>' +
+                               '</div>';
+
+                // Ставим маркер на карту
+                L.marker([p.lat, p.lng], {icon: icon})
+                 .addTo(map)
+                 .bindPopup(popupHtml);
+            });
+
+            // Авто-фокус на последнюю точку из списка
+            var last = myPoints[myPoints.length - 1];
+            map.setView([last.lat, last.lng], 8);
+
+        } else {
+            alert("Ошибка: Файл points.js пуст или не найден!");
+        }
+    </script>
+</body>
+</html>
