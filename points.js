@@ -11,6 +11,6 @@ var myPoints = [
         lng: 38.4500, 
         title: "Ночевка у озера", 
         desc: "Проехал 80 км. Очень красиво.", 
-        link: "2.gpx" 
+        link: "track.gpx" 
     }
 ];
