@@ -19,6 +19,6 @@ var myPoints = [
         lng: 37.6156, 
         title: "День 3: Старт в ", 
         desc: "Проехал первые 20 км. Настроение отличное!", 
-        link: "https://www.instagram.com/chissgo/"
+        link: "https://www.instagram.com/chissgo"
     }
 ];
