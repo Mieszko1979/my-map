@@ -18,6 +18,6 @@ var myPoints = [
     lng: 39.4500,
     title: "День 3: Область",
     desc: "Ночевка в лесу",
-    link: "1.gpx" 
+    link: "track.gpx" 
   }
 ];
