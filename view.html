@@ -31,7 +31,13 @@
         if (fileName) {
             new L.GPX('tracks/' + fileName, {
                 async: true,
-                polyline_options: { color: '#ffea00', weight: 4, opacity: 0.9 } // Желтый трек лучше видно на спутнике
+                // --- ОТКЛЮЧАЕМ ЛИШНИЕ ИКОНКИ СТАРТА И ФИНИША ---
+                marker_options: {
+                    startIconUrl: null,
+                    endIconUrl: null,
+                    shadowUrl: null
+                },
+                polyline_options: { color: '#ffea00', weight: 4, opacity: 0.9 }
             }).on('loaded', function(e) {
                 map.fitBounds(e.target.getBounds());
                 var g = e.target;
@@ -40,8 +46,6 @@
                     "🏁 <b>Путь:</b> " + (g.get_distance()/1000).toFixed(1) + " км<br>" +
                     "⛰️ <b>Набор:</b> " + g.get_elevation_gain().toFixed(0) + " м";
             }).addTo(map);
-        } else {
-            document.getElementById('info').innerHTML = "Файл не указан";
         }
     </script>
 </body>
