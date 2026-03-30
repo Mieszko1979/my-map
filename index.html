@@ -61,8 +61,8 @@
             // Берем координаты самой последней точки из списка
             var latestPoint = myPoints[myPoints.length - 1];
             
-            // Сдвигаем карту к этой точке и ставим масштаб 7 (регион вокруг)
-            map.setView([latestPoint.lat, latestPoint.lng], 7);
+            // Сдвигаем карту к этой точке и ставим масштаб 5 (регион вокруг)
+            map.setView([latestPoint.lat, latestPoint.lng], 5);
 
         } else {
             console.log("Точки не найдены в points.js");
