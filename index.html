@@ -37,14 +37,11 @@
             myPoints.forEach(function(p, i) {
                 var icon = L.divIcon({ className: 'day-marker', html: (i + 1), iconSize: [26, 26], iconAnchor: [13, 13] });
                 
-                // Формируем ссылку на ваш сайт GitHub Pages
-                var baseUrl = window.location.origin + window.location.pathname;
-                if (!baseUrl.endsWith('/')) baseUrl += '/';
+                // --- САМАЯ ТОЧНАЯ ССЫЛКА ---
+                // Мы берем адрес вашего сайта напрямую
+                var fileUrl = "https://mieszko1979.github.io/my-map/tracks/" + p.link;
                 
-                // Путь: ваш_сайт / tracks / имя_файла
-                var fileUrl = baseUrl + "tracks/" + p.link;
-                
-                // Ссылки для внешних сервисов
+                // Кодируем ссылки для сервисов
                 var studioUrl = "https://gpx.studio/?state=%7B%22urls%22%3A%5B%22" + encodeURIComponent(fileUrl) + "%22%5D%7D";
                 var nakarteUrl = "https://nakarte.me/#nktl=" + encodeURIComponent(fileUrl);
 
@@ -58,6 +55,7 @@
                 L.marker([p.lat, p.lng], {icon: icon}).addTo(map).bindPopup(popupHtml);
             });
 
+            // Авто-фокус на последнюю точку
             var last = myPoints[myPoints.length - 1];
             map.setView([last.lat, last.lng], 8);
         }
