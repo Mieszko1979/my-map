@@ -18,34 +18,35 @@
         }
         .popup-box { text-align: center; font-family: sans-serif; min-width: 180px; padding: 5px; }
         .popup-box b { font-size: 16px; display: block; margin-bottom: 5px; }
-        /* Кнопки */
         .btn-go {
             display: block; background: #007bff; color: white !important;
             text-decoration: none; padding: 10px; border-radius: 20px;
             margin-top: 10px; font-weight: bold; font-size: 14px;
         }
-        .btn-alt { background: #28a745; } /* Зеленая кнопка для запаса */
+        .btn-alt { background: #28a745; }
     </style>
 </head>
 <body>
     <div id="map"></div>
     <script>
-        var map = L.map('map').setView([50, 80], 4);
+        var map = L.map('map', {zoomControl: false}).setView([50, 80], 4);
+        L.control.zoom({position: 'bottomright'}).addTo(map);
         L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '&copy; CARTO' }).addTo(map);
 
         if (typeof myPoints !== 'undefined' && myPoints.length > 0) {
             myPoints.forEach(function(p, i) {
                 var icon = L.divIcon({ className: 'day-marker', html: (i + 1), iconSize: [26, 26], iconAnchor: [13, 13] });
                 
-                // --- СУПЕР-НАДЕЖНЫЕ ССЫЛКИ ---
-                // Прямой путь к "сырому" файлу на GitHub (это работает всегда)
-                var rawUrl = "https://raw.githubusercontent.com/Mieszko1979/my-map/main/tracks/" + p.link;
+                // Формируем ссылку на ваш сайт GitHub Pages
+                var baseUrl = window.location.origin + window.location.pathname;
+                if (!baseUrl.endsWith('/')) baseUrl += '/';
                 
-                // Ссылка для gpx.studio
-                var studioUrl = "https://gpx.studio/?state=%7B%22urls%22%3A%5B%22" + encodeURIComponent(rawUrl) + "%22%5D%7D";
+                // Путь: ваш_сайт / tracks / имя_файла
+                var fileUrl = baseUrl + "tracks/" + p.link;
                 
-                // Ссылка для Nakarte.me (как запасной вариант)
-                var nakarteUrl = "https://nakarte.me/#nktl=" + encodeURIComponent(rawUrl);
+                // Ссылки для внешних сервисов
+                var studioUrl = "https://gpx.studio/?state=%7B%22urls%22%3A%5B%22" + encodeURIComponent(fileUrl) + "%22%5D%7D";
+                var nakarteUrl = "https://nakarte.me/#nktl=" + encodeURIComponent(fileUrl);
 
                 var popupHtml = '<div class="popup-box">' +
                                '<b>' + p.title + '</b>' +
