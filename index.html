@@ -8,26 +8,20 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="points.js"></script>
     <style>
-        html, body { margin: 0; padding: 0; height: 100%; width: 100%; }
-        #map { height: 100%; width: 100%; background: #f0f0f0; }
+        html, body, #map { height: 100%; margin: 0; padding: 0; overflow: hidden; }
         .day-marker {
             background: white; border: 2px solid #007bff; border-radius: 50%;
             color: #007bff; font-weight: bold; font-family: Arial;
             display: flex; align-items: center; justify-content: center;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-size: 13px;
         }
-        .popup-box { text-align: center; font-family: sans-serif; min-width: 180px; padding: 5px; }
+        .popup-box { text-align: center; font-family: sans-serif; min-width: 160px; }
         .popup-box b { font-size: 16px; display: block; margin-bottom: 5px; }
-        
-        /* Стили кнопок */
-        .btn {
-            display: block; color: white !important; text-decoration: none; 
-            padding: 8px; border-radius: 15px; margin-top: 8px; 
-            font-weight: bold; font-size: 13px;
+        .btn-view {
+            display: inline-block; background: #4285F4; color: white !important;
+            text-decoration: none; padding: 12px 25px; border-radius: 25px;
+            margin-top: 10px; font-weight: bold; font-size: 16px;
         }
-        .btn-blue { background: #007bff; }    /* gpx.studio */
-        .btn-green { background: #28a745; }   /* Nakarte */
-        .btn-orange { background: #fd7e14; }  /* Strava / Komoot */
     </style>
 </head>
 <body>
@@ -41,31 +35,16 @@
             myPoints.forEach(function(p, i) {
                 var icon = L.divIcon({ className: 'day-marker', html: (i + 1), iconSize: [26, 26], iconAnchor: [13, 13] });
                 
-                // Ссылка на файл в вашей папке tracks
-                var fileUrl = "https://mieszko1979.github.io/my-map/tracks/" + p.link;
-                var studioUrl = "https://gpx.studio/?state=%7B%22urls%22%3A%5B%22" + encodeURIComponent(fileUrl) + "%22%5D%7D";
-                var nakarteUrl = "https://nakarte.me/#nktl=" + encodeURIComponent(fileUrl);
+                // Ссылка ведет на наш специальный просмотрщик спутника
+                var viewUrl = "view.html?file=" + p.link;
 
-                // Собираем текст окна
-                var html = '<div class="popup-box">' +
-                           '<b>' + p.title + '</b>' +
-                           '<span>' + p.desc + '</span>';
+                var popupHtml = '<div class="popup-box">' +
+                               '<b>' + p.title + '</b>' +
+                               '<span>' + p.desc + '</span><br>' +
+                               '<a href="' + viewUrl + '" class="btn-view" target="_blank">Спутник</a>' +
+                               '</div>';
 
-                // 1. Кнопка авто-трека (если указан файл .gpx)
-                if (p.link) {
-                    html += '<a href="' + studioUrl + '" class="btn btn-blue" target="_blank">Жми (Трек)</a>';
-                    html += '<a href="' + nakarteUrl + '" class="btn btn-green" target="_blank">Запасной (Nakarte)</a>';
-                }
-
-                // 2. Дополнительная ссылка (Strava, Komoot и т.д.), если вы её указали
-                if (p.ext_link) {
-                    var label = p.ext_title ? p.ext_title : "Подробнее";
-                    html += '<a href="' + p.ext_link + '" class="btn btn-orange" target="_blank">' + label + '</a>';
-                }
-
-                html += '</div>';
-
-                L.marker([p.lat, p.lng], {icon: icon}).addTo(map).bindPopup(html);
+                L.marker([p.lat, p.lng], {icon: icon}).addTo(map).bindPopup(popupHtml);
             });
 
             var last = myPoints[myPoints.length - 1];
