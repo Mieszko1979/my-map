@@ -70,11 +70,11 @@
                 var btnText = point.service ? point.service : "Открыть трек";
                 
                 var content = `
-                    <div class="my-popup">
-                        <b>День ${i + 1}: ${point.title}</b><br>
-                        ${point.desc}<br>
-                        <a href="${point.link}" target="_blank">${btnText}</a>
-                    </div>`;
+    <div class="my-popup">
+        <b>${point.title}</b><br>
+        ${point.desc}<br>
+        <a href="${point.link}" target="_blank">${btnText}</a>
+    </div>`;
                 
                 marker.bindPopup(content);
             });
