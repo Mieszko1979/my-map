@@ -20,5 +20,5 @@ var myPoints = [
         title: "День 3: Старт в Москве", 
         desc: "Проехал первые 20 км. Настроение отличное!", 
         link: "https://www.komoot.com/tour/12345"
-    },
+    }
 ];
