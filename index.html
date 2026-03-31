@@ -10,26 +10,36 @@
     <style>
         html, body, #map { height: 100%; margin: 0; padding: 0; overflow: hidden; }
         
-        /* Базовый стиль кружка */
+        /* Стиль кружка */
         .day-marker {
-            background: #fff; border: 2px solid #28a745; border-radius: 50%;
-            color: #000; font-weight: bold; font-family: Arial;
+            background: #fff; 
+            border: 2px solid #28a745; 
+            border-radius: 50%;
+            color: #000; 
+            font-weight: bold; 
+            font-family: Arial;
             display: flex;
+            justify-content: center; /* Центрируем основную цифру */
             align-items: center;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2); 
-            font-size: 11px; /* Шрифт 11 как просили */
-            overflow: hidden; /* Обрезает всё, что не влезает в круг */
-            white-space: nowrap; /* Не дает тексту переноситься */
+            font-size: 11px;
+            overflow: hidden; /* ОБРЕЗАЕМ ВСЁ ЛИШНЕЕ */
+            white-space: nowrap;
         }
 
-        /* Если это ОДИНОЧНЫЙ день — центрируем */
-        .day-marker.single { justify-content: center; }
+        /* Контейнер для цифр */
+        .num-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+        }
 
-        /* Если это ДИАПАЗОН (например 24-27) — прижимаем к левому краю с отступом, 
-           чтобы первая цифра была по центру */
-        .day-marker.range { 
-            justify-content: flex-start; 
-            padding-left: 7px; /* Отступ, чтобы "24" из "24-27" было в центре круга 30px */
+        /* Хвост (например, "-4"), который уходит вправо */
+        .suffix {
+            position: absolute;
+            left: 100%; /* Начинается сразу после первой цифры */
+            white-space: nowrap;
+            /* Чтобы хвост не был виден, если он не влезает в круг */
         }
 
         .popup-box { text-align: center; font-family: sans-serif; min-width: 180px; }
@@ -50,15 +60,20 @@
 
         if (typeof myPoints !== 'undefined' && myPoints.length > 0) {
             myPoints.forEach(function(p, i) {
-                var displayDay = String(p.day ? p.day : (i + 1));
+                var fullDay = String(p.day ? p.day : (i + 1));
                 
-                // Проверяем, есть ли в номере дня тире (диапазон)
-                var isRange = displayDay.includes('-');
-                var markerClass = isRange ? 'day-marker range' : 'day-marker single';
+                // Разделяем строку по дефису
+                var parts = fullDay.split('-');
+                var baseNum = parts[0]; // Первая цифра (например, 2 или 24)
+                var suffix = parts.length > 1 ? '-' + parts[1] : ''; // Хвост (например, -4 или -27)
+
+                // Формируем HTML: база в центре, суффикс абсолютно справа
+                var markerHtml = '<span class="num-container">' + baseNum + 
+                                 '<span class="suffix">' + suffix + '</span></span>';
 
                 var icon = L.divIcon({ 
-                    className: markerClass, 
-                    html: '<span>' + displayDay + '</span>', 
+                    className: 'day-marker', 
+                    html: markerHtml, 
                     iconSize: [30, 30], 
                     iconAnchor: [15, 15] 
                 });
