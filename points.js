@@ -1,18 +1,20 @@
 var myPoints = [
   {
+    day: "1",
     lat: 55.7512,
     lng: 37.6184,
-    title: "День 1 - 0101.2026",
-    desc: "Палатка",
+    title: "01.02.2026: Старт",
+    desc: "Погода отличная, выезжаем!",
     link: "1.gpx",
-    vk: "https://vk.com/mieszko_travel"
+    vk: "https://vk.com/wall123_456"
   },
   {
+    day: "2-4",
     lat: 55.8500,
     lng: 38.4500,
-    title: "День 2: 01.02.2026",
-    desc: "Проехал много километров.",
-    link: "4.gpx",
-    vk: "https://vk.com/wall-171082824_1662" 
-  }  
+    title: "Дни на озере",
+    desc: "Тут мы стояли 3 дня лагерем.",
+    link: "3.gpx",
+    vk: "https://vk.com/wall123_457"
+  }
 ];
