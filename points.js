@@ -13,6 +13,6 @@ var myPoints = [
     title: "День 2: 01.02.2026",
     desc: "Проехал много километров.",
     link: "2.gpx",
-    vk: "https://vk.com/mieszko_travel" 
+    vk: "https://vk.com/wall-171082824_1662" 
   }  
 ];
