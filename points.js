@@ -10,7 +10,7 @@ var myPoints = [
   {
     lat: 55.8500,
     lng: 38.4500,
-    title: "День 2: Область",
+    title: "День 2: 01.02.2026",
     desc: "Проехал много километров.",
     link: "2.gpx",
     vk: "https://vk.com/mieszko_travel" 
