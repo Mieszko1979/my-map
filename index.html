@@ -4,50 +4,107 @@
     <title>Карта велопутешествия</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="points.js"></script>
+
     <style>
         html, body, #map { height: 100%; margin: 0; padding: 0; overflow: hidden; }
+        
+        /* Стиль зеленых кружков с номерами */
         .day-marker {
-            background: white; border: 2px solid red; border-radius: 50%;
-            color: black; font-weight: bold; font-family: Arial;
+            background: #fff; border: 2px solid #28a745; border-radius: 50%;
+            color: #000; font-weight: bold; font-family: Arial;
             display: flex; align-items: center; justify-content: center;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-size: 13px;
         }
-        .popup-box { text-align: center; font-family: sans-serif; min-width: 160px; }
-        .popup-box b { font-size: 16px; display: block; margin-bottom: 5px; }
-        .btn-view {
-            display: inline-block; background: #28a745; color: white !important;
-            text-decoration: none; padding: 6px 15px; border-radius: 15px;
-            margin-top: 10px; font-weight: bold; font-size: 13px;
+
+        /* Контейнер всплывающего окна */
+        .popup-box { text-align: center; font-family: sans-serif; min-width: 180px; }
+        .popup-box b { font-size: 16px; display: block; margin-bottom: 5px; color: #333; }
+        .popup-box p { margin: 8px 0; color: #666; font-size: 14px; }
+
+        /* Контейнер для кнопок в ряд */
+        .btn-row { 
+            display: flex; 
+            justify-content: center; 
+            gap: 10px; /* Расстояние между кнопками */
+            margin-top: 10px; 
         }
+
+        /* Общие стили кнопок */
+        .btn {
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+            padding: 8px 15px;
+            border-radius: 15px;
+            display: inline-block;
+            transition: 0.2s;
+        }
+
+        /* Кнопка ТРЕК (Зеленая) */
+        .btn-track {
+            background: #28a745;
+            color: white !important;
+        }
+
+        /* Кнопка VK (Белая с синими буквами) */
+        .btn-vk {
+            background: #ffffff;
+            color: #0077FF !important; /* Синий цвет ВК */
+            border: 1px solid #0077FF;
+        }
+        
+        .btn:active { transform: scale(0.9); }
     </style>
 </head>
 <body>
+
     <div id="map"></div>
+
     <script>
-        var map = L.map('map', {zoomControl: false}).setView([50, 80], 4);
+        // Инициализация карты без флага
+        var map = L.map('map', {zoomControl: false, attributionControl: false}).setView([50, 80], 4);
         map.attributionControl.setPrefix('Мое велопутешествие');
-        L.control.zoom({position: 'bottomright'}).addTo(map);
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '' }).addTo(map);
+        
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(map);
 
         if (typeof myPoints !== 'undefined' && myPoints.length > 0) {
+            
             myPoints.forEach(function(p, i) {
-                var icon = L.divIcon({ className: 'day-marker', html: (i + 1), iconSize: [26, 26], iconAnchor: [13, 13] });
-                
-                // Ссылка ведет на наш специальный просмотрщик спутника
-                var viewUrl = "view.html?file=" + p.link;
+                var icon = L.divIcon({
+                    className: 'day-marker',
+                    html: (i + 1),
+                    iconSize: [26, 26],
+                    iconAnchor: [13, 13]
+                });
 
-                var popupHtml = '<div class="popup-box">' +
-                               '<b>' + p.title + '</b>' +
-                               '<span>' + p.desc + '</span><br>' +
-                               '<a href="' + viewUrl + '" class="btn-view" target="_blank">Трек</a>' +
-                               '</div>';
+                // Формируем содержимое окна
+                var html = '<div class="popup-box">';
+                html += '<b>' + p.title + '</b>';
+                html += '<p>' + p.desc + '</p>';
+                html += '<div class="btn-row">'; // Начало ряда кнопок
 
-                L.marker([p.lat, p.lng], {icon: icon}).addTo(map).bindPopup(popupHtml);
+                // ПРОВЕРКА 1: Если есть имя файла, рисуем кнопку ТРЕК
+                if (p.link && p.link !== "") {
+                    var viewUrl = "view.html?file=" + p.link;
+                    html += '<a href="' + viewUrl + '" class="btn btn-track" target="_blank">Трек</a>';
+                }
+
+                // ПРОВЕРКА 2: Если есть ссылка на ВК, рисуем кнопку VK
+                if (p.vk && p.vk !== "") {
+                    html += '<a href="' + p.vk + '" class="btn btn-vk" target="_blank">VK</a>';
+                }
+
+                html += '</div>'; // Конец ряда кнопок
+                html += '</div>';
+
+                L.marker([p.lat, p.lng], {icon: icon}).addTo(map).bindPopup(html);
             });
 
+            // Авто-фокус на последнюю точку
             var last = myPoints[myPoints.length - 1];
             map.setView([last.lat, last.lng], 8);
         }
