@@ -17,29 +17,31 @@
             border-radius: 50%;
             color: #000; 
             font-weight: bold; 
-            font-family: Arial;
+            font-family: Arial, sans-serif;
             display: flex;
-            justify-content: center; /* Центрируем основную цифру */
+            justify-content: center; 
             align-items: center;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2); 
-            font-size: 11px;
-            overflow: hidden; /* ОБРЕЗАЕМ ВСЁ ЛИШНЕЕ */
+            /* ВОЗВРАЩАЕМ КРУПНЫЙ ШРИФТ */
+            font-size: 14px; 
+            overflow: hidden; 
             white-space: nowrap;
         }
 
-        /* Контейнер для цифр */
-        .num-container {
+        /* Оболочка для цифр */
+        .num-wrapper {
             position: relative;
-            display: flex;
-            justify-content: center;
+            display: inline-block;
+            line-height: 1;
         }
 
-        /* Хвост (например, "-4"), который уходит вправо */
+        /* Хвост (например, "-4"), который приклеен справа и не мешает центровке основной цифры */
         .suffix {
             position: absolute;
-            left: 100%; /* Начинается сразу после первой цифры */
+            left: 100%; 
+            top: 0;
             white-space: nowrap;
-            /* Чтобы хвост не был виден, если он не влезает в круг */
+            /* Он будет обрезан краем day-marker из-за overflow:hidden */
         }
 
         .popup-box { text-align: center; font-family: sans-serif; min-width: 180px; }
@@ -62,13 +64,12 @@
             myPoints.forEach(function(p, i) {
                 var fullDay = String(p.day ? p.day : (i + 1));
                 
-                // Разделяем строку по дефису
                 var parts = fullDay.split('-');
-                var baseNum = parts[0]; // Первая цифра (например, 2 или 24)
-                var suffix = parts.length > 1 ? '-' + parts[1] : ''; // Хвост (например, -4 или -27)
+                var baseNum = parts[0];
+                var suffix = parts.length > 1 ? '-' + parts[1] : '';
 
-                // Формируем HTML: база в центре, суффикс абсолютно справа
-                var markerHtml = '<span class="num-container">' + baseNum + 
+                // Главная фишка: baseNum центрируется, а suffix прилипает справа
+                var markerHtml = '<span class="num-wrapper">' + baseNum + 
                                  '<span class="suffix">' + suffix + '</span></span>';
 
                 var icon = L.divIcon({ 
@@ -79,13 +80,10 @@
                 });
 
                 var html = '<div class="popup-box"><b>' + p.title + '</b><p>' + p.desc + '</p><div class="btn-row">';
-                if (p.link && p.link !== "") {
-                    html += '<a href="view.html?file=' + p.link + '" class="btn btn-track" target="_blank">Трек</a>';
-                }
-                if (p.vk && p.vk !== "") {
-                    html += '<a href="' + p.vk + '" class="btn btn-vk" target="_blank">VK</a>';
-                }
+                if (p.link && p.link !== "") { html += '<a href="view.html?file=' + p.link + '" class="btn btn-track" target="_blank">Трек</a>'; }
+                if (p.vk && p.vk !== "") { html += '<a href="' + p.vk + '" class="btn btn-vk" target="_blank">VK</a>'; }
                 html += '</div></div>';
+                
                 L.marker([p.lat, p.lng], {icon: icon}).addTo(map).bindPopup(html);
             });
 
