@@ -12,7 +12,7 @@ var myPoints = [
     lng: 38.4500,
     title: "День 2: 01.02.2026",
     desc: "Проехал много километров.",
-    link: "2.gpx",
+    link: "4.gpx",
     vk: "https://vk.com/wall-171082824_1662" 
   }  
 ];
