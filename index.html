@@ -28,8 +28,9 @@
     <div id="map"></div>
     <script>
         var map = L.map('map', {zoomControl: false}).setView([50, 80], 4);
+        map.attributionControl.setPrefix('Мое велопутешествие');
         L.control.zoom({position: 'bottomright'}).addTo(map);
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '&copy; CARTO' }).addTo(map);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '' }).addTo(map);
 
         if (typeof myPoints !== 'undefined' && myPoints.length > 0) {
             myPoints.forEach(function(p, i) {
