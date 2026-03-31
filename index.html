@@ -18,7 +18,7 @@
         .popup-box { text-align: center; font-family: sans-serif; min-width: 160px; }
         .popup-box b { font-size: 16px; display: block; margin-bottom: 5px; }
         .btn-view {
-            display: inline-block; background: #4285F4; color: white !important;
+            display: inline-block; background: #28a745; color: white !important;
             text-decoration: none; padding: 12px 25px; border-radius: 25px;
             margin-top: 10px; font-weight: bold; font-size: 16px;
         }
@@ -42,7 +42,7 @@
                 var popupHtml = '<div class="popup-box">' +
                                '<b>' + p.title + '</b>' +
                                '<span>' + p.desc + '</span><br>' +
-                               '<a href="' + viewUrl + '" class="btn-view" target="_blank">Спутник</a>' +
+                               '<a href="' + viewUrl + '" class="btn-view" target="_blank">Трек</a>' +
                                '</div>';
 
                 L.marker([p.lat, p.lng], {icon: icon}).addTo(map).bindPopup(popupHtml);
