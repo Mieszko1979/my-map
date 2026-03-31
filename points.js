@@ -5,7 +5,7 @@ var myPoints = [
     title: "Старт маршрута",
     desc: "Выехал из Москвы. Погода +25.",
     link: "1.gpx",                         // Кнопка "Трек" будет
-    vk: "https://vk.com/wall12345_678"     // Кнопка "VK" будет
+    vk: "https://vk.com/mieszko_travel"     // Кнопка "VK" будет
   },
   {
     lat: 55.8500,
