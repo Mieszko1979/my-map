@@ -2,10 +2,10 @@ var myPoints = [
   {
     lat: 55.7512,
     lng: 37.6184,
-    title: "Старт в Москве",
-    desc: "Первый день путешествия!",
+    title: "День 1 - 0101.2026",
+    desc: "Палатка",
     link: "1.gpx",
-    vk: "https://vk.com/wall12345_678"
+    vk: "https://vk.com/mieszko_travel"
   },
   {
     lat: 55.8500,
