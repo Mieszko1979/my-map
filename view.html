@@ -1,75 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Детальный разбор трека</title>
+    <title>Трек дня</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- Карты и GPX -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.7.0/gpx.min.js"></script>
-    
-    <!-- Библиотека для графика высот -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <style>
-        html, body { height: 100%; margin: 0; padding: 0; font-family: sans-serif; background: #000; }
-        
-        /* Карта занимает верхнюю часть экрана */
+        html, body { height: 100%; margin: 0; padding: 0; background: #000; overflow: hidden; }
         #map { height: 70%; width: 100%; }
-        
-        /* Контейнер для графика внизу */
-        #chart-container { 
-            height: 30%; width: 100%; background: white; 
-            border-top: 2px solid #ccc; box-sizing: border-box; padding: 10px;
-        }
-
-        /* Панель информации справа */
-        #info { 
-            position: absolute; top: 20px; right: 20px; z-index: 1000; 
-            background: rgba(255,255,255,0.9); padding: 15px; border-radius: 12px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3); width: 200px; line-height: 1.6;
-        }
-        .stat-val { font-weight: bold; color: #238aff; font-size: 16px; }
-        .stat-label { font-size: 12px; color: #666; text-transform: uppercase; display: block; margin-top: 5px; }
+        #chart-container { height: 30%; width: 100%; background: white; padding: 10px; box-sizing: border-box; }
+        #info { position: absolute; top: 10px; right: 10px; z-index: 1000; background: rgba(255,255,255,0.9); padding: 10px; border-radius: 8px; font-family: sans-serif; box-shadow: 0 2px 10px rgba(0,0,0,0.3); font-size: 13px; }
     </style>
 </head>
 <body>
-
     <div id="map"></div>
-    
-    <div id="info">
-        <b style="font-size:18px; display:block; border-bottom:1px solid #ddd; margin-bottom:10px; padding-bottom:5px;">Итоги дня</b>
-        
-        <span class="stat-label">Дистанция</span>
-        <span id="dist" class="stat-val">0.0</span> <small>км</small>
-
-        <span class="stat-label">Набор высоты</span>
-        <span id="gain" class="stat-val">0</span> <small>м</small>
-
-        <span class="stat-label">Макс. высота</span>
-        <span id="max-alt" class="stat-val">0</span> <small>м</small>
-
-        <span class="stat-label">Время в движении</span>
-        <span id="time" class="stat-val">00:00</span>
-
-        <span class="stat-label">Ср. скорость</span>
-        <span id="avg-speed" class="stat-val">0.0</span> <small>км/ч</small>
-    </div>
-
-    <div id="chart-container">
-        <canvas id="elevationChart"></canvas>
-    </div>
-
+    <div id="info">Загрузка...</div>
+    <div id="chart-container"><canvas id="elevationChart"></canvas></div>
     <script>
-        var map = L.map('map').setView([50, 80], 5);
+        var map = L.map('map', {attributionControl: true}).setView([50, 80], 5);
         map.attributionControl.setPrefix('Мое велопутешествие');
-
-        // Спутник Google
-        L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{
-            maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3'], attribution: ''
-        }).addTo(map);
+        L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{ maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3'], attribution: '' }).addTo(map);
 
         var urlParams = new URLSearchParams(window.location.search);
         var fileName = urlParams.get('file');
@@ -82,60 +35,20 @@
             }).on('loaded', function(e) {
                 var g = e.target;
                 map.fitBounds(g.getBounds());
-
-                // 1. Выводим статистику в правое окно
-                document.getElementById('dist').innerText = (g.get_distance()/1000).toFixed(1);
-                document.getElementById('gain').innerText = g.get_elevation_gain().toFixed(0);
-                document.getElementById('max-alt').innerText = g.get_elevation_max().toFixed(0);
-                document.getElementById('avg-speed').innerText = g.get_moving_speed().toFixed(1);
-                
-                // Красиво форматируем время (из миллисекунд в часы:минуты)
-                var ms = g.get_moving_time();
-                var hours = Math.floor(ms / 3600000);
-                var mins = Math.floor((ms % 3600000) / 60000);
-                document.getElementById('time').innerText = hours + "ч " + mins + "м";
-
-                // 2. Строим график высот
-                var elevationData = g.get_elevation_data(); // Массив [дистанция, высота]
-                buildChart(elevationData);
-
+                document.getElementById('info').innerHTML = "<b>" + (g.get_distance()/1000).toFixed(1) + " км</b> | <b>" + g.get_elevation_gain().toFixed(0) + " м набора</b>";
+                buildChart(g.get_elevation_data());
             }).addTo(map);
         }
 
         function buildChart(data) {
             var ctx = document.getElementById('elevationChart').getContext('2d');
-            
-            // Подготавливаем данные для графика
-            var labels = data.map(d => (d[0]).toFixed(1)); // Дистанция
-            var values = data.map(d => d[1].toFixed(0));   // Высота
-
             new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Высота (м)',
-                        data: values,
-                        fill: true,
-                        backgroundColor: 'rgba(35, 138, 255, 0.2)',
-                        borderColor: '#238aff',
-                        borderWidth: 2,
-                        pointRadius: 0, // Убираем точки, оставляем только линию
-                        tension: 0.3    // Сглаживание линии
-                    }]
+                    labels: data.map(d => d[0].toFixed(1)),
+                    datasets: [{ label: 'Высота', data: data.map(d => d[1].toFixed(0)), fill: true, backgroundColor: 'rgba(40, 167, 69, 0.2)', borderColor: '#28a745', borderWidth: 2, pointRadius: 0, tension: 0.3 }]
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: { 
-                            title: { display: true, text: 'Дистанция (км)' },
-                            ticks: { maxTicksLimit: 10 }
-                        },
-                        y: { title: { display: true, text: 'Высота (м)' } }
-                    }
-                }
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { ticks: { font: { size: 10 } } } } }
             });
         }
     </script>
