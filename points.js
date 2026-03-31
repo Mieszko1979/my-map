@@ -12,7 +12,7 @@ var myPoints = [
     lng: 38.4500,
     title: "День 2: Область",
     desc: "Проехал много километров.",
-    link: "track.gpx",
-    vk: "" // Кнопки ВК не будет
-  }
+    link: "2.gpx",
+    vk: "https://vk.com/mieszko_travel" 
+  }  
 ];
