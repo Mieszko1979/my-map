@@ -36,5 +36,18 @@ var points2024 = [
   { day: "39", lat: 40.866852, lng: 62.295458, title: "08.08.2024", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_1365" },
   { day: "40-41", lat: 39.784063, lng: 64.422211, title: "09.08.2024 - 10.08.2024", desc: "Хостел", link: "", vk: "https://vk.com/wall-171082824_1373" },
   { day: "42", lat: 40.076787, lng: 64.92373, title: "11.08.2024", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_1378" },
+  { day: "43", lat: 39.951853, lng: 65.955909, title: "12.08.2024", desc: "В гостях у местных", link: "", vk: "https://vk.com/wall-171082824_1380" },
+  { day: "44-45", lat: 39.652969, lng: 66.971423, title: "13.08.2024 - 14.08.2024", desc: "Хостел", link: "", vk: "https://vk.com/wall-171082824_1380" },
+  { day: "46", lat: 39.517008, lng: 67.394471, title: "15.08.2024", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_1388" },
+  { day: "47", lat: 39.450781, lng: 68.197774, title: "16.08.2024", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_1388" },
+  { day: "48", lat: 39.360297, lng: 68.556114, title: "17.08.2024", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_1389" },
+  { day: "49-51", lat: 38.507486, lng: 68.763036, title: "18.08.2024 - 20.08.2024", desc: "Хостел", link: "", vk: "https://vk.com/wall-171082824_1392" },
+  { day: "52", lat: 38.436567, lng: 68.729342, title: "21.08.2024", desc: "АЗС", link: "", vk: "https://vk.com/wall-171082824_1402" },
+  { day: "53", lat: 37.706544, lng: 68.661195, title: "22.08.2024", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_1402" },
+  { day: "54", lat: 37.21141, lng: 68.590132, title: "23.08.2024", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_1402" },
+  { day: "55", lat: 36.900752, lng: 68.850477, title: "24.08.2024", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_1410" },
+  { day: "56", lat: 36.647018, lng: 68.629782, title: "25.08.2024", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_1424" },
+  { day: "57", lat: 36.695212, lng: 67.70614, title: "26.08.2024", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_1433" },
+  { day: "58", lat: 56.397398, lng: 47.787415, title: "02.07.2024", desc: "Палатка", link: "", vk: "" },
 ];
 
