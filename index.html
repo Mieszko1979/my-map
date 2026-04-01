@@ -1,92 +1,133 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Карта велопутешествия</title>
+    <title>Мои Велопутешествия</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="points.js"></script>
+    
+    <!-- ПОДКЛЮЧАЕМ ВСЕ ФАЙЛЫ АРХИВА -->
+    <script src="points.js"></script> <!-- Текущий -->
+    <script src="archive/2018/points.js"></script>
+    <script src="archive/2019/points.js"></script>
+    <script src="archive/2024/points.js"></script>
+
     <style>
         html, body, #map { height: 100%; margin: 0; padding: 0; overflow: hidden; }
         
-        /* Стиль кружка */
+        /* ПАНЕЛЬ МЕНЮ */
+        #menu-box {
+            position: absolute; top: 10px; left: 10px; z-index: 1000;
+            background: white; padding: 12px; border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.2); font-family: Arial, sans-serif;
+            min-width: 230px;
+        }
+        .menu-title { font-weight: bold; display: flex; align-items: center; cursor: pointer; font-size: 15px; }
+        .menu-title input { margin-right: 10px; transform: scale(1.2); }
+        
+        #trip-list { margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee; display: none; }
+        .trip-item { margin-bottom: 10px; display: flex; align-items: center; font-size: 13px; }
+        .trip-item input { margin-right: 10px; cursor: pointer; }
+
+        /* СТИЛИ КРУЖКОВ */
         .day-marker {
-            background: #fff; 
-            border: 2px solid #28a745; 
-            border-radius: 50%;
-            color: #000; 
-            font-weight: bold; 
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center; 
-            align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2); 
-            /* ВОЗВРАЩАЕМ КРУПНЫЙ ШРИФТ */
-            font-size: 14px; 
-            overflow: hidden; 
-            white-space: nowrap;
+            background: #fff; border: 2px solid #28a745; border-radius: 50%;
+            color: #000; font-weight: bold; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-size: 11px; overflow: hidden;
         }
+        /* Архивные кружки — СИНИЕ */
+        .day-marker.archive { border-color: #007bff; color: #007bff; }
 
-        /* Оболочка для цифр */
-        .num-wrapper {
-            position: relative;
-            display: inline-block;
-            line-height: 1;
-        }
-
-        /* Хвост (например, "-4"), который приклеен справа и не мешает центровке основной цифры */
-        .suffix {
-            position: absolute;
-            left: 100%; 
-            top: 0;
-            white-space: nowrap;
-            /* Он будет обрезан краем day-marker из-за overflow:hidden */
-        }
-
-        .popup-box { text-align: center; font-family: sans-serif; min-width: 180px; }
-        .popup-box b { font-size: 16px; display: block; margin-bottom: 5px; color: #333; }
-        .popup-box p { margin: 8px 0; color: #666; font-size: 14px; }
+        .popup-box { text-align: center; font-family: sans-serif; min-width: 170px; }
         .btn-row { display: flex; justify-content: center; gap: 8px; margin-top: 10px; }
-        .btn { text-decoration: none; font-weight: bold; font-size: 13px; padding: 6px 12px; border-radius: 15px; display: inline-block; }
+        .btn { text-decoration: none; font-weight: bold; font-size: 12px; padding: 6px 12px; border-radius: 15px; }
         .btn-track { background: #28a745; color: white !important; }
-        .btn-vk { background: #ffffff; color: #0077FF !important; border: 1px solid #0077FF; }
+        .btn-archive-track { background: #007bff; color: white !important; }
+        .btn-vk { border: 1px solid #0077FF; color: #0077FF !important; }
     </style>
 </head>
 <body>
+
+    <div id="menu-box">
+        <div class="menu-title" onclick="document.getElementById('main-toggle').click()">
+            <input type="checkbox" id="main-toggle" onclick="event.stopPropagation()" onchange="toggleList()">
+            Мои велопутешествия
+        </div>
+        <div id="trip-list">
+            <div class="trip-item">
+                <input type="checkbox" onchange="toggleArchive(this, points2018, 'a2018')"> 
+                1. Яранск - Паттайя 2018 год
+            </div>
+            <div class="trip-item">
+                <input type="checkbox" onchange="toggleArchive(this, points2019, 'a2019')"> 
+                2. Путешествие 2019
+            </div>
+            <div class="trip-item">
+                <input type="checkbox" onchange="toggleArchive(this, points2024, 'a2024')"> 
+                3. Путешествие 2024
+            </div>
+        </div>
+    </div>
+
     <div id="map"></div>
+
     <script>
-        var map = L.map('map', {zoomControl: false, attributionControl: true}).setView([50, 80], 4);
+        var map = L.map('map', {zoomControl: false, attributionControl: false}).setView([50, 80], 4);
         map.attributionControl.setPrefix('Мое велопутешествие');
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '' }).addTo(map);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(map);
 
-        if (typeof myPoints !== 'undefined' && myPoints.length > 0) {
-            myPoints.forEach(function(p, i) {
-                var fullDay = String(p.day ? p.day : (i + 1));
-                
-                var parts = fullDay.split('-');
-                var baseNum = parts[0];
-                var suffix = parts.length > 1 ? '-' + parts[1] : '';
+        var archiveLayers = {};
 
-                // Главная фишка: baseNum центрируется, а suffix прилипает справа
-                var markerHtml = '<span class="num-wrapper">' + baseNum + 
-                                 '<span class="suffix">' + suffix + '</span></span>';
-
-                var icon = L.divIcon({ 
-                    className: 'day-marker', 
-                    html: markerHtml, 
-                    iconSize: [30, 30], 
-                    iconAnchor: [15, 15] 
+        // 1. ФУНКЦИЯ ВКЛЮЧЕНИЯ АРХИВА
+        function toggleArchive(checkbox, data, id) {
+            if (checkbox.checked) {
+                var group = L.layerGroup();
+                data.forEach(function(p) {
+                    var icon = L.divIcon({ className: 'day-marker archive', html: p.day, iconSize: [30, 30], iconAnchor: [15, 15] });
+                    var html = createPopup(p, true);
+                    L.marker([p.lat, p.lng], {icon: icon}).addTo(group).bindPopup(html);
                 });
+                group.addTo(map);
+                archiveLayers[id] = group;
+                // Фокус на архивный поход
+                var last = data[data.length - 1];
+                map.setView([last.lat, last.lng], 6);
+            } else {
+                if (archiveLayers[id]) { map.removeLayer(archiveLayers[id]); delete archiveLayers[id]; }
+            }
+        }
 
-                var html = '<div class="popup-box"><b>' + p.title + '</b><p>' + p.desc + '</p><div class="btn-row">';
-                if (p.link && p.link !== "") { html += '<a href="view.html?file=' + p.link + '" class="btn btn-track" target="_blank">Трек</a>'; }
-                if (p.vk && p.vk !== "") { html += '<a href="' + p.vk + '" class="btn btn-vk" target="_blank">VK</a>'; }
-                html += '</div></div>';
-                
-                L.marker([p.lat, p.lng], {icon: icon}).addTo(map).bindPopup(html);
+        // 2. ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+        function createPopup(p, isArchive) {
+            var btnClass = isArchive ? "btn btn-archive-track" : "btn btn-track";
+            // В архиве файлы лежат в подпапках, поэтому добавляем 'archive/' к пути
+            var trackUrl = isArchive ? "view.html?file=archive/" + p.link : "view.html?file=" + p.link;
+            
+            var html = '<div class="popup-box"><b>'+p.title+'</b><p>'+p.desc+'</p><div class="btn-row">';
+            if (p.link) html += '<a href="'+trackUrl+'" class="'+btnClass+'" target="_blank">Трек</a>';
+            if (p.vk) html += '<a href="'+p.vk+'" class="btn btn-vk" target="_blank">VK</a>';
+            html += '</div></div>';
+            return html;
+        }
+
+        function toggleList() {
+            var main = document.getElementById('main-toggle');
+            var list = document.getElementById('trip-list');
+            list.style.display = main.checked ? 'block' : 'none';
+            if (!main.checked) {
+                for (var key in archiveLayers) { map.removeLayer(archiveLayers[key]); }
+                archiveLayers = {};
+                list.querySelectorAll('input').forEach(i => i.checked = false);
+            }
+        }
+
+        // 3. ТЕКУЩИЙ ПОХОД (Зеленый)
+        if (typeof myPoints !== 'undefined') {
+            myPoints.forEach(function(p, i) {
+                var icon = L.divIcon({ className: 'day-marker', html: p.day ? p.day : (i+1), iconSize: [30, 30], iconAnchor: [15, 15] });
+                L.marker([p.lat, p.lng], {icon: icon}).addTo(map).bindPopup(createPopup(p, false));
             });
-
             var last = myPoints[myPoints.length - 1];
             map.setView([last.lat, last.lng], 8);
         }
