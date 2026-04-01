@@ -6,6 +6,15 @@ var points2024 = [
   { day: "6", lat: 55.417292, lng: 47.524427, title: "06.07.2024", desc: "Палатка", link: "", vk: "" },
   { day: "7", lat: 54.917725, lng: 48.273968, title: "07.07.2024", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_1252" },
   { day: "8", lat: 54.376861, lng: 48.736339, title: "08.07.2024", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_1261" },
-  { day: "9", lat: 54.21534, lng: 48.511787, title: "09.07.2024", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_1267" },
+  { day: "9", lat: 54.21534, lng: 49.511787, title: "09.07.2024", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_1267" },
+  { day: "10", lat: 53.743585, lng: 50.22194, title: "10.07.2024", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_1271" },
+  { day: "11", lat: 53.361533, lng: 50.307107, title: "11.07.2024", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_1271" },
+  { day: "12", lat: 52.81317, lng: 50.500058, title: "12.07.2024", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_1271" },
+  { day: "13", lat: 51.906877, lng: 50.837183, title: "13.07.2024", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_1275" },
+  { day: "14", lat: 51.362875, lng: 51.326132, title: "14.07.2024", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_1277" },
+  { day: "15-16", lat: 56.397398, lng: 47.787415, title: "15.07.2024 - 16.07.2024", desc: "Хостел", link: "", vk: "https://vk.com/wall-171082824_1289" },
+  { day: "17", lat: 50.740018, lng: 51.0896, title: "17.07.2024", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_1301" },
+  { day: "18", lat: 49.854874, lng: 51.32503, title: "18.07.2024", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_1303" },
+  { day: "19", lat: 49.005632, lng: 51.794408, title: "19.07.2024", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_1309" },
 ];
 
