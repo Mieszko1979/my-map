@@ -1,119 +1,181 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Мои Велопутешествия</title>
+    <title>Архив велопутешествий</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Стили и скрипты карт -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <!-- Плагин для чтения GPX -->
+    <!-- Плагин для GPX -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.7.0/gpx.min.js"></script>
+    
+    <!-- Ваш файл с текущим походом -->
     <script src="points.js"></script>
 
     <style>
-        html, body, #map { height: 100%; margin: 0; padding: 0; overflow: hidden; }
+        /* Чтобы карта не была серой, задаем жестко высоту */
+        html, body { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; }
+        #map { height: 100vh; width: 100vw; background: #e0e0e0; }
+        
+        /* ПАНЕЛЬ МЕНЮ */
         #menu-box {
-            position: absolute; top: 10px; left: 10px; z-index: 1000;
-            background: white; padding: 12px; border-radius: 10px;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.2); font-family: Arial, sans-serif;
-            min-width: 230px;
+            position: absolute; top: 15px; left: 15px; z-index: 1000;
+            background: white; padding: 15px; border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2); font-family: sans-serif;
+            min-width: 250px;
         }
-        .menu-title { font-weight: bold; display: flex; align-items: center; cursor: pointer; font-size: 15px; }
-        .menu-title input { margin-right: 10px; transform: scale(1.2); }
-        #trip-list { margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee; display: none; }
-        .trip-item { margin-bottom: 10px; display: flex; align-items: center; font-size: 13px; }
-        .trip-item input { margin-right: 10px; cursor: pointer; }
+        .menu-header { font-weight: bold; font-size: 16px; display: flex; align-items: center; cursor: pointer; }
+        .menu-header input { margin-right: 12px; transform: scale(1.3); }
+        
+        #trip-list { margin-top: 12px; padding-top: 12px; border-top: 1px solid #eee; display: none; }
+        .trip-item { margin-bottom: 10px; display: flex; align-items: center; font-size: 14px; font-weight: 500; }
+        .trip-item input { margin-right: 12px; transform: scale(1.1); cursor: pointer; }
 
+        /* ОБЩИЙ СТИЛЬ КРУЖКОВ */
         .day-marker {
-            background: #fff; border: 2px solid #28a745; border-radius: 50%;
+            background: #fff; border: 2.5px solid #28a745; border-radius: 50%;
             color: #000; font-weight: bold; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-size: 11px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3); font-size: 11px;
         }
-        /* Архивные точки - СИНИЕ */
-        .day-marker.archive { border-color: #007bff; color: #007bff; }
+
+        /* ЦВЕТА ДЛЯ РАЗНЫХ ЛЕТ */
+        .m2018 { border-color: #ff0000; color: #ff0000; } /* Красный */
+        .m2019 { border-color: #007bff; color: #007bff; } /* Синий */
+        .m2024 { border-color: #ff8c00; color: #ff8c00; } /* Оранжевый */
+
+        .popup-box { text-align: center; font-family: sans-serif; }
     </style>
 </head>
 <body>
 
     <div id="menu-box">
-        <div class="menu-title" onclick="document.getElementById('main-toggle').click()">
-            <input type="checkbox" id="main-toggle" onclick="event.stopPropagation()" onchange="toggleList()">
+        <div class="menu-header">
+            <input type="checkbox" id="main-toggle" onchange="toggleList()">
             Мои велопутешествия
         </div>
         <div id="trip-list">
-            <div class="trip-item"><input type="checkbox" onchange="loadGPX(this, 'archive/2018/2018.gpx', 'a2018')"> 1. Яранск - Паттайя 2018</div>
-            <div class="trip-item"><input type="checkbox" onchange="loadGPX(this, 'archive/2019/2019.gpx', 'a2019')"> 2. Путешествие 2019</div>
-            <div class="trip-item"><input type="checkbox" onchange="loadGPX(this, 'archive/2024/2024.gpx', 'a2024')"> 3. Путешествие 2024</div>
+            <div class="trip-item">
+                <input type="checkbox" class="trip-check" data-id="2018" data-file="archive/2018/2018.gpx" data-color="m2018" onchange="handleCheck(this)"> 
+                1. Яранск - Паттайя 2018
+            </div>
+            <div class="trip-item">
+                <input type="checkbox" class="trip-check" data-id="2019" data-file="archive/2019/2019.gpx" data-color="m2019" onchange="handleCheck(this)"> 
+                2. Путешествие 2019
+            </div>
+            <div class="trip-item">
+                <input type="checkbox" class="trip-check" data-id="2024" data-file="archive/2024/2024.gpx" data-color="m2024" onchange="handleCheck(this)"> 
+                3. Путешествие 2024
+            </div>
         </div>
     </div>
 
     <div id="map"></div>
 
     <script>
+        // Инициализация карты
         var map = L.map('map', {zoomControl: false, attributionControl: false}).setView([50, 80], 4);
         map.attributionControl.setPrefix('Мое велопутешествие');
         L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(map);
 
-        var archiveLayers = {};
+        var layers = {}; // Здесь храним загруженные слои
+        var activeOrder = []; // Очередь включенных маршрутов для фокуса
 
-        // ФУНКЦИЯ ЗАГРУЗКИ АРХИВНОГО GPX
-        function loadGPX(checkbox, fileUrl, id) {
-            if (checkbox.checked) {
-                var counter = 1;
-                var gpx = new L.GPX(fileUrl, {
-                    async: true,
-                    marker_options: {
-                        startIconUrl: null, endIconUrl: null, shadowUrl: null,
-                        wptIconUrls: { '': null } // Убираем стандартные иконки
-                    },
-                    polyline_options: { color: '#007bff', weight: 2, opacity: 0.5 }
-                }).on('addpoint', function(e) {
-                    // Для каждой путевой точки из GPX создаем наш синий кружок
-                    if (e.point_type === 'waypoint') {
-                        var icon = L.divIcon({
-                            className: 'day-marker archive',
-                            html: counter++,
-                            iconSize: [26, 26],
-                            iconAnchor: [13, 13]
-                        });
-                        e.point.setIcon(icon);
-                        
-                        // В бабл вставляем название точки из GPX
-                        var name = e.point_name || "Точка";
-                        var comment = e.point_desc || "";
-                        e.point.bindPopup("<div style='text-align:center;'><b>" + name + "</b><br>" + comment + "</div>");
-                    }
-                }).on('loaded', function(e) {
-                    map.fitBounds(e.target.getBounds());
-                }).addTo(map);
-
-                archiveLayers[id] = gpx;
-            } else {
-                if (archiveLayers[id]) { map.removeLayer(archiveLayers[id]); delete archiveLayers[id]; }
-            }
-        }
-
+        // 1. УПРАВЛЕНИЕ СПИСКОМ
         function toggleList() {
-            var main = document.getElementById('main-toggle');
-            document.getElementById('trip-list').style.display = main.checked ? 'block' : 'none';
-            if (!main.checked) {
-                for (var key in archiveLayers) { map.removeLayer(archiveLayers[key]); }
-                archiveLayers = {};
-                document.querySelectorAll('#trip-list input').forEach(i => i.checked = false);
+            var isChecked = document.getElementById('main-toggle').checked;
+            document.getElementById('trip-list').style.display = isChecked ? 'block' : 'none';
+            if (!isChecked) {
+                // Выключаем всё
+                Object.keys(layers).forEach(id => map.removeLayer(layers[id]));
+                document.querySelectorAll('.trip-check').forEach(c => c.checked = false);
+                layers = {};
+                activeOrder = [];
             }
         }
 
-        // ТЕКУЩИЙ ПОХОД (Зеленый) - остается через points.js для гибкости
+        // 2. ОБРАБОТКА ГАЛОЧКИ МАРШРУТА
+        function handleCheck(cb) {
+            var id = cb.getAttribute('data-id');
+            var file = cb.getAttribute('data-file');
+            var colorClass = cb.getAttribute('data-color');
+
+            if (cb.checked) {
+                activeOrder.push(id);
+                loadGPX(id, file, colorClass);
+            } else {
+                activeOrder = activeOrder.filter(item => item !== id);
+                if (layers[id]) {
+                    map.removeLayer(layers[id]);
+                    delete layers[id];
+                }
+                focusOnTop();
+            }
+        }
+
+        // 3. ЗАГРУЗКА GPX
+        function loadGPX(id, fileUrl, colorClass) {
+            var counter = 1;
+            var gpx = new L.GPX(fileUrl, {
+                async: true,
+                marker_options: {
+                    startIconUrl: null, endIconUrl: null, shadowUrl: null,
+                    wptIconUrls: { '': null }
+                },
+                polyline_options: { className: 'path-' + id, opacity: 0 } // Линию не рисуем, только точки
+            }).on('addpoint', function(e) {
+                if (e.point_type === 'waypoint') {
+                    var icon = L.divIcon({
+                        className: 'day-marker ' + colorClass,
+                        html: counter++,
+                        iconSize: [28, 28],
+                        iconAnchor: [14, 14]
+                    });
+                    e.point.setIcon(icon);
+                    var name = e.point_name || "Точка";
+                    e.point.bindPopup("<div class='popup-box'><b>" + name + "</b></div>");
+                }
+            }).on('loaded', function() {
+                focusOnTop();
+            }).addTo(map);
+
+            layers[id] = gpx;
+        }
+
+        // 4. ЛОГИКА ФОКУСИРОВКИ (на первую точку первого активного)
+        function focusOnTop() {
+            if (activeOrder.length > 0) {
+                // Ищем самый первый активный маршрут в списке (по приоритету 2018 > 2019 > 2024)
+                var priority = ["2018", "2019", "2024"];
+                var bestId = priority.find(pId => activeOrder.includes(pId));
+                
+                if (bestId && layers[bestId]) {
+                    var layer = layers[bestId];
+                    // Прыгаем на границы этого слоя
+                    map.fitBounds(layer.getBounds(), { padding: [50, 50] });
+                }
+            } else {
+                // Если всё выключено, возвращаемся к текущему походу
+                focusOnCurrent();
+            }
+        }
+
+        function focusOnCurrent() {
+            if (typeof myPoints !== 'undefined' && myPoints.length > 0) {
+                var last = myPoints[myPoints.length - 1];
+                map.setView([last.lat, last.lng], 8);
+            }
+        }
+
+        // 5. ТЕКУЩИЙ ПОХОД (Зеленый)
         if (typeof myPoints !== 'undefined') {
             myPoints.forEach(function(p, i) {
                 var icon = L.divIcon({ className: 'day-marker', html: p.day ? p.day : (i+1), iconSize: [30, 30], iconAnchor: [15, 15] });
-                var html = '<div style="text-align:center;"><b>'+p.title+'</b><p>'+p.desc+'</p>';
-                if (p.link) html += '<a href="view.html?file='+p.link+'" target="_blank" style="display:block;background:#28a745;color:white;padding:5px;border-radius:10px;text-decoration:none;font-weight:bold;">Трек</a>';
-                html += '</div>';
+                var html = '<div class="popup-box"><b>'+p.title+'</b><br><a href="view.html?file='+p.link+'" target="_blank">Трек</a></div>';
                 L.marker([p.lat, p.lng], {icon: icon}).addTo(map).bindPopup(html);
             });
-            var last = myPoints[myPoints.length - 1];
-            map.setView([last.lat, last.lng], 8);
+            focusOnCurrent();
         }
     </script>
 </body>
