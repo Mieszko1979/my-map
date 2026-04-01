@@ -1,0 +1,289 @@
+<?xml version="1.0"?>
+<gpx version="1.1" creator="Organic Maps" xmlns="http://www.topografix.com/GPX/1/1"
+    xmlns:gpxx="http://www.garmin.com/xmlschemas/GpxExtensions/v3"
+    xmlns:gpx_style="http://www.topografix.com/GPX/gpx_style/0/2"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.topografix.com/GPX/1/1 https://www.topografix.com/GPX/1/1/gpx.xsd http://www.topografix.com/GPX/gpx_style/0/2 https://www.topografix.com/GPX/gpx_style/0/2/gpx_style.xsd http://www.garmin.com/xmlschemas/GpxExtensions/v3 https://www.garmin.com/xmlschemas/GpxExtensionsv3.xsd">
+<metadata>
+  <name>Ночлег 2019</name>
+</metadata>
+<wpt lat="56.942146" lon="47.870633">
+  <name>05.08.19</name>
+</wpt>
+<wpt lat="56.133693" lon="48.33075">
+  <name>06. 08.19</name>
+</wpt>
+<wpt lat="55.707742" lon="49.216314">
+  <name>07.08.19</name>
+</wpt>
+<wpt lat="55.378943" lon="49.936024">
+  <name>08.08.19</name>
+</wpt>
+<wpt lat="55.240978" lon="50.833483">
+  <name>09.08.19</name>
+</wpt>
+<wpt lat="54.891568" lon="52.374013">
+  <name>10.08.19</name>
+</wpt>
+<wpt lat="54.609583" lon="52.685532">
+  <name>11.08.19</name>
+</wpt>
+<wpt lat="54.316426" lon="53.392542">
+  <name>12.08.19</name>
+</wpt>
+<wpt lat="53.631186" lon="53.638284">
+  <name>13.08.19</name>
+</wpt>
+<wpt lat="53.109479" lon="54.358628">
+  <name>14.08.19</name>
+</wpt>
+<wpt lat="52.687271" lon="54.898243">
+  <name>15.08.19</name>
+</wpt>
+<wpt lat="52.470159" lon="55.132103">
+  <name>Родник</name>
+</wpt>
+<wpt lat="52.062636" lon="55.258504">
+  <name>16.08.19</name>
+</wpt>
+<wpt lat="51.763289" lon="55.092291">
+  <name>Profit Hostel</name>
+</wpt>
+<wpt lat="51.763094" lon="55.091821">
+  <name>Мое местоположение</name>
+</wpt>
+<wpt lat="51.276754" lon="54.988114">
+  <name>19.08.19</name>
+</wpt>
+<wpt lat="50.981889" lon="55.69662">
+  <name>20.08.19</name>
+</wpt>
+<wpt lat="50.637508" lon="56.664501">
+  <name>21.08.19</name>
+</wpt>
+<wpt lat="50.27964" lon="57.197804">
+  <name>22.08.19</name>
+</wpt>
+<wpt lat="50.234364" lon="58.286996">
+  <name>23.08.19</name>
+</wpt>
+<wpt lat="50.084041" lon="59.56948">
+  <name>Мое местоположение</name>
+</wpt>
+<wpt lat="50.084041" lon="59.56948">
+  <name>24.08.19</name>
+</wpt>
+<wpt lat="49.540312" lon="60.301102">
+  <name>25.08.19</name>
+</wpt>
+<wpt lat="48.654765" lon="60.825715">
+  <name>26.08.19</name>
+</wpt>
+<wpt lat="47.767775" lon="61.348918">
+  <name>27.08.19</name>
+</wpt>
+<wpt lat="47.074506" lon="61.520316">
+  <name>28.08.19</name>
+</wpt>
+<wpt lat="46.211431" lon="61.931238">
+  <name>30.08.19</name>
+</wpt>
+<wpt lat="45.788931" lon="62.718464">
+  <name>31.08.19</name>
+</wpt>
+<wpt lat="45.467866" lon="64.063661">
+  <name>01.09.19</name>
+</wpt>
+<wpt lat="44.895053" lon="64.7444">
+  <name>02.09.19</name>
+</wpt>
+<wpt lat="44.851873" lon="65.498149">
+  <name>03.09.19</name>
+</wpt>
+<wpt lat="44.289028" lon="66.53348">
+  <name>04.09.19</name>
+</wpt>
+<wpt lat="43.753796" lon="67.524158">
+  <name>05.09.19</name>
+</wpt>
+<wpt lat="43.285707" lon="68.199761">
+  <name>06.09.19</name>
+</wpt>
+<wpt lat="42.949463" lon="68.901758">
+  <name>08.09.19</name>
+</wpt>
+<wpt lat="42.46053" lon="69.590936">
+  <name>09.09.19</name>
+</wpt>
+<wpt lat="42.517866" lon="70.37434">
+  <name>10.09.19</name>
+</wpt>
+<wpt lat="42.895234" lon="71.359339">
+  <name>11.09.19</name>
+</wpt>
+<wpt lat="43.000003" lon="71.969128">
+  <name>14.09.19</name>
+</wpt>
+<wpt lat="42.900818" lon="72.99026">
+  <name>15.09.19</name>
+</wpt>
+<wpt lat="42.81218" lon="74.594056">
+  <name>Turkmenistan Embassy</name>
+</wpt>
+<wpt lat="42.850046" lon="73.979143">
+  <name>16.09.19</name>
+</wpt>
+<wpt lat="42.85252" lon="75.22675">
+  <name>19.09.19</name>
+</wpt>
+<wpt lat="42.600635" lon="75.813984">
+  <name>20.09.19</name>
+</wpt>
+<wpt lat="42.179567" lon="76.694361">
+  <name>21.09.19</name>
+</wpt>
+<wpt lat="42.400183" lon="77.844768">
+  <name>22.09.2019</name>
+</wpt>
+<wpt lat="42.714489" lon="78.368585">
+  <name>29.09.2019</name>
+</wpt>
+<wpt lat="42.722218" lon="77.552835">
+  <name>30.09.19</name>
+</wpt>
+<wpt lat="42.450834" lon="76.179445">
+  <name>01.10.19</name>
+</wpt>
+<wpt lat="42.18929" lon="75.565973">
+  <name>02.10.19</name>
+</wpt>
+<wpt lat="41.985827" lon="74.775973">
+  <name>03.10.19</name>
+</wpt>
+<wpt lat="41.928317" lon="74.516574">
+  <name>04.10.19</name>
+</wpt>
+<wpt lat="42.042942" lon="74.156869">
+  <name>05.10.19</name>
+</wpt>
+<wpt lat="42.19913" lon="73.584669">
+  <name>06.10.19</name>
+</wpt>
+<wpt lat="41.93511" lon="72.884037">
+  <name>07.10.19</name>
+</wpt>
+<wpt lat="41.75465" lon="72.933541">
+  <name>08.10.19</name>
+</wpt>
+<wpt lat="41.478603" lon="72.297964">
+  <name>09.10.19</name>
+</wpt>
+<wpt lat="40.515277" lon="72.806087">
+  <name>Храм</name>
+</wpt>
+<wpt lat="41.0268" lon="72.538979">
+  <name>10.10.19</name>
+</wpt>
+<wpt lat="40.78716" lon="73.323926">
+  <name>11.10.19</name>
+</wpt>
+<wpt lat="40.51901" lon="72.803152">
+  <name>12.10.19-13.10.19</name>
+</wpt>
+<wpt lat="40.6596" lon="72.21038">
+  <name>14.10.19</name>
+</wpt>
+<wpt lat="40.380589" lon="71.77669">
+  <name>15.10.19</name>
+</wpt>
+<wpt lat="40.332413" lon="71.308352">
+  <name>16.10.19</name>
+</wpt>
+<wpt lat="40.618782" lon="70.896875">
+  <name>17.10.19</name>
+</wpt>
+<wpt lat="41.039164" lon="70.571386">
+  <name>Родник</name>
+</wpt>
+<wpt lat="41.011585" lon="70.626526">
+  <name>18.10.19</name>
+</wpt>
+<wpt lat="40.97089" lon="69.993761">
+  <name>19.10.19</name>
+</wpt>
+<wpt lat="40.965515" lon="69.307246">
+  <name>24.10—25.10</name>
+</wpt>
+<wpt lat="41.118543" lon="68.706238">
+  <name>26.10.19</name>
+</wpt>
+<wpt lat="41.355986" lon="68.987788">
+  <name>27. 10.19</name>
+</wpt>
+<wpt lat="41.317653" lon="69.281502">
+  <name>ООО "Universal Mobile Systems" (UMS)</name>
+</wpt>
+<wpt lat="41.271798" lon="69.276445">
+  <name>Amir Khan Hostel 08.11.19</name>
+</wpt>
+<wpt lat="40.958732" lon="68.846109">
+  <name>05.11.19</name>
+</wpt>
+<wpt lat="40.958732" lon="68.846109">
+  <name>05.11.19</name>
+</wpt>
+<wpt lat="40.409414" lon="49.940242">
+  <name>09.11.19</name>
+</wpt>
+<wpt lat="39.459883" lon="48.550981">
+  <name>Orkhan</name>
+</wpt>
+<wpt lat="40.359687" lon="49.826468">
+  <name>Здание</name>
+</wpt>
+<wpt lat="36.260184" lon="50.007007">
+  <name>همکاری</name>
+</wpt>
+<wpt lat="40.163173" lon="49.470368">
+  <name>14.11.19</name>
+</wpt>
+<wpt lat="39.965559" lon="49.407394">
+  <name>15.11.19</name>
+</wpt>
+<wpt lat="39.475884" lon="48.741848">
+  <name>16.11.19</name>
+</wpt>
+<wpt lat="39.445325" lon="48.548915">
+  <name>M.İbrahimov adına Biləsuvar Təhsil Kompleksi</name>
+</wpt>
+<wpt lat="39.449738" lon="48.548115">
+  <name>17.11.19</name>
+</wpt>
+<wpt lat="38.624185" lon="48.873481">
+  <name>19.11.19</name>
+</wpt>
+<wpt lat="38.435181" lon="48.770018">
+  <name>20.11.2019</name>
+</wpt>
+<wpt lat="38.242818" lon="48.310325">
+  <name>ستاد اسکان فرهنگیان</name>
+</wpt>
+<wpt lat="38.229362" lon="48.276878">
+  <name>خوابگاه دخترانه سراسری</name>
+</wpt>
+<wpt lat="38.42124" lon="48.878237">
+  <name>هتل دریا</name>
+</wpt>
+<wpt lat="38.65977" lon="48.824764">
+  <name>25.11.19</name>
+</wpt>
+<wpt lat="38.947121" lon="48.768552">
+  <name>18.11.19</name>
+</wpt>
+<wpt lat="40.421745" lon="49.79886">
+  <name>Army Market</name>
+</wpt>
+<wpt lat="40.418648" lon="49.933026">
+  <name>Здание</name>
+</wpt>
+</gpx>
