@@ -75,7 +75,7 @@ var points2024 = [
   { day: "85", lat: 37.179047, lng: 50.286659, title: "23.09.2024", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_1558" },
   { day: "86", lat: 37.51286, lng: 49.336082, title: "24.09.2024", desc: "Пляж", link: "", vk: "https://vk.com/wall-171082824_1558" },
   { day: "87", lat: 38.198357, lng: 48.891312, title: "25.09.2024", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_1558" },
-  { day: "88-89", lat: 38.198357, lng: 48.891312, title: "26.09.2024 - 27.09.2024", desc: "Гостиница", link: "", vk: "https://vk.com/wall-171082824_1558" },
+  { day: "88-89", lat: 38.421409, lng: 48.877923, title: "26.09.2024 - 27.09.2024", desc: "Гостиница", link: "", vk: "https://vk.com/wall-171082824_1558" },
   { day: "90", lat: 38.436597, lng: 48.586458, title: "28.09.2024", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_1563" },
   { day: "91", lat: 38.527956, lng: 47.795784, title: "29.09.2024", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_1570" },
   { day: "92", lat: 38.47647, lng: 47.026002, title: "30.09.2024", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_1572" },
