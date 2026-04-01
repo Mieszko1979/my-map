@@ -5,5 +5,7 @@ var points2024 = [
   { day: "5", lat: 55.819087, lng: 47.446907, title: "05.07.2024", desc: "Палатка", link: "", vk: "" },
   { day: "6", lat: 55.417292, lng: 47.524427, title: "06.07.2024", desc: "Палатка", link: "", vk: "" },
   { day: "7", lat: 54.917725, lng: 48.273968, title: "07.07.2024", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_1252" },
+  { day: "8", lat: 54.376861, lng: 48.736339, title: "08.07.2024", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_1261" },
+  { day: "9", lat: 54.21534, lng: 48.511787, title: "09.07.2024", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_1267" },
 ];
 
