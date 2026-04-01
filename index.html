@@ -7,13 +7,15 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
-    <!-- Подключаем списки точек для каждого года -->
+    <!-- Сначала подключаем ТЕКУЩИЙ поход -->
+    <script src="points.js"></script> 
+    <!-- Затем архивные -->
     <script src="archive/2018/points.js"></script>
     <script src="archive/2019/points.js"></script>
     <script src="archive/2024/points.js"></script>
 
     <style>
-        html, body, #map { height: 100%; margin: 0; padding: 0; overflow: hidden; background: #e0e0e0; }
+        html, body, #map { height: 100%; margin: 0; padding: 0; overflow: hidden; background: #f0f0f0; }
         
         #menu-box {
             position: absolute; top: 15px; left: 15px; z-index: 1000;
@@ -24,23 +26,23 @@
         .menu-header input { margin-right: 12px; transform: scale(1.3); }
         #trip-list { margin-top: 12px; padding-top: 12px; border-top: 1px solid #eee; display: none; }
         .trip-item { margin-bottom: 10px; display: flex; align-items: center; font-size: 14px; }
-        .trip-item input { margin-right: 12px; transform: scale(1.1); }
+        .trip-item input { margin-right: 12px; }
 
-        /* Стиль кружков */
+        /* Общий стиль кружков */
         .day-marker {
-            background: #fff; border-radius: 50%; border: 2.5px solid #000;
+            background: #fff; border-radius: 50%; border: 2.5px solid #28a745; /* Зеленый по умолчанию */
             color: #000; font-weight: bold; font-family: Arial;
             display: flex; justify-content: center; align-items: center;
             box-shadow: 0 2px 5px rgba(0,0,0,0.3); font-size: 14px;
             overflow: hidden; white-space: nowrap;
         }
-        .num-wrapper { position: relative; display: inline-block; }
+        .num-wrapper { position: relative; display: inline-block; line-height: 1; }
         .suffix { position: absolute; left: 100%; top: 0; }
 
-        /* Цвета маршрутов */
-        .m2018 { border-color: #ff0000; color: #ff0000; } /* Красный */
-        .m2019 { border-color: #007bff; color: #007bff; } /* Синий */
-        .m2024 { border-color: #ff8c00; color: #ff8c00; } /* Оранжевый */
+        /* Цвета для архива */
+        .m2018 { border-color: #ff0000; color: #ff0000; } 
+        .m2019 { border-color: #007bff; color: #007bff; } 
+        .m2024 { border-color: #ff8c00; color: #ff8c00; } 
 
         .popup-box { text-align: center; font-family: sans-serif; min-width: 170px; }
         .btn-row { display: flex; justify-content: center; gap: 8px; margin-top: 10px; }
@@ -67,9 +69,11 @@
     <script>
         var map = L.map('map', {zoomControl: false, attributionControl: true}).setView([50, 80], 4);
         map.attributionControl.setPrefix('Мое велопутешествие');
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(map);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '' }).addTo(map);
 
-        var layerGroup = L.layerGroup().addTo(map);
+        // Две группы слоев: одна для текущего, другая для архива
+        var currentTripLayer = L.layerGroup().addTo(map);
+        var archiveLayerGroup = L.layerGroup().addTo(map);
 
         function toggleList() {
             var show = document.getElementById('main-toggle').checked;
@@ -80,44 +84,72 @@
             }
         }
 
-        function updateMarkers() {
-            layerGroup.clearLayers();
-            var focused = false;
-
-            // Порядок приоритета для фокусировки: 2018, потом 2019, потом 2024
-            if (document.getElementById('chk2018').checked) { 
-                drawTrip(points2018, 'm2018', 'archive/2018/'); 
-                if(!focused) { focusOn(points2018); focused = true; }
-            }
-            if (document.getElementById('chk2019').checked) { 
-                drawTrip(points2019, 'm2019', 'archive/2019/'); 
-                if(!focused) { focusOn(points2019); focused = true; }
-            }
-            if (document.getElementById('chk2024').checked) { 
-                drawTrip(points2024, 'm2024', 'archive/2024/'); 
-                if(!focused) { focusOn(points2024); focused = true; }
-            }
-        }
-
-        function drawTrip(data, colorClass, folder) {
+        // Функция отрисовки ЛЮБОГО похода
+        function drawTrip(data, targetLayer, colorClass, folder) {
             data.forEach(function(p, i) {
                 var fullDay = String(p.day ? p.day : (i + 1));
                 var parts = fullDay.split('-');
                 var markerHtml = '<span class="num-wrapper">' + parts[0] + 
                                  '<span class="suffix">' + (parts[1] ? '-' + parts[1] : '') + '</span></span>';
 
-                var icon = L.divIcon({ className: 'day-marker ' + colorClass, html: markerHtml, iconSize: [30, 30], iconAnchor: [15, 15] });
+                var icon = L.divIcon({ 
+                    className: 'day-marker ' + (colorClass || ''), 
+                    html: markerHtml, 
+                    iconSize: [30, 30], 
+                    iconAnchor: [15, 15] 
+                });
+
                 var html = '<div class="popup-box"><b>' + p.title + '</b><p>' + p.desc + '</p><div class="btn-row">';
-                if (p.link) html += '<a href="view.html?folder='+folder+'&file=' + p.link + '" class="btn btn-track" target="_blank">Трек</a>';
-                if (p.vk) html += '<a href="' + p.vk + '" class="btn btn-vk" target="_blank">VK</a>';
+                if (p.link) {
+                    html += '<a href="view.html?folder='+folder+'&file=' + p.link + '" class="btn btn-track" target="_blank">Трек</a>';
+                }
+                if (p.vk) {
+                    html += '<a href="' + p.vk + '" class="btn btn-vk" target="_blank">VK</a>';
+                }
                 html += '</div></div>';
                 
-                L.marker([p.lat, p.lng], {icon: icon}).addTo(layerGroup).bindPopup(html);
+                L.marker([p.lat, p.lng], {icon: icon}).addTo(targetLayer).bindPopup(html);
             });
         }
 
-        function focusOn(data) {
-            if (data.length > 0) { map.setView([data[0].lat, data[0].lng], 7); }
+        // Обновление архивных слоев
+        function updateMarkers() {
+            archiveLayerGroup.clearLayers();
+            var lastCheckedData = null;
+
+            if (document.getElementById('chk2018').checked) { 
+                drawTrip(points2018, archiveLayerGroup, 'm2018', 'archive/2018/'); 
+                lastCheckedData = points2018;
+            }
+            if (document.getElementById('chk2019').checked) { 
+                drawTrip(points2019, archiveLayerGroup, 'm2019', 'archive/2019/'); 
+                lastCheckedData = points2019;
+            }
+            if (document.getElementById('chk2024').checked) { 
+                drawTrip(points2024, archiveLayerGroup, 'm2024', 'archive/2024/'); 
+                lastCheckedData = points2024;
+            }
+
+            // Фокусируемся на последнем включенном архиве, если он есть
+            if (lastCheckedData) {
+                map.setView([lastCheckedData[0].lat, lastCheckedData[0].lng], 7);
+            } else {
+                // Если всё выключили - возвращаемся к текущему
+                focusOnCurrent();
+            }
+        }
+
+        function focusOnCurrent() {
+            if (typeof myPoints !== 'undefined' && myPoints.length > 0) {
+                var last = myPoints[myPoints.length - 1];
+                map.setView([last.lat, last.lng], 8);
+            }
+        }
+
+        // ЗАПУСК ПРИ ЗАГРУЗКЕ
+        if (typeof myPoints !== 'undefined') {
+            drawTrip(myPoints, currentTripLayer, '', 'tracks/'); // Текущий (зеленый)
+            focusOnCurrent();
         }
     </script>
 </body>
