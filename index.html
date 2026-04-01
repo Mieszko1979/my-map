@@ -20,17 +20,25 @@
         #menu-box {
             position: absolute; top: 15px; left: 15px; z-index: 1000;
             background: white; padding: 15px; border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2); font-family: sans-serif; min-width: 280px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2); font-family: sans-serif; min-width: 320px;
         }
-        .menu-header { font-weight: bold; font-size: 16px; display: flex; align-items: center; cursor: pointer; }
+        .menu-header { font-weight: bold; font-size: 16px; display: flex; align-items: center; cursor: pointer; color: #333; }
         .menu-header input { margin-right: 12px; transform: scale(1.3); }
         #trip-list { margin-top: 12px; padding-top: 12px; border-top: 1px solid #eee; display: none; }
-        .trip-item { margin-bottom: 10px; display: flex; align-items: center; font-size: 14px; }
+        
+        .trip-item { margin-bottom: 12px; display: flex; align-items: center; font-size: 14px; font-weight: bold; }
         .trip-item input { margin-right: 12px; }
+
+        /* ЦВЕТА ТЕКСТА В МЕНЮ И КРУЖКОВ */
+        .c2018 { color: #ff0000; border-color: #ff0000 !important; } /* Красный */
+        .c2019 { color: #007bff; border-color: #007bff !important; } /* Синий */
+        .c2021 { color: #9b59b6; border-color: #9b59b6 !important; } /* Фиолетовый */
+        .c2024 { color: #ff8c00; border-color: #ff8c00 !important; } /* Оранжевый */
+        .cCurrent { color: #28a745; border-color: #28a745 !important; } /* Зеленый */
 
         /* СТИЛЬ КРУЖКОВ */
         .day-marker {
-            background: #fff; border-radius: 50%; border: 2.5px solid #28a745; /* По умолчанию зеленый */
+            background: #fff; border-radius: 50%; border: 2.5px solid;
             color: #000; font-weight: bold; font-family: Arial;
             display: flex; justify-content: center; align-items: center;
             box-shadow: 0 2px 5px rgba(0,0,0,0.3); font-size: 14px;
@@ -39,13 +47,7 @@
         .num-wrapper { position: relative; display: inline-block; line-height: 1; }
         .suffix { position: absolute; left: 100%; top: 0; }
 
-        /* ЦВЕТА ДЛЯ АРХИВА */
-        .m2018 { border-color: #ff0000; color: #ff0000; } /* Красный */
-        .m2019 { border-color: #007bff; color: #007bff; } /* Синий */
-        .m2021 { border-color: #9b59b6; color: #9b59b6; } /* Фиолетовый */
-        .m2024 { border-color: #ff8c00; color: #ff8c00; } /* Оранжевый */
-
-        .popup-box { text-align: center; font-family: sans-serif; min-width: 170px; }
+        .popup-box { text-align: center; font-family: sans-serif; min-width: 170px; color: #333; }
         .btn-row { display: flex; justify-content: center; gap: 8px; margin-top: 10px; }
         .btn { text-decoration: none; font-weight: bold; font-size: 13px; padding: 6px 12px; border-radius: 15px; }
         .btn-track { background: #28a745; color: white !important; }
@@ -59,10 +61,22 @@
             <input type="checkbox" id="main-toggle" onchange="toggleList()"> Мои велопутешествия
         </div>
         <div id="trip-list">
-            <div class="trip-item"><input type="checkbox" class="trip-check" id="chk2018" onchange="updateMarkers()"> 1. Яранск - Паттайя</div>
-            <div class="trip-item"><input type="checkbox" class="trip-check" id="chk2019" onchange="updateMarkers()"> 2. Яранск - Иссык-Куль - Иран</div>
-            <div class="trip-item"><input type="checkbox" class="trip-check" id="chk2021" onchange="updateMarkers()"> 3. Яранск - Байкал</div>
-            <div class="trip-item"><input type="checkbox" class="trip-check" id="chk2024" onchange="updateMarkers()"> 4. Яранск - Афганистан - Армения</div>
+            <div class="trip-item c2018">
+                <input type="checkbox" class="trip-check" id="chk2018" onchange="updateMarkers()"> 
+                1. Яранск - Паттайя (2018) - 9 476 км.
+            </div>
+            <div class="trip-item c2019">
+                <input type="checkbox" class="trip-check" id="chk2019" onchange="updateMarkers()"> 
+                2. Яранск - Иссык-Куль - Иран (2019) - 6 283 км.
+            </div>
+            <div class="trip-item c2021">
+                <input type="checkbox" class="trip-check" id="chk2021" onchange="updateMarkers()"> 
+                3. Яранск - Байкал (2021) - 4 793 км.
+            </div>
+            <div class="trip-item c2024">
+                <input type="checkbox" class="trip-check" id="chk2024" onchange="updateMarkers()"> 
+                4. Яранск - Афганистан - Армения (2024) - 7 137 км.
+            </div>
         </div>
     </div>
 
@@ -92,11 +106,22 @@
                 var markerHtml = '<span class="num-wrapper">' + parts[0] + 
                                  '<span class="suffix">' + (parts[1] ? '-' + parts[1] : '') + '</span></span>';
 
-                var icon = L.divIcon({ className: 'day-marker ' + (colorClass || ''), html: markerHtml, iconSize: [30, 30], iconAnchor: [15, 15] });
+                var icon = L.divIcon({ 
+                    className: 'day-marker ' + colorClass, 
+                    html: markerHtml, 
+                    iconSize: [30, 30], 
+                    iconAnchor: [15, 15] 
+                });
+
                 var html = '<div class="popup-box"><b>' + p.title + '</b><p>' + p.desc + '</p><div class="btn-row">';
-                if (p.link) html += '<a href="view.html?folder='+folder+'&file=' + p.link + '" class="btn btn-track" target="_blank">Трек</a>';
-                if (p.vk) html += '<a href="' + p.vk + '" class="btn btn-vk" target="_blank">VK</a>';
+                if (p.link) {
+                    html += '<a href="view.html?folder='+folder+'&file=' + p.link + '" class="btn btn-track" target="_blank">Трек</a>';
+                }
+                if (p.vk) {
+                    html += '<a href="' + p.vk + '" class="btn btn-vk" target="_blank">VK</a>';
+                }
                 html += '</div></div>';
+                
                 L.marker([p.lat, p.lng], {icon: icon}).addTo(targetLayer).bindPopup(html);
             });
         }
@@ -105,21 +130,20 @@
             archiveLayerGroup.clearLayers();
             var focusData = null;
 
-            // Проверка по порядку: 2018, 2019, 2021, 2024
             if (document.getElementById('chk2018').checked) { 
-                drawTrip(points2018, archiveLayerGroup, 'm2018', 'archive/2018/'); 
+                drawTrip(points2018, archiveLayerGroup, 'c2018', 'archive/2018/'); 
                 if(!focusData) focusData = points2018;
             }
             if (document.getElementById('chk2019').checked) { 
-                drawTrip(points2019, archiveLayerGroup, 'm2019', 'archive/2019/'); 
+                drawTrip(points2019, archiveLayerGroup, 'c2019', 'archive/2019/'); 
                 if(!focusData) focusData = points2019;
             }
             if (document.getElementById('chk2021').checked) { 
-                drawTrip(points2021, archiveLayerGroup, 'm2021', 'archive/2021/'); 
+                drawTrip(points2021, archiveLayerGroup, 'c2021', 'archive/2021/'); 
                 if(!focusData) focusData = points2021;
             }
             if (document.getElementById('chk2024').checked) { 
-                drawTrip(points2024, archiveLayerGroup, 'm2024', 'archive/2024/'); 
+                drawTrip(points2024, archiveLayerGroup, 'c2024', 'archive/2024/'); 
                 if(!focusData) focusData = points2024;
             }
 
@@ -137,9 +161,8 @@
             }
         }
 
-        // РИСУЕМ ТЕКУЩИЙ СРАЗУ
         if (typeof myPoints !== 'undefined') {
-            drawTrip(myPoints, currentTripLayer, '', 'tracks/');
+            drawTrip(myPoints, currentTripLayer, 'cCurrent', 'tracks/');
             focusOnCurrent();
         }
     </script>
