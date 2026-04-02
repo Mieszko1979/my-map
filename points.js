@@ -14,7 +14,7 @@ var myPoints = [
     lng: 38.4500,
     title: "22.03.2026-23.02.2026",
     desc: "Тут мы стояли 3 дня лагерем.",
-    link: "3.gpx",
+    link: "4.gpx",
     vk: "https://vk.com/wall123_457"
   }
 ];
