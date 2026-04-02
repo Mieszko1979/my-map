@@ -37,5 +37,15 @@ var points2018 = [
   { day: "38", lat: 41.95337, lng: 113.89635, title: "26.09.2018", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_26" },
   { day: "39", lat: 41.60221, lng: 114.35731, title: "27.09.2018", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_27" },
   { day: "40", lat: 41.16956 , lng: 114.69075, title: "28.09.2018", desc: "Гостиница", link: "", vk: "https://vk.com/wall-171082824_28" },
+  { day: "41-42", lat: 41.01838, lng: 114.76852, title: "29.09.2018 - 30.09.2018", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_30" },
+  { day: "43", lat: 40.51608, lng: 115.18669, title: "01.10.2018", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_37" },
+  { day: "44", lat: 40.27705, lng: 115.63005, title: "02.10.2018", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_38" },
+  { day: "45", lat: 39.90167, lng: 116.44750, title: "03.10.2018", desc: "Парк", link: "", vk: "https://vk.com/wall-171082824_40" },
+  { day: "46", lat: 39.76982, lng: 116.25040, title: "04.10.2018", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_41" },
+  { day: "47", lat: 39.39864, lng: 116.05634, title: "05.10.2018", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_43" },
+  { day: "48", lat: 38.88587, lng: 115.90243, title: "06.10.2018", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_44" },
+  { day: "49", lat: 38.42822, lng: 115.61272, title: "07.10.2018", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_45" },
+  { day: "50", lat: 37.72632, lng: 115.23682, title: "08.10.2018", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_46" },
+  { day: "51", lat: 37.24454, lng: 114.87713, title: "09.10.2018", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_47" },
   
 ];
