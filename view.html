@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Просмотр трека</title>
+    <title>Детальный трек</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -10,32 +10,71 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         html, body { height: 100%; margin: 0; padding: 0; font-family: sans-serif; background: #000; overflow: hidden; }
-        #map { height: 70%; width: 100%; }
-        #chart-container { height: 30%; width: 100%; background: white; padding: 10px; box-sizing: border-box; }
-        #info { position: absolute; top: 15px; right: 15px; z-index: 1000; background: rgba(255,255,255,0.95); padding: 15px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); width: 180px; line-height: 1.4; }
-        .divider { font-size: 16px; font-weight: bold; border-bottom: 1px solid #ddd; margin-bottom: 10px; padding-bottom: 5px; color: #000; }
+        #map { height: 72%; width: 100%; }
+        #chart-container { height: 28%; width: 100%; background: white; padding: 10px; box-sizing: border-box; }
+        
+        #info { 
+            position: absolute; top: 15px; right: 15px; z-index: 1000; 
+            background: rgba(255,255,255,0.95); padding: 15px; border-radius: 15px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3); width: 190px; line-height: 1.4;
+        }
+        .divider { 
+            font-size: 16px; font-weight: bold; border-bottom: 1px solid #ddd; 
+            margin-bottom: 12px; padding-bottom: 8px; color: #000; 
+        }
         .stat-item { margin-bottom: 8px; }
         .stat-label { font-size: 10px; color: #777; text-transform: uppercase; display: block; }
         .stat-val { font-weight: bold; color: #238aff; font-size: 17px; }
     </style>
 </head>
 <body>
+
     <div id="map"></div>
+    
     <div id="info">
         <div class="divider">ИТОГИ ДНЯ</div>
-        <div class="stat-item"><span class="stat-label">Дистанция</span><span id="dist" class="stat-val">0.0</span> <small>км</small></div>
-        <div class="stat-item"><span class="stat-label">Набор высоты</span><span id="gain" class="stat-val">0</span> <small>м</small></div>
-        <div class="stat-item"><span class="stat-label">Макс. высота</span><span id="max-alt" class="stat-val">0</span> <small>м</small></div>
+        
+        <div class="stat-item">
+            <span class="stat-label">Дистанция</span>
+            <span id="dist" class="stat-val">--</span> <small>км</small>
+        </div>
+
+        <div class="stat-item">
+            <span class="stat-label">Набор высоты</span>
+            <span id="gain" class="stat-val">--</span> <small>м</small>
+        </div>
+
+        <div class="stat-item">
+            <span class="stat-label">Макс. высота</span>
+            <span id="max-alt" class="stat-val">--</span> <small>м</small>
+        </div>
+
+        <div class="stat-item">
+            <span class="stat-label">Время в движении</span>
+            <span id="time" class="stat-val">--</span>
+        </div>
+
+        <div class="stat-item">
+            <span class="stat-label">Ср. скорость</span>
+            <span id="avg-speed" class="stat-val">--</span> <small>км/ч</small>
+        </div>
     </div>
-    <div id="chart-container"><canvas id="elevationChart"></canvas></div>
+
+    <div id="chart-container">
+        <canvas id="elevationChart"></canvas>
+    </div>
+
     <script>
         var map = L.map('map', {attributionControl: true, zoomControl: false}).setView([50, 80], 5);
         map.attributionControl.setPrefix('Мое велопутешествие');
-        L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{ maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3'], attribution: '' }).addTo(map);
+
+        L.tileLayer('http://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',{
+            maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3'], attribution: ''
+        }).addTo(map);
 
         var urlParams = new URLSearchParams(window.location.search);
         var fileName = urlParams.get('file');
-        var folder = urlParams.get('folder') || 'tracks/'; // По умолчанию папка текущего похода
+        var folder = urlParams.get('folder') || 'tracks/';
 
         if (fileName) {
             new L.GPX(folder + fileName, {
@@ -45,9 +84,27 @@
             }).on('loaded', function(e) {
                 var g = e.target;
                 map.fitBounds(g.getBounds());
+
+                // 1. Дистанция и высоты (есть всегда)
                 document.getElementById('dist').innerText = (g.get_distance()/1000).toFixed(1);
                 document.getElementById('gain').innerText = g.get_elevation_gain().toFixed(0);
                 document.getElementById('max-alt').innerText = g.get_elevation_max().toFixed(0);
+                
+                // 2. Время и скорость (требуют наличия времени в GPX)
+                var movingTimeMs = g.get_moving_time(); // в миллисекундах
+                
+                if (movingTimeMs > 0) {
+                    var hours = Math.floor(movingTimeMs / 3600000);
+                    var mins = Math.floor((movingTimeMs % 3600000) / 60000);
+                    document.getElementById('time').innerText = hours + "ч " + mins + "м";
+                    
+                    var speed = g.get_moving_speed(); // км/ч
+                    document.getElementById('avg-speed').innerText = speed.toFixed(1);
+                } else {
+                    document.getElementById('time').innerText = "нет данных";
+                    document.getElementById('avg-speed').innerText = "---";
+                }
+
                 buildChart(g.get_elevation_data());
             }).addTo(map);
         }
@@ -58,9 +115,25 @@
                 type: 'line',
                 data: {
                     labels: data.map(d => d[0].toFixed(1)),
-                    datasets: [{ data: data.map(d => d[1].toFixed(0)), fill: true, backgroundColor: 'rgba(35, 138, 255, 0.1)', borderColor: '#238aff', borderWidth: 2, pointRadius: 0, tension: 0.3 }]
+                    datasets: [{
+                        data: data.map(d => d[1].toFixed(0)),
+                        fill: true,
+                        backgroundColor: 'rgba(35, 138, 255, 0.1)',
+                        borderColor: '#238aff',
+                        borderWidth: 2,
+                        pointRadius: 0,
+                        tension: 0.3
+                    }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { ticks: { maxTicksLimit: 10, font: {size: 10} } }, y: { ticks: { font: {size: 10} } } } }
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { title: { display: true, text: 'км' }, ticks: { maxTicksLimit: 10, font: {size: 10} } },
+                        y: { ticks: { font: {size: 10} } }
+                    }
+                }
             });
         }
     </script>
