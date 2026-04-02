@@ -5,7 +5,7 @@ var myPoints = [
     lng: 37.6184,
     title: "01.02.2026",
     desc: "Палатка",
-    link: "1.gpx",
+    link: "2.gpx",
     vk: "https://vk.com/mieszko_travel"
   },
   {
