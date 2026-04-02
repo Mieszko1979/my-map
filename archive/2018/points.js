@@ -87,5 +87,17 @@ var points2018 = [
   { day: "89-90", lat: 22.518663, lng: 103.958666, title: "16.11.2018 - 17.11.2018", desc: "В гостях у местных", link: "", vk: "https://vk.com/wall-171082824_271" },
   { day: "91", lat: 22.500083, lng: 103.967133, title: "18.11.2018", desc: "Гостиница", link: "", vk: "https://vk.com/wall-171082824_275" },
   { day: "92", lat: 22.337462, lng: 103.849417, title: "19.11.2018", desc: "Гостиница", link: "", vk: "https://vk.com/wall-171082824_279" },
+  { day: "93", lat: 22.388453, lng: 103.552617, title: "20.11.2018", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_282" },
+  { day: "94", lat: 22.395498, lng: 103.195266, title: "21.11.2018", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_283" },
+  { day: "95", lat: 21.914598, lng: 103.131188, title: "22.11.2018", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_285" },
+  { day: "96-97", lat: 21.392238, lng: 103.014881, title: "23.11.2018 - 24.11.2018", desc: "Гостиница", link: "", vk: "https://vk.com/wall-171082824_291" },
+  { day: "98", lat: 21.145672, lng: 102.690174, title: "25.11.2018", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_301" },
+  { day: "99", lat: 21.058552, lng: 102.241889, title: "26.11.2018", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_303" },
+  { day: "100", lat: 20.684768, lng: 101.987596, title: "27.11.2018", desc: "Гостиница", link: "", vk: "https://vk.com/wall-171082824_307" },
+  { day: "101", lat: 20.574477, lng: 102.267027, title: "28.11.2018", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_315" },
+  { day: "102", lat: 20.108854, lng: 102.284682, title: "29.11.2018", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_321" },
+  { day: "103-104", lat: 19.886725, lng: 102.140903, title: "30.11.2018 - 01.12.2018", desc: "Хостел", link: "", vk: "https://vk.com/wall-171082824_325" },
+  { day: "105", lat: 19.523964, lng: 101.968785, title: "02.12.2018", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_333" },
+  { day: "106", lat: 19.199528, lng: 101.660691, title: "03.12.2018", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_334" },
   
 ];
