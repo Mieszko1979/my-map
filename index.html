@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
-    <!-- ПОДКЛЮЧАЕМ ДАННЫЕ -->
     <script src="points.js"></script>
     <script src="archive/2018/points.js"></script>
     <script src="archive/2019/points.js"></script>
@@ -17,7 +16,7 @@
     <style>
         html, body, #map { height: 100%; margin: 0; padding: 0; overflow: hidden; background: #000; }
         
-        /* ПАНЕЛЬ МЕНЮ СЛЕВА */
+        /* МЕНЮ СЛЕВА */
         #menu-box {
             position: absolute; top: 15px; left: 15px; z-index: 1000;
             background: rgba(255, 255, 255, 0.9); padding: 15px; border-radius: 12px;
@@ -29,32 +28,34 @@
         .trip-item { margin-bottom: 12px; display: flex; align-items: center; font-size: 14px; font-weight: bold; }
         .trip-item input { margin-right: 12px; }
 
-        /* БЛОК-ПОДСКАЗКА СВЕРХУ ПО ЦЕНТРУ */
+        /* ПОДСКАЗКА СВЕРХУ */
         #hint-box {
             position: absolute; top: 15px; left: 50%; transform: translateX(-50%); z-index: 1000;
             background: rgba(255, 255, 255, 0.9); padding: 8px 18px; border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.4); font-family: sans-serif;
             display: flex; align-items: center; white-space: nowrap; pointer-events: none;
         }
-        .hint-text {
-            color: #ff0000; /* Чисто красный цвет без окантовки */
-            font-weight: bold; font-size: 16px;
-        }
-        /* Мини-символ кружка в подсказке */
-        .hint-circle {
-            width: 18px; height: 18px; border: 2px solid #28a745; 
-            background: white; border-radius: 50%; margin-left: 10px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        .hint-text { color: #ff0000; font-weight: bold; font-size: 16px; }
+        .hint-circle { width: 18px; height: 18px; border: 2px solid #28a745; background: white; border-radius: 50%; margin-left: 10px; }
+
+        /* АВАТАРКА В УГЛУ */
+        .map-avatar {
+            position: absolute; bottom: 40px; right: 10px; z-index: 1000;
+            width: 60px; height: 60px; border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.8);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            opacity: 0.7; /* Полупрозрачность */
+            pointer-events: none;
+            object-fit: cover;
         }
 
-        /* ЦВЕТА МАРШРУТОВ */
+        /* ЦВЕТА И МАРКЕРЫ */
         .c2018 { color: #ff0000; border-color: #ff0000 !important; }
         .c2019 { color: #007bff; border-color: #007bff !important; }
         .c2021 { color: #9b59b6; border-color: #9b59b6 !important; }
         .c2024 { color: #ff8c00; border-color: #ff8c00 !important; }
         .cCurrent { color: #28a745; border-color: #28a745 !important; }
 
-        /* СТИЛЬ КРУЖКОВ */
         .day-marker {
             background: #fff; border-radius: 50%; border: 2.5px solid;
             color: #000; font-weight: bold; font-family: Arial;
@@ -65,7 +66,6 @@
         .num-wrapper { position: relative; display: inline-block; line-height: 1; }
         .suffix { position: absolute; left: 100%; top: 0; }
 
-        /* НАСТРОЙКИ ТЕКСТА В ОКНЕ */
         .popup-box { text-align: center; font-family: sans-serif; min-width: 180px; color: #333; }
         .popup-box b { font-size: 19px; display: block; margin-bottom: 5px; color: #000; }
         .popup-box p { margin: 8px 0; font-size: 16px; line-height: 1.4; }
@@ -78,17 +78,13 @@
 </head>
 <body>
 
-    <!-- ПОДСКАЗКА -->
-    <div id="hint-box">
-        <span class="hint-text">! Жми на кружок</span>
-        <div class="hint-circle"></div>
-    </div>
+    <div id="hint-box"><span class="hint-text">! Жми на кружок</span><div class="hint-circle"></div></div>
+    
+    <!-- Кнопка-аватарка -->
+    <img src="avatar.jpg" class="map-avatar">
 
-    <!-- МЕНЮ -->
     <div id="menu-box">
-        <div class="menu-header">
-            <input type="checkbox" id="main-toggle" onchange="toggleList()"> Мои велопутешествия
-        </div>
+        <div class="menu-header"><input type="checkbox" id="main-toggle" onchange="toggleList()"> Мои велопутешествия</div>
         <div id="trip-list">
             <div class="trip-item c2018"><input type="checkbox" class="trip-check" id="chk2018" onchange="updateMarkers()"> 1. Яранск - Паттайя (2018) - 9 476 км.</div>
             <div class="trip-item c2019"><input type="checkbox" class="trip-check" id="chk2019" onchange="updateMarkers()"> 2. Яранск - Иссык-Куль - Иран (2019) - 6 283 км.</div>
@@ -103,9 +99,7 @@
         var map = L.map('map', {zoomControl: false, attributionControl: true}).setView([50, 80], 4);
         map.attributionControl.setPrefix('Мое велопутешествие');
 
-        L.tileLayer('http://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
-            maxZoom: 20, subdomains: ['mt0','mt1','mt2','mt3'], attribution: ''
-        }).addTo(map);
+        L.tileLayer('http://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20, subdomains: ['mt0','mt1','mt2','mt3'], attribution: '' }).addTo(map);
 
         var currentTripLayer = L.layerGroup().addTo(map);
         var archiveLayerGroup = L.layerGroup().addTo(map);
@@ -129,13 +123,9 @@
             data.forEach(function(p, i) {
                 var fullDay = String(p.day ? p.day : (i + 1));
                 var parts = fullDay.split('-');
-                var markerHtml = '<span class="num-wrapper">' + parts[0] + 
-                                 '<span class="suffix">' + (parts[1] ? '-' + parts[1] : '') + '</span></span>';
-
+                var markerHtml = '<span class="num-wrapper">' + parts[0] + '<span class="suffix">' + (parts[1] ? '-' + parts[1] : '') + '</span></span>';
                 var icon = L.divIcon({ className: 'day-marker ' + colorClass, html: markerHtml, iconSize: [30, 30], iconAnchor: [15, 15] });
-                var html = '<div class="popup-box"><b>' + p.title + '</b><p>' + p.desc + '</p>';
-                html += '<div class="coords">' + p.lat.toFixed(5) + ', ' + p.lng.toFixed(5) + '</div>';
-                html += '<div class="btn-row">';
+                var html = '<div class="popup-box"><b>' + p.title + '</b><p>' + p.desc + '</p><div class="coords">' + p.lat.toFixed(5) + ', ' + p.lng.toFixed(5) + '</div><div class="btn-row">';
                 if (p.link) html += '<a href="view.html?folder='+folder+'&file=' + p.link + '" class="btn btn-track" target="_blank">Трек</a>';
                 if (p.vk) html += '<a href="' + p.vk + '" class="btn btn-vk" target="_blank">VK</a>';
                 html += '</div></div>';
