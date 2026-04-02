@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
+    <!-- ПОДКЛЮЧАЕМ ДАННЫЕ -->
     <script src="points.js"></script>
     <script src="archive/2018/points.js"></script>
     <script src="archive/2019/points.js"></script>
@@ -16,6 +17,7 @@
     <style>
         html, body, #map { height: 100%; margin: 0; padding: 0; overflow: hidden; background: #000; }
         
+        /* ПАНЕЛЬ МЕНЮ СЛЕВА */
         #menu-box {
             position: absolute; top: 15px; left: 15px; z-index: 1000;
             background: rgba(255, 255, 255, 0.9); padding: 15px; border-radius: 12px;
@@ -27,13 +29,37 @@
         .trip-item { margin-bottom: 12px; display: flex; align-items: center; font-size: 14px; font-weight: bold; }
         .trip-item input { margin-right: 12px; }
 
-        /* ЦВЕТА */
+        /* БЛОК-ПОДСКАЗКА СВЕРХУ ПО ЦЕНТРУ */
+        #hint-box {
+            position: absolute; top: 15px; left: 50%; transform: translateX(-50%); z-index: 1000;
+            background: rgba(255, 255, 255, 0.9); padding: 8px 18px; border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4); font-family: sans-serif;
+            display: flex; align-items: center; white-space: nowrap; pointer-events: none;
+        }
+        .hint-text {
+            color: #ff0000; /* Красный цвет */
+            font-weight: bold; font-size: 16px;
+            /* Нефритовая окантовка (Jade outline) */
+            text-shadow: 
+                -1px -1px 0 #00a86b,  1px -1px 0 #00a86b,
+                -1px  1px 0 #00a86b,  1px  1px 0 #00a86b,
+                 0px  2px 4px rgba(0,0,0,0.3);
+        }
+        /* Мини-символ кружка в подсказке */
+        .hint-circle {
+            width: 18px; height: 18px; border: 2px solid #28a745; 
+            background: white; border-radius: 50%; margin-left: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        /* ЦВЕТА МАРШРУТОВ */
         .c2018 { color: #ff0000; border-color: #ff0000 !important; }
         .c2019 { color: #007bff; border-color: #007bff !important; }
         .c2021 { color: #9b59b6; border-color: #9b59b6 !important; }
         .c2024 { color: #ff8c00; border-color: #ff8c00 !important; }
         .cCurrent { color: #28a745; border-color: #28a745 !important; }
 
+        /* СТИЛЬ КРУЖКОВ */
         .day-marker {
             background: #fff; border-radius: 50%; border: 2.5px solid;
             color: #000; font-weight: bold; font-family: Arial;
@@ -57,6 +83,13 @@
 </head>
 <body>
 
+    <!-- ПОДСКАЗКА -->
+    <div id="hint-box">
+        <span class="hint-text">! Жми на кружок</span>
+        <div class="hint-circle"></div>
+    </div>
+
+    <!-- МЕНЮ -->
     <div id="menu-box">
         <div class="menu-header">
             <input type="checkbox" id="main-toggle" onchange="toggleList()"> Мои велопутешествия
@@ -79,26 +112,20 @@
             maxZoom: 20, subdomains: ['mt0','mt1','mt2','mt3'], attribution: ''
         }).addTo(map);
 
-        var currentTripLayer = L.layerGroup().addTo(map); // Слой текущего похода
-        var archiveLayerGroup = L.layerGroup().addTo(map); // Слой архивов
+        var currentTripLayer = L.layerGroup().addTo(map);
+        var archiveLayerGroup = L.layerGroup().addTo(map);
 
         function toggleList() {
             var showArchive = document.getElementById('main-toggle').checked;
             var list = document.getElementById('trip-list');
-            
             if (showArchive) {
-                // ПРЯЧЕМ ТЕКУЩИЙ, ПОКАЗЫВАЕМ СПИСОК АРХИВА
                 list.style.display = 'block';
                 map.removeLayer(currentTripLayer);
             } else {
-                // ВОЗВРАЩАЕМ ТЕКУЩИЙ, ПРЯЧЕМ АРХИВ
                 list.style.display = 'none';
                 currentTripLayer.addTo(map);
-                
-                // Выключаем все архивные галочки и стираем их с карты
                 document.querySelectorAll('.trip-check').forEach(c => c.checked = false);
                 archiveLayerGroup.clearLayers();
-                
                 focusOnCurrent();
             }
         }
@@ -128,7 +155,6 @@
             if (document.getElementById('chk2019').checked) { drawTrip(points2019, archiveLayerGroup, 'c2019', 'archive/2019/'); if(!focusData) focusData = points2019; }
             if (document.getElementById('chk2021').checked) { drawTrip(points2021, archiveLayerGroup, 'c2021', 'archive/2021/'); if(!focusData) focusData = points2021; }
             if (document.getElementById('chk2024').checked) { drawTrip(points2024, archiveLayerGroup, 'c2024', 'archive/2024/'); if(!focusData) focusData = points2024; }
-            
             if (focusData) map.setView([focusData[0].lat, focusData[0].lng], 7);
         }
 
@@ -139,7 +165,6 @@
             }
         }
 
-        // ПЕРВАЯ ОТРИСОВКА (ТОЛЬКО ТЕКУЩИЙ)
         if (typeof myPoints !== 'undefined') {
             drawTrip(myPoints, currentTripLayer, 'cCurrent', 'tracks/');
             focusOnCurrent();
