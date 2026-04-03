@@ -59,6 +59,14 @@ var points2019 = [
   { day: "69-70", lat: 40.51901, lng: 72.803152, title: "12.10.2019 - 13.10.2019", desc: "Хостел", link: "", vk: "https://vk.com/wall-171082824_724" },
   { day: "71", lat: 40.6596, lng: 72.21038, title: "14.10.2019", desc: "В гостях у местных", link: "", vk: "https://vk.com/wall-171082824_729" },
   { day: "72", lat: 40.380589, lng: 71.77669, title: "15.10.2019", desc: "Хостел", link: "", vk: "https://vk.com/wall-171082824_739" },
+  { day: "73", lat: 40.332343, lng: 71.308345, title: "16.10.2019", desc: "Газовая заправка", link: "", vk: "https://vk.com/wall-171082824_744" },
+  { day: "74", lat: 40.618782, lng: 70.896875, title: "17.10.2019", desc: "Топчан в кафе", link: "", vk: "https://vk.com/wall-171082824_760" },
+  { day: "75", lat: 41.011585, lng: 70.626525, title: "18.10.2019", desc: "Пост МЧС", link: "", vk: "https://vk.com/wall-171082824_769" },
+  { day: "76", lat: 40.97089, lng: 69.993761, title: "19.10.2019", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_772" },
+  { day: "77-79", lat: 41.28095, lng: 69.29506, title: "20.10.2019 - 23.10.2019", desc: "Хостел", link: "", vk: "https://vk.com/wall-171082824_773" },
+  { day: "80-81", lat: 40.965515, lng: 69.307246, title: "24.10.2019 - 25.10.2019", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_866" },
+  { day: "82", lat: 41.118543, lng: 68.706238, title: "26.10.2019", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_866" },
+  { day: "83", lat: 41.355986, lng: 68.987788, title: "27.10.2019", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_866" },
   
 
   { day: "1", lat: 56.942146, lng: 47.870633, title: "05.10.2019", desc: "Палатка", link: "", vk: "" },
