@@ -17,31 +17,53 @@
     <style>
         html, body, #map { height: 100%; margin: 0; padding: 0; overflow: hidden; background: #000; }
         
-        /* ПАНЕЛЬ МЕНЮ СЛЕВА */
+        /* МЕНЮ СЛЕВА */
         #menu-box {
             position: absolute; top: 15px; left: 15px; z-index: 1000;
             background: rgba(255, 255, 255, 0.95); padding: 15px; border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4); font-family: sans-serif; min-width: 280px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4); font-family: sans-serif; min-width: 300px;
         }
         .menu-header { font-weight: bold; font-size: 16px; display: flex; align-items: center; cursor: pointer; color: #333; }
         .menu-header input { margin-right: 12px; transform: scale(1.3); }
-        
-        /* Список архива (скрыт по умолчанию) */
         #trip-list { margin-top: 12px; padding-top: 12px; border-top: 1px solid #ccc; display: none; }
         .trip-item { margin-bottom: 12px; display: flex; align-items: center; font-size: 14px; font-weight: bold; }
         .trip-item input { margin-right: 12px; }
 
-        /* ГАЛОЧКА ФОТО (ТЕПЕРЬ ВСЕГДА ВИДНА) */
+        /* ГАЛОЧКА ФОТО */
         #photo-toggle-wrap { margin-top: 10px; padding-top: 10px; border-top: 1px dashed #ccc; color: #28a745; font-weight: bold; display: flex; align-items: center; font-size: 15px; cursor: pointer; }
         #photo-toggle-wrap input { margin-right: 12px; transform: scale(1.2); }
 
-        /* ПРОСМОТР ФОТО */
-        #photo-viewer { position: absolute; bottom: 100px; left: 15px; z-index: 1000; width: 250px; background: white; padding: 5px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none; }
+        /* ПОДСКАЗКА СВЕРХУ */
+        #hint-box {
+            position: absolute; top: 15px; left: 50%; transform: translateX(-50%); z-index: 1000;
+            background: rgba(255, 255, 255, 0.9); padding: 8px 18px; border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4); font-family: sans-serif;
+            display: flex; align-items: center; white-space: nowrap; pointer-events: none;
+        }
+        .hint-text { color: #ff0000; font-weight: bold; font-size: 16px; }
+        .hint-circle { width: 18px; height: 18px; border: 2px solid #28a745; background: white; border-radius: 50%; margin-left: 10px; }
+
+        /* ОКНО ПРОСМОТРА ФОТО */
+        #photo-viewer {
+            position: absolute; bottom: 100px; left: 15px; z-index: 1000;
+            width: 250px; background: white; padding: 5px; border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none;
+        }
         #photo-viewer img { width: 100%; border-radius: 5px; cursor: pointer; }
         #photo-viewer .close-btn { position: absolute; top: -10px; right: -10px; background: red; color: white; border-radius: 50%; width: 22px; height: 22px; text-align: center; line-height: 20px; cursor: pointer; font-weight: bold; border: 2px solid white; }
 
         /* СТИЛИ МАРКЕРОВ */
-        .day-marker { background: #fff; border-radius: 50%; border: 2.5px solid; color: #000; font-weight: bold; font-family: Arial; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.5); font-size: 14px; overflow: hidden; white-space: nowrap; }
+        .day-marker {
+            background: #fff; border-radius: 50%; border: 2.5px solid;
+            color: #000; font-weight: bold; font-family: Arial;
+            display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.5); font-size: 14px;
+            overflow: hidden; white-space: nowrap;
+        }
+        .num-wrapper { position: relative; display: inline-block; line-height: 1; }
+        .suffix { position: absolute; left: 100%; top: 0; }
+
+        /* ЦВЕТА МАРШРУТОВ */
         .c2018 { color: #ff0000; border-color: #ff0000 !important; }
         .c2019 { color: #007bff; border-color: #007bff !important; }
         .c2021 { color: #9b59b6; border-color: #9b59b6 !important; }
@@ -52,7 +74,7 @@
         .photo-marker { background: none !important; border: none !important; display: flex; align-items: center; justify-content: center; box-shadow: none !important; }
         .cam-svg { filter: drop-shadow(0px 0px 3px white) drop-shadow(0px 0px 5px rgba(255,255,255,0.8)); transition: transform 0.2s; }
 
-        /* ОКНО ТОЧКИ */
+        /* ТЕКСТ В ОКНЕ ТОЧКИ */
         .popup-box { text-align: center; font-family: sans-serif; min-width: 180px; color: #333; }
         .popup-box b { font-size: 19px; display: block; margin-bottom: 5px; color: #000; }
         .popup-box p { margin: 8px 0; font-size: 16px; line-height: 1.4; }
@@ -64,9 +86,6 @@
         .btn-3d { background: #ffdb00; color: #000 !important; border: 1px solid #cca300; }
 
         .map-avatar { position: absolute; bottom: 24px; right: 10px; z-index: 1000; width: 60px; height: 60px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.8); box-shadow: 0 2px 10px rgba(0,0,0,0.5); opacity: 0.7; pointer-events: none; object-fit: cover; }
-        #hint-box { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); z-index: 1000; background: rgba(255, 255, 255, 0.9); padding: 8px 18px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); font-family: sans-serif; display: flex; align-items: center; white-space: nowrap; pointer-events: none; }
-        .hint-text { color: #ff0000; font-weight: bold; font-size: 16px; }
-        .hint-circle { width: 18px; height: 18px; border: 2px solid #28a745; background: white; border-radius: 50%; margin-left: 10px; }
     </style>
 </head>
 <body>
@@ -80,10 +99,10 @@
         </div>
         
         <div id="trip-list">
-            <div class="trip-item c2018"><input type="checkbox" class="trip-check" id="chk2018" onchange="updateMarkers(false)"> 1. Яранск - Паттайя (2018)</div>
-            <div class="trip-item c2019"><input type="checkbox" class="trip-check" id="chk2019" onchange="updateMarkers(false)"> 2. Яранск - Иран (2019)</div>
-            <div class="trip-item c2021"><input type="checkbox" class="trip-check" id="chk2021" onchange="updateMarkers(false)"> 3. Яранск - Байкал (2021)</div>
-            <div class="trip-item c2024"><input type="checkbox" class="trip-check" id="chk2024" onchange="updateMarkers(false)"> 4. Яранск - Армения (2024)</div>
+            <div class="trip-item c2018"><input type="checkbox" class="trip-check" id="chk2018" onchange="updateMarkers(false)"> 1. Яранск - Паттайя (2018) - 9 476 км.</div>
+            <div class="trip-item c2019"><input type="checkbox" class="trip-check" id="chk2019" onchange="updateMarkers(false)"> 2. Яранск - Иран (2019) - 6 283 км.</div>
+            <div class="trip-item c2021"><input type="checkbox" class="trip-check" id="chk2021" onchange="updateMarkers(false)"> 3. Яранск - Байкал (2021) - 4 793 км.</div>
+            <div class="trip-item c2024"><input type="checkbox" class="trip-check" id="chk2024" onchange="updateMarkers(false)"> 4. Яранск - Армения (2024) - 7 137 км.</div>
         </div>
 
         <div id="photo-toggle-wrap">
@@ -95,9 +114,14 @@
     <div id="map"></div>
 
     <script>
+        // Инициализация карты
         var map = L.map('map', {zoomControl: false, attributionControl: true}).setView([50, 80], 4);
         map.attributionControl.setPrefix('Мое велопутешествие');
-        L.tileLayer('http://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20, subdomains: ['mt0','mt1','mt2','mt3'], attribution: '' }).addTo(map);
+
+        // Слой Гибрид Google
+        L.tileLayer('http://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+            maxZoom: 20, subdomains: ['mt0','mt1','mt2','mt3'], attribution: ''
+        }).addTo(map);
 
         var currentTripLayer = L.layerGroup().addTo(map);
         var archiveLayerGroup = L.layerGroup().addTo(map);
@@ -120,20 +144,21 @@
                 currentTripLayer.addTo(map);
                 archiveLayerGroup.clearLayers();
                 photoLayerGroup.clearLayers();
+                closePhoto();
                 focusOnCurrent();
             }
-            updateMarkers(true); // Перерисовываем всё
+            updateMarkers(true);
         }
 
         function updateMarkers(onlyPhotos) {
             archiveLayerGroup.clearLayers();
             photoLayerGroup.clearLayers();
             var showPhotos = document.getElementById('photo-toggle').checked;
-            var isArchiveMode = document.getElementById('main-toggle').checked;
+            var isArchive = document.getElementById('main-toggle').checked;
 
             if (!showPhotos) closePhoto();
 
-            if (isArchiveMode) {
+            if (isArchive) {
                 if (document.getElementById('chk2018').checked) { 
                     drawTrip(points2018, archiveLayerGroup, 'c2018', 'archive/2018/'); 
                     if(showPhotos) loadPhotos('archive-2018-photos', hexColors['c2018']);
@@ -158,9 +183,8 @@
                     }
                 }
             } else {
-                // ТЕКУЩИЙ ПОХОД
                 drawTrip(myPoints, currentTripLayer, 'cCurrent', 'tracks/');
-                if(showPhotos) loadPhotos('trip-2026-photos', hexColors['cCurrent']);
+                if(showPhotos) loadPhotos('archive-2026-photos', hexColors['cCurrent']);
             }
         }
 
@@ -170,11 +194,13 @@
                 var parts = fullDay.split('-');
                 var markerHtml = '<span class="num-wrapper">' + parts[0] + '<span class="suffix">' + (parts[1] ? '-' + parts[1] : '') + '</span></span>';
                 var icon = L.divIcon({ className: 'day-marker ' + colorClass, html: markerHtml, iconSize: [24, 24], iconAnchor: [12, 12] });
+                
                 var html = '<div class="popup-box"><b>' + p.title + '</b><p>' + p.desc + '</p><div class="coords">' + p.lat.toFixed(5) + ', ' + p.lng.toFixed(5) + '</div><div class="btn-row">';
                 if (p.link) html += '<a href="view.html?folder='+folder+'&file=' + p.link + '" class="btn btn-track" target="_blank">Трек</a>';
                 if (p.vk) html += '<a href="' + p.vk + '" class="btn btn-vk" target="_blank">VK</a>';
                 if (p.relive) html += '<a href="' + p.relive + '" class="btn btn-3d" target="_blank">3D</a>';
                 html += '</div></div>';
+                
                 L.marker([p.lat, p.lng], {icon: icon}).addTo(targetLayer).bindPopup(html);
             });
         }
