@@ -27,8 +27,6 @@
         .stat-val { font-weight: bold; color: #238aff; font-size: 17px; }
 
         .marker-ab { background: #ff0000; border: 2px solid white; border-radius: 50%; color: white; font-weight: bold; text-align: center; line-height: 24px; font-size: 14px; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
-        
-        /* Та самая точка на карте */
         .hover-dot { background: #fff; border: 3px solid #ff0000; border-radius: 50%; box-shadow: 0 0 10px rgba(255,255,255,0.8); }
         
         .map-avatar { position: absolute; bottom: 32%; right: 10px; z-index: 1000; width: 50px; height: 50px; border-radius: 50%; border: 2px solid white; opacity: 0.8; pointer-events: none; object-fit: cover; }
@@ -101,7 +99,6 @@
                 }).addTo(map);
 
                 buildChart(g.get_elevation_data());
-
             }).addTo(map);
         }
 
@@ -127,7 +124,6 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    // НАСТРОЙКИ ДЛЯ УДОБНОГО НАВЕДЕНИЯ (ПО ВСЕЙ ПЛОЩАДИ)
                     interaction: {
                         intersect: false,
                         mode: 'index',
@@ -135,28 +131,25 @@
                     },
                     plugins: { 
                         legend: { display: false },
-                        tooltip: {
-                            enabled: true,
-                            position: 'nearest',
-                            external: function(context) {
-                                // При каждом движении мыши по графику
-                                var idx = context.tooltip.dataPoints ? context.tooltip.dataPoints[0].dataIndex : null;
-                                if (idx !== null) {
-                                    var ratio = idx / (values.length - 1);
-                                    var pointIdx = Math.floor(ratio * (trackPoints.length - 1));
-                                    var latlng = trackPoints[pointIdx];
-                                    if (latlng) {
-                                        hoverMarker.setLatLng(latlng).addTo(map);
-                                    }
-                                } else {
-                                    map.removeLayer(hoverMarker);
-                                }
-                            }
-                        }
+                        tooltip: { enabled: false } // ПОЛНОСТЬЮ ОТКЛЮЧАЕМ ЧЕРНОЕ ОКНО
                     },
                     scales: {
                         x: { title: { display: true, text: 'км', font: {weight: 'bold'} }, ticks: { maxTicksLimit: 10 } },
                         y: { title: { display: true, text: 'м', font: {weight: 'bold'} } }
+                    },
+                    // Управление точкой на карте через событие наведения
+                    onHover: (event, activeElements) => {
+                        if (activeElements.length > 0) {
+                            var idx = activeElements[0].index;
+                            var ratio = idx / (values.length - 1);
+                            var pointIdx = Math.floor(ratio * (trackPoints.length - 1));
+                            var latlng = trackPoints[pointIdx];
+                            if (latlng) {
+                                hoverMarker.setLatLng(latlng).addTo(map);
+                            }
+                        } else {
+                            map.removeLayer(hoverMarker);
+                        }
                     }
                 }
             });
