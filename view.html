@@ -89,16 +89,36 @@
                 var polyline = g.getLayers()[0];
                 trackPoints = polyline.getLatLngs();
 
+                // Маркеры старта и финиша
                 L.marker(trackPoints[0], {icon: L.divIcon({className: 'marker-ab', html: 'A', iconSize: [24, 24], iconAnchor: [12, 12]})}).addTo(map);
                 L.marker(trackPoints[trackPoints.length - 1], {icon: L.divIcon({className: 'marker-ab', html: 'B', iconSize: [24, 24], iconAnchor: [12, 12]})}).addTo(map);
 
+                // --- УЛУЧШЕННЫЕ СТРЕЛКИ С КРАСНОЙ ОКАНТОВКОЙ ---
                 L.polylineDecorator(polyline, {
                     patterns: [
-                        {offset: '10%', repeat: '20%', symbol: L.Symbol.arrowHead({pixelSize: 12, pathOptions: {color: '#ffff00', fillOpacity: 1, weight: 0, fill: true}})}
+                        // Слой 1: Красная подложка (чуть больше)
+                        {
+                            offset: '10%', 
+                            repeat: '20%', 
+                            symbol: L.Symbol.arrowHead({
+                                pixelSize: 16, 
+                                pathOptions: {color: '#ff0000', fillOpacity: 1, weight: 0}
+                            })
+                        },
+                        // Слой 2: Желтая середина
+                        {
+                            offset: '10%', 
+                            repeat: '20%', 
+                            symbol: L.Symbol.arrowHead({
+                                pixelSize: 10, 
+                                pathOptions: {color: '#ffff00', fillOpacity: 1, weight: 0}
+                            })
+                        }
                     ]
                 }).addTo(map);
 
                 buildChart(g.get_elevation_data());
+
             }).addTo(map);
         }
 
@@ -124,20 +144,12 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    interaction: {
-                        intersect: false,
-                        mode: 'index',
-                        axis: 'x'
-                    },
-                    plugins: { 
-                        legend: { display: false },
-                        tooltip: { enabled: false } // ПОЛНОСТЬЮ ОТКЛЮЧАЕМ ЧЕРНОЕ ОКНО
-                    },
+                    interaction: { intersect: false, mode: 'index', axis: 'x' },
+                    plugins: { legend: { display: false }, tooltip: { enabled: false } },
                     scales: {
                         x: { title: { display: true, text: 'км', font: {weight: 'bold'} }, ticks: { maxTicksLimit: 10 } },
                         y: { title: { display: true, text: 'м', font: {weight: 'bold'} } }
                     },
-                    // Управление точкой на карте через событие наведения
                     onHover: (event, activeElements) => {
                         if (activeElements.length > 0) {
                             var idx = activeElements[0].index;
