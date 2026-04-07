@@ -39,10 +39,31 @@
     
     <div id="info">
         <div class="divider">ИТОГИ ДНЯ</div>
-        <div class="stat-item"><span class="stat-label">Дистанция</span><span id="dist" class="stat-val">--</span></div>
-        <div class="stat-item"><span class="stat-label">Набор высоты</span><span id="gain" class="stat-val">--</span></div>
-        <div class="stat-item"><span class="stat-label">Макс. высота</span><span id="max-alt" class="stat-val">--</span></div>
-        <div class="stat-item"><span class="stat-label">Время / Скор.</span><span id="time-speed" class="stat-val">--</span></div>
+        
+        <div class="stat-item">
+            <span class="stat-label">Дистанция</span>
+            <span id="dist" class="stat-val">--</span>
+        </div>
+
+        <div class="stat-item">
+            <span class="stat-label">Набор высоты</span>
+            <span id="gain" class="stat-val">--</span>
+        </div>
+
+        <div class="stat-item">
+            <span class="stat-label">Макс. высота</span>
+            <span id="max-alt" class="stat-val">--</span>
+        </div>
+
+        <div class="stat-item">
+            <span class="stat-label">Время в движении</span>
+            <span id="time" class="stat-val">--</span>
+        </div>
+
+        <div class="stat-item">
+            <span class="stat-label">Ср. скорость</span>
+            <span id="avg-speed" class="stat-val">--</span> <small style="color:#238aff; font-weight:bold;">км/ч</small>
+        </div>
     </div>
 
     <div id="chart-container">
@@ -75,6 +96,7 @@
                 var g = e.target;
                 map.fitBounds(g.getBounds(), {padding: [40, 40]});
                 
+                // Наполняем статистику
                 document.getElementById('dist').innerText = (g.get_distance()/1000).toFixed(1) + " км";
                 document.getElementById('gain').innerText = g.get_elevation_gain().toFixed(0) + " м";
                 document.getElementById('max-alt').innerText = g.get_elevation_max().toFixed(0) + " м";
@@ -83,15 +105,18 @@
                 if (ms > 0) {
                     var h = Math.floor(ms / 3600000);
                     var m = Math.floor((ms % 3600000) / 60000);
-                    document.getElementById('time-speed').innerText = h + "ч " + m + "м | " + g.get_moving_speed().toFixed(1) + " км/ч";
+                    document.getElementById('time').innerText = h + "ч " + m + "м";
+                    document.getElementById('avg-speed').innerText = g.get_moving_speed().toFixed(1);
                 }
 
                 var polyline = g.getLayers()[0];
                 trackPoints = polyline.getLatLngs();
 
+                // Маркеры старта и финиша
                 L.marker(trackPoints[0], {icon: L.divIcon({className: 'marker-ab', html: 'A', iconSize: [24, 24], iconAnchor: [12, 12]})}).addTo(map);
                 L.marker(trackPoints[trackPoints.length - 1], {icon: L.divIcon({className: 'marker-ab', html: 'B', iconSize: [24, 24], iconAnchor: [12, 12]})}).addTo(map);
 
+                // Желтые стрелки
                 L.polylineDecorator(polyline, {
                     patterns: [
                         {offset: '10%', repeat: '20%', symbol: L.Symbol.arrowHead({pixelSize: 12, pathOptions: {color: '#ffff00', fillOpacity: 1, weight: 0, fill: true}})}
@@ -99,6 +124,7 @@
                 }).addTo(map);
 
                 buildChart(g.get_elevation_data());
+
             }).addTo(map);
         }
 
@@ -124,32 +150,20 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    interaction: {
-                        intersect: false,
-                        mode: 'index',
-                        axis: 'x'
-                    },
-                    plugins: { 
-                        legend: { display: false },
-                        tooltip: { enabled: false } // ПОЛНОСТЬЮ ОТКЛЮЧАЕМ ЧЕРНОЕ ОКНО
-                    },
+                    interaction: { intersect: false, mode: 'index', axis: 'x' },
+                    plugins: { legend: { display: false }, tooltip: { enabled: false } },
                     scales: {
                         x: { title: { display: true, text: 'км', font: {weight: 'bold'} }, ticks: { maxTicksLimit: 10 } },
                         y: { title: { display: true, text: 'м', font: {weight: 'bold'} } }
                     },
-                    // Управление точкой на карте через событие наведения
                     onHover: (event, activeElements) => {
                         if (activeElements.length > 0) {
                             var idx = activeElements[0].index;
                             var ratio = idx / (values.length - 1);
                             var pointIdx = Math.floor(ratio * (trackPoints.length - 1));
                             var latlng = trackPoints[pointIdx];
-                            if (latlng) {
-                                hoverMarker.setLatLng(latlng).addTo(map);
-                            }
-                        } else {
-                            map.removeLayer(hoverMarker);
-                        }
+                            if (latlng) { hoverMarker.setLatLng(latlng).addTo(map); }
+                        } else { map.removeLayer(hoverMarker); }
                     }
                 }
             });
