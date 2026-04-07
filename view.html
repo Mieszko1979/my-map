@@ -5,45 +5,48 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
+    <!-- Карты -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.7.0/gpx.min.js"></script>
+    
+    <!-- Графики -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
-    <!-- Дополнение для стрелок направления -->
-    <script src="https://cdn.jsdelivr.net/npm/leaflet-polylineiterator@1.0.0/dist/leaflet-polylineiterator.min.js"></script>
-    <script src="https://bluehalo.github.io/Leaflet.PolylineDecorator/dist/leaflet.polylineDecorator.js"></script>
+    <!-- Стрелки направления (надежная ссылка) -->
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-polylinedecorator@1.6.0/dist/leaflet.polylineDecorator.js"></script>
 
     <style>
         html, body { height: 100%; margin: 0; padding: 0; font-family: sans-serif; background: #000; overflow: hidden; }
-        #map { height: 72%; width: 100%; }
-        #chart-container { height: 28%; width: 100%; background: white; padding: 5px 10px; box-sizing: border-box; }
+        #map { height: 70%; width: 100%; }
+        #chart-container { height: 30%; width: 100%; background: white; padding: 10px; box-sizing: border-box; border-top: 2px solid #333; }
         
         /* ИНФО-ПАНЕЛЬ */
         #info { 
             position: absolute; top: 15px; right: 15px; z-index: 1000; 
-            background: rgba(255,255,255,0.95); padding: 12px; border-radius: 15px; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3); width: 180px; font-size: 13px;
+            background: rgba(255,255,255,0.95); padding: 15px; border-radius: 15px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3); width: 190px;
         }
-        .divider { font-size: 15px; font-weight: bold; border-bottom: 1px solid #ddd; margin-bottom: 8px; padding-bottom: 5px; }
-        .stat-item { margin-bottom: 5px; }
-        .stat-label { font-size: 10px; color: #777; text-transform: uppercase; }
-        .stat-val { font-weight: bold; color: #238aff; font-size: 16px; display: block; }
+        .divider { font-size: 16px; font-weight: bold; border-bottom: 1px solid #ddd; margin-bottom: 10px; padding-bottom: 5px; color: #000; }
+        .stat-item { margin-bottom: 8px; }
+        .stat-label { font-size: 10px; color: #777; text-transform: uppercase; display: block; }
+        .stat-val { font-weight: bold; color: #238aff; font-size: 17px; }
 
         /* МАРКЕРЫ А и B */
         .marker-ab {
             background: #ff0000; border: 2px solid white; border-radius: 50%;
-            color: white; font-weight: bold; text-align: center; line-height: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.5); font-family: Arial;
+            color: white; font-weight: bold; text-align: center; 
+            line-height: 24px; font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
         }
 
-        /* ТОЧКА СИНХРОНИЗАЦИИ (при ховере на график) */
-        .sync-point {
-            background: #fff; border: 3px solid #238aff; border-radius: 50%;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        /* ТОЧКА НА КАРТЕ ПРИ НАВЕДЕНИИ НА ГРАФИК */
+        .hover-dot {
+            background: #fff; border: 3px solid #ff0000; border-radius: 50%;
+            box-shadow: 0 0 10px rgba(255,255,255,0.8);
         }
         
-        .map-avatar { position: absolute; bottom: 30%; right: 10px; z-index: 1000; width: 50px; height: 50px; border-radius: 50%; border: 2px solid white; opacity: 0.7; pointer-events: none; object-fit: cover; }
+        .map-avatar { position: absolute; bottom: 32%; right: 10px; z-index: 1000; width: 50px; height: 50px; border-radius: 50%; border: 2px solid white; opacity: 0.8; pointer-events: none; object-fit: cover; }
     </style>
 </head>
 <body>
@@ -56,7 +59,7 @@
         <div class="stat-item"><span class="stat-label">Дистанция</span><span id="dist" class="stat-val">--</span></div>
         <div class="stat-item"><span class="stat-label">Набор высоты</span><span id="gain" class="stat-val">--</span></div>
         <div class="stat-item"><span class="stat-label">Макс. высота</span><span id="max-alt" class="stat-val">--</span></div>
-        <div class="stat-item"><span class="stat-label">Время / Ср. скор.</span><span id="time-speed" class="stat-val">--</span></div>
+        <div class="stat-item"><span class="stat-label">Время / Скор.</span><span id="time-speed" class="stat-val">--</span></div>
     </div>
 
     <div id="chart-container">
@@ -67,7 +70,7 @@
         var map = L.map('map', {attributionControl: true, zoomControl: false}).setView([50, 80], 5);
         map.attributionControl.setPrefix('Мое велопутешествие');
 
-        L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{
+        L.tileLayer('http://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',{
             maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3'], attribution: ''
         }).addTo(map);
 
@@ -75,112 +78,88 @@
         var fileName = urlParams.get('file');
         var folder = urlParams.get('folder') || 'tracks/';
         
-        var trackPoints = []; // Для синхронизации с графиком
+        var trackPoints = []; 
         var hoverMarker = L.marker([0,0], {
-            icon: L.divIcon({className: 'sync-point', iconSize: [12, 12], iconAnchor: [6, 6]})
+            icon: L.divIcon({className: 'hover-dot', iconSize: [14, 14], iconAnchor: [7, 7]})
         });
 
         if (fileName) {
-            var gpx = new L.GPX(folder + fileName, {
+            new L.GPX(folder + fileName, {
                 async: true,
                 marker_options: { startIconUrl: null, endIconUrl: null, shadowUrl: null },
-                polyline_options: { color: '#ffea00', weight: 5, opacity: 0.85 }
+                polyline_options: { color: '#ffea00', weight: 5, opacity: 0.9 }
             }).on('loaded', function(e) {
                 var g = e.target;
-                map.fitBounds(g.getBounds());
+                map.fitBounds(g.getBounds(), {padding: [40, 40]});
                 
                 // 1. Статистика
-                var d = (g.get_distance()/1000).toFixed(1);
-                var gn = g.get_elevation_gain().toFixed(0);
-                var mx = g.get_elevation_max().toFixed(0);
-                document.getElementById('dist').innerText = d + " км";
-                document.getElementById('gain').innerText = gn + " м";
-                document.getElementById('max-alt').innerText = mx + " м";
+                document.getElementById('dist').innerText = (g.get_distance()/1000).toFixed(1) + " км";
+                document.getElementById('gain').innerText = g.get_elevation_gain().toFixed(0) + " м";
+                document.getElementById('max-alt').innerText = g.get_elevation_max().toFixed(0) + " м";
                 
                 var ms = g.get_moving_time();
                 if (ms > 0) {
-                    var hours = Math.floor(ms / 3600000);
-                    var mins = Math.floor((ms % 3600000) / 60000);
-                    var speed = g.get_moving_speed().toFixed(1);
-                    document.getElementById('time-speed').innerText = hours + "ч " + mins + "м | " + speed + " км/ч";
+                    var h = Math.floor(ms / 3600000);
+                    var m = Math.floor((ms % 3600000) / 60000);
+                    document.getElementById('time-speed').innerText = h + "ч " + m + "м | " + g.get_moving_speed().toFixed(1) + " км/ч";
                 }
 
-                // 2. Получаем все точки трека для синхронизации
-                trackPoints = g.getLayers()[0].getLatLngs();
+                // 2. Данные трека для связи с графиком
+                var polyline = g.getLayers()[0];
+                trackPoints = polyline.getLatLngs();
 
-                // 3. Расставляем Маркеры A и B
-                var start = trackPoints[0];
-                var end = trackPoints[trackPoints.length - 1];
-                L.marker(start, {icon: L.divIcon({className: 'marker-ab', html: 'A', iconSize: [20, 20]})}).addTo(map);
-                L.marker(end, {icon: L.divIcon({className: 'marker-ab', html: 'B', iconSize: [20, 20]})}).addTo(map);
+                // 3. Маркеры A и B
+                L.marker(trackPoints[0], {icon: L.divIcon({className: 'marker-ab', html: 'A', iconSize: [24, 24], iconAnchor: [12, 12]})}).addTo(map);
+                L.marker(trackPoints[trackPoints.length - 1], {icon: L.divIcon({className: 'marker-ab', html: 'B', iconSize: [24, 24], iconAnchor: [12, 12]})}).addTo(map);
 
                 // 4. Желтые стрелки направления
-                L.polylineDecorator(g.getLayers()[0], {
+                L.polylineDecorator(polyline, {
                     patterns: [
-                        {offset: '5%', repeat: '15%', symbol: L.Symbol.arrowHead({pixelSize: 12, polygon: false, pathOptions: {color: '#ffff00', weight: 3, opacity: 1}})}
+                        {offset: '10%', repeat: '20%', symbol: L.Symbol.arrowHead({pixelSize: 12, pathOptions: {color: '#ffff00', fillOpacity: 1, weight: 0, fill: true}})}
                     ]
                 }).addTo(map);
 
-                // 5. Строим график
+                // 5. График
                 buildChart(g.get_elevation_data());
+
             }).addTo(map);
         }
 
         function buildChart(elevationData) {
             var ctx = document.getElementById('elevationChart').getContext('2d');
-            
-            // Данные для графика (x = расстояние, y = высота)
             var labels = elevationData.map(d => d[0].toFixed(1));
             var values = elevationData.map(d => d[1].toFixed(0));
 
-            var chart = new Chart(ctx, {
+            new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: labels,
                     datasets: [{
                         data: values,
                         fill: true,
-                        backgroundColor: 'rgba(35, 138, 255, 0.15)',
+                        backgroundColor: 'rgba(35, 138, 255, 0.1)',
                         borderColor: '#238aff',
                         borderWidth: 2,
                         pointRadius: 0,
-                        hoverRadius: 5,
-                        tension: 0.2
+                        tension: 0.1
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { 
-                        legend: { display: false },
-                        tooltip: {
-                            mode: 'index',
-                            intersect: false,
-                            callbacks: {
-                                label: function(context) {
-                                    return context.parsed.y + " м";
-                                },
-                                title: function(context) {
-                                    return context[0].label + " км";
-                                }
-                            }
-                        }
-                    },
+                    plugins: { legend: { display: false } },
                     scales: {
-                        x: { 
-                            title: { display: true, text: 'РАССТОЯНИЕ (КМ)', font: {size: 10, weight: 'bold'} },
-                            ticks: { maxTicksLimit: 12, font: {size: 9} } 
-                        },
-                        y: { 
-                            title: { display: true, text: 'ВЫСОТА (М)', font: {size: 10, weight: 'bold'} },
-                            ticks: { font: {size: 9} } 
-                        }
+                        x: { title: { display: true, text: 'РАССТОЯНИЕ (КМ)', font: {size: 10, weight: 'bold'} }, ticks: { maxTicksLimit: 10 } },
+                        y: { title: { display: true, text: 'ВЫСОТА (М)', font: {size: 10, weight: 'bold'} } }
                     },
-                    // МАГИЯ СИНХРОНИЗАЦИИ
+                    // Синхронизация с картой
                     onHover: (event, activeElements) => {
                         if (activeElements.length > 0) {
-                            var index = activeElements[0].index;
-                            var latlng = trackPoints[index];
+                            var idx = activeElements[0].index;
+                            // Находим точку на треке, которая соответствует позиции на графике
+                            var ratio = idx / values.length;
+                            var pointIdx = Math.floor(ratio * trackPoints.length);
+                            var latlng = trackPoints[pointIdx];
                             if (latlng) {
                                 hoverMarker.setLatLng(latlng).addTo(map);
                             }
