@@ -26,11 +26,31 @@
         .stat-label { font-size: 10px; color: #777; text-transform: uppercase; display: block; }
         .stat-val { font-weight: bold; color: #238aff; font-size: 17px; }
 
-        .marker-ab { background: #ff0000; border: 2px solid white; border-radius: 50%; color: white; font-weight: bold; text-align: center; line-height: 24px; font-size: 14px; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
-        
-        /* Та самая точка на карте */
+        /* МАРКЕРЫ А и B */
+        .marker-ab {
+            background: #ff0000; border: 2px solid white; border-radius: 50%;
+            color: white; font-weight: bold; text-align: center; line-height: 24px; font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        }
+
+        /* ТОТ САМЫЙ СТИЛЬ СТРЕЛОК KOMOOT */
+        .komoot-arrow-box {
+            background: white;
+            border: 2px solid #ffea00; /* Желтая рамка под цвет трека */
+            border-radius: 4px;
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+        .komoot-arrow-box svg {
+            fill: #ffea00; /* Желтая стрелка */
+            display: block;
+        }
+
         .hover-dot { background: #fff; border: 3px solid #ff0000; border-radius: 50%; box-shadow: 0 0 10px rgba(255,255,255,0.8); }
-        
         .map-avatar { position: absolute; bottom: 32%; right: 10px; z-index: 1000; width: 50px; height: 50px; border-radius: 50%; border: 2px solid white; opacity: 0.8; pointer-events: none; object-fit: cover; }
     </style>
 </head>
@@ -91,12 +111,35 @@
                 var polyline = g.getLayers()[0];
                 trackPoints = polyline.getLatLngs();
 
+                // Точки A и B
                 L.marker(trackPoints[0], {icon: L.divIcon({className: 'marker-ab', html: 'A', iconSize: [24, 24], iconAnchor: [12, 12]})}).addTo(map);
                 L.marker(trackPoints[trackPoints.length - 1], {icon: L.divIcon({className: 'marker-ab', html: 'B', iconSize: [24, 24], iconAnchor: [12, 12]})}).addTo(map);
 
+                // --- НОВАЯ ЛОГИКА СТРЕЛОК (КАК В KOMOOT) ---
+                var arrowIconHtml = `
+                    <div class="komoot-arrow-box">
+                        <svg width="10" height="10" viewBox="0 0 10 10">
+                            <path d="M5 1 L9 8 L5 6 L1 8 Z" />
+                        </svg>
+                    </div>`;
+
                 L.polylineDecorator(polyline, {
                     patterns: [
-                        {offset: '10%', repeat: '20%', symbol: L.Symbol.arrowHead({pixelSize: 12, pathOptions: {color: '#ffff00', fillOpacity: 1, weight: 0, fill: true}})}
+                        {
+                            offset: 50, // Начинаем через 50 пикселей
+                            repeat: 150, // Повторяем каждые 150 пикселей
+                            symbol: L.Symbol.marker({
+                                rotate: true, // Поворачивать по направлению линии
+                                markerOptions: {
+                                    icon: L.divIcon({
+                                        className: '',
+                                        html: arrowIconHtml,
+                                        iconSize: [16, 16],
+                                        iconAnchor: [8, 8]
+                                    })
+                                }
+                            })
+                        }
                     ]
                 }).addTo(map);
 
@@ -107,15 +150,12 @@
 
         function buildChart(elevationData) {
             var ctx = document.getElementById('elevationChart').getContext('2d');
-            var labels = elevationData.map(d => d[0].toFixed(1));
-            var values = elevationData.map(d => d[1].toFixed(0));
-
             new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: labels,
+                    labels: elevationData.map(d => d[0].toFixed(1)),
                     datasets: [{
-                        data: values,
+                        data: elevationData.map(d => d[1].toFixed(0)),
                         fill: true,
                         backgroundColor: 'rgba(35, 138, 255, 0.15)',
                         borderColor: '#238aff',
@@ -127,30 +167,19 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    // НАСТРОЙКИ ДЛЯ УДОБНОГО НАВЕДЕНИЯ (ПО ВСЕЙ ПЛОЩАДИ)
-                    interaction: {
-                        intersect: false,
-                        mode: 'index',
-                        axis: 'x'
-                    },
+                    interaction: { intersect: false, mode: 'index', axis: 'x' },
                     plugins: { 
                         legend: { display: false },
                         tooltip: {
                             enabled: true,
-                            position: 'nearest',
                             external: function(context) {
-                                // При каждом движении мыши по графику
                                 var idx = context.tooltip.dataPoints ? context.tooltip.dataPoints[0].dataIndex : null;
                                 if (idx !== null) {
-                                    var ratio = idx / (values.length - 1);
+                                    var ratio = idx / (elevationData.length - 1);
                                     var pointIdx = Math.floor(ratio * (trackPoints.length - 1));
                                     var latlng = trackPoints[pointIdx];
-                                    if (latlng) {
-                                        hoverMarker.setLatLng(latlng).addTo(map);
-                                    }
-                                } else {
-                                    map.removeLayer(hoverMarker);
-                                }
+                                    if (latlng) hoverMarker.setLatLng(latlng).addTo(map);
+                                } else { map.removeLayer(hoverMarker); }
                             }
                         }
                     },
