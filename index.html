@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <!-- Плагин для стрелок и иконок на линиях -->
     <script src="https://cdn.jsdelivr.net/npm/leaflet-polylinedecorator@1.6.0/dist/leaflet.polylineDecorator.js"></script>
     
     <script src="points.js"></script>
@@ -102,7 +101,6 @@
             photoLayerGroup.clearLayers();
             var showPhotos = document.getElementById('photo-toggle').checked;
             var isArchive = document.getElementById('main-toggle').checked;
-
             if (!showPhotos) closePhoto();
 
             if (isArchive) {
@@ -110,7 +108,6 @@
                 if (document.getElementById('chk2019').checked) { drawTrip(points2019, archiveLayerGroup, 'c2019', 'archive/2019/'); if(showPhotos) loadPhotos('archive-2019-photos', hexColors['c2019']); }
                 if (document.getElementById('chk2021').checked) { drawTrip(points2021, archiveLayerGroup, 'c2021', 'archive/2021/'); if(showPhotos) loadPhotos('archive-2021-photos', hexColors['c2021']); }
                 if (document.getElementById('chk2024').checked) { drawTrip(points2024, archiveLayerGroup, 'c2024', 'archive/2024/'); if(showPhotos) loadPhotos('archive-2024-photos', hexColors['c2024']); }
-                
                 if (!onlyPhotos) {
                     var layers = archiveLayerGroup.getLayers();
                     if (layers.length > 0) map.fitBounds(new L.featureGroup(layers).getBounds(), {padding: [50, 50]});
@@ -134,24 +131,30 @@
                 if (p.relive) html += '<a href="' + p.relive + '" class="btn btn-3d" target="_blank">3D</a>';
                 html += '</div></div>';
                 
-                L.marker([p.lat, p.lng], {icon: icon}).addTo(targetLayer).bindPopup(html);
+                // РИСУЕМ МАРКЕР (если не стоит команда скрыть)
+                if (!p.hide_marker) {
+                    L.marker([p.lat, p.lng], {icon: icon}).addTo(targetLayer).bindPopup(html);
+                }
 
-                // --- ЛОГИКА ТРАНСПОРТА (Самолет/Поезд) ---
+                // ЛОГИКА ТРАНСПОРТА
                 if (p.transport && p.transport_to) {
                     var lineCoords = [[p.lat, p.lng], p.transport_to];
                     var transportLine = L.polyline(lineCoords, {
-                        color: '#333', weight: 2, dashArray: '5, 10', opacity: 0.6
+                        color: '#333', weight: 3, dashArray: '5, 10', opacity: 0.7, interactive: true
                     }).addTo(targetLayer);
+
+                    // ПРИВЯЗЫВАЕМ ОКНО К ЛИНИИ
+                    transportLine.bindPopup(html);
 
                     var symbol = p.transport === 'plane' ? '✈️' : '🚂';
                     L.polylineDecorator(transportLine, {
                         patterns: [
-                            {offset: '10%', repeat: '40%', symbol: L.Symbol.arrowHead({pixelSize: 10, pathOptions: {color: '#333', fillOpacity: 1, weight: 0}})},
+                            {offset: '15%', repeat: '30%', symbol: L.Symbol.arrowHead({pixelSize: 12, pathOptions: {color: '#000', fillOpacity: 1, weight: 0}})},
                             {offset: '50%', repeat: 0, symbol: L.Symbol.marker({rotate: true, markerOptions: {
-                                icon: L.divIcon({html: '<div style="font-size:20px; filter: drop-shadow(0 0 2px white);">'+symbol+'</div>', className: '', iconSize: [20, 20], iconAnchor: [10, 10]})
+                                icon: L.divIcon({html: '<div style="font-size:24px; filter: drop-shadow(0 0 2px white); cursor:pointer;">'+symbol+'</div>', className: '', iconSize: [24, 24], iconAnchor: [12, 12]})
                             }})}
                         ]
-                    }).addTo(targetLayer);
+                    }).addTo(targetLayer).on('click', function() { transportLine.openPopup(); });
                 }
             });
         }
@@ -168,10 +171,8 @@
                 });
             }).catch(e => console.log("Нет фото"));
         }
-
         function closePhoto() { document.getElementById('photo-viewer').style.display = 'none'; }
         function focusOnCurrent() { if (typeof myPoints !== 'undefined' && myPoints.length > 0) { var last = myPoints[myPoints.length - 1]; map.setView([last.lat, last.lng], 8); } }
-
         if (typeof myPoints !== 'undefined') { focusOnCurrent(); updateMarkers(true); }
     </script>
 </body>
