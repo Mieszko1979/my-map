@@ -62,19 +62,20 @@
                 
                 var ms = g.get_moving_time();
                 var speed = g.get_moving_speed();
-                var showStats = true;
-                if (folder.includes('2018')) showStats = false;
-                else if (mode === 'bike' && speed > 150) showStats = false;
-                else if (ms <= 0) showStats = false;
-
-                if (showStats) {
+                
+                // ЛОГИКА ОТОБРАЖЕНИЯ: Скрываем ТОЛЬКО для папки 2018
+                if (folder.includes('2018')) {
+                    document.getElementById('time-row').style.display = 'none';
+                    document.getElementById('speed-row').style.display = 'none';
+                } else if (ms > 0) {
                     var h = Math.floor(ms / 3600000);
                     var m = Math.floor((ms % 3600000) / 60000);
                     document.getElementById('time').innerText = h + "ч " + m + "м";
                     document.getElementById('avg-speed').innerText = speed.toFixed(1);
                 } else {
-                    document.getElementById('time-row').style.display = 'none';
-                    document.getElementById('speed-row').style.display = 'none';
+                    // Если данных по времени нет в самом файле (любой год кроме 2018)
+                    document.getElementById('time').innerText = "нет данных";
+                    document.getElementById('avg-speed').innerText = "---";
                 }
 
                 var polyline = g.getLayers()[0];
