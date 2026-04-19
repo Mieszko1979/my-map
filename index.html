@@ -61,9 +61,9 @@
         <div class="menu-header"><input type="checkbox" id="main-toggle" onchange="toggleList()"> Мои велопутешествия</div>
         <div id="trip-list">
             <div class="trip-item c2018"><input type="checkbox" class="trip-check" id="chk2018" onchange="updateMarkers(false)"> 1. Яранск - Паттайя (2018) - 9 476 км.</div>
-            <div class="trip-item c2019"><input type="checkbox" class="trip-check" id="chk2019" onchange="updateMarkers(false)"> 2. Яранск - Иссык-Куль - Иран (2019) - 6 283 км.</div>
+            <div class="trip-item c2019"><input type="checkbox" class="trip-check" id="chk2019" onchange="updateMarkers(false)"> 2. Яранск - Иран (2019) - 6 283 км.</div>
             <div class="trip-item c2021"><input type="checkbox" class="trip-check" id="chk2021" onchange="updateMarkers(false)"> 3. Яранск - Байкал (2021) - 4 793 км.</div>
-            <div class="trip-item c2024"><input type="checkbox" class="trip-check" id="chk2024" onchange="updateMarkers(false)"> 4. Яранск - Афганистан - Армения (2024) - 7 137 км.</div>
+            <div class="trip-item c2024"><input type="checkbox" class="trip-check" id="chk2024" onchange="updateMarkers(false)"> 4. Яранск - Армения (2024) - 7 137 км.</div>
         </div>
         <div id="photo-toggle-wrap"><input type="checkbox" id="photo-toggle" onchange="updateMarkers(true)"> 📷 Показать фото</div>
     </div>
@@ -86,12 +86,10 @@
             if (showArchive) {
                 list.style.display = 'block';
                 map.removeLayer(currentTripLayer);
-                archiveLayerGroup.clearLayers();
-                photoLayerGroup.clearLayers();
-                document.querySelectorAll('.trip-check').forEach(c => c.checked = false);
             } else {
                 list.style.display = 'none';
                 currentTripLayer.addTo(map);
+                document.querySelectorAll('.trip-check').forEach(c => c.checked = false);
                 archiveLayerGroup.clearLayers();
                 photoLayerGroup.clearLayers();
                 closePhoto();
@@ -113,6 +111,7 @@
                 if (document.getElementById('chk2019').checked) { drawTrip(points2019, archiveLayerGroup, 'c2019', 'archive/2019/'); if(showPhotos) loadPhotos('archive-2019-photos', hexColors['c2019']); }
                 if (document.getElementById('chk2021').checked) { drawTrip(points2021, archiveLayerGroup, 'c2021', 'archive/2021/'); if(showPhotos) loadPhotos('archive-2021-photos', hexColors['c2021']); }
                 if (document.getElementById('chk2024').checked) { drawTrip(points2024, archiveLayerGroup, 'c2024', 'archive/2024/'); if(showPhotos) loadPhotos('archive-2024-photos', hexColors['c2024']); }
+                
                 if (!onlyPhotos) {
                     var layers = archiveLayerGroup.getLayers();
                     if (layers.length > 0) map.fitBounds(new L.featureGroup(layers).getBounds(), {padding: [50, 50]});
@@ -175,7 +174,7 @@
         }
 
         function closePhoto() { document.getElementById('photo-viewer').style.display = 'none'; }
-        function focusOnCurrent() { if (typeof myPoints !== 'undefined' && myPoints.length > 0) { var last = myPoints[myPoints.length - 1]; var lat = last.lat || last.from[0]; var lng = last.lng || last.from[1]; map.setView([lat, lng], 8); } }
+        function focusOnCurrent() { if (typeof myPoints !== 'undefined' && myPoints.length > 0) { var last = myPoints[myPoints.length - 1]; var lat = last.lat || (last.from ? last.from[0] : 50); var lng = last.lng || (last.from ? last.from[1] : 80); map.setView([lat, lng], 8); } }
         if (typeof myPoints !== 'undefined') { focusOnCurrent(); updateMarkers(true); }
     </script>
 </body>
