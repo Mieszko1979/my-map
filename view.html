@@ -63,7 +63,6 @@
                 var ms = g.get_moving_time();
                 var speed = g.get_moving_speed();
                 
-                // ЛОГИКА ОТОБРАЖЕНИЯ: Скрываем ТОЛЬКО для папки 2018
                 if (folder.includes('2018')) {
                     document.getElementById('time-row').style.display = 'none';
                     document.getElementById('speed-row').style.display = 'none';
@@ -73,8 +72,8 @@
                     document.getElementById('time').innerText = h + "ч " + m + "м";
                     document.getElementById('avg-speed').innerText = speed.toFixed(1);
                 } else {
-                    // Если данных по времени нет в самом файле (любой год кроме 2018)
-                    document.getElementById('time').innerText = "нет данных";
+                    // ЗДЕСЬ ИСПРАВЛЕНО НА ТРИ ТИРЕ
+                    document.getElementById('time').innerText = "---";
                     document.getElementById('avg-speed').innerText = "---";
                 }
 
