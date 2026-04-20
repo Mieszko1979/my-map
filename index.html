@@ -32,27 +32,31 @@
         .trip-item { margin-bottom: 12px; display: flex; align-items: center; font-size: 14px; font-weight: bold; }
         .trip-item input { margin-right: 12px; }
 
-        /* ГАЛОЧКА ФОТО (ДОБАВИЛ ОТСТУП) */
+        /* ГАЛОЧКА ФОТО */
         #photo-toggle-wrap { 
-            margin-top: 18px; /* Увеличил отступ, чтобы не было тесно */
-            padding-top: 12px; 
-            border-top: 1px dashed #ccc; 
-            color: #28a745; 
-            font-weight: bold; 
-            display: flex; 
-            align-items: center; 
-            font-size: 15px; 
-            cursor: pointer; 
+            margin-top: 18px; padding-top: 12px; 
+            border-top: 1px dashed #ccc; color: #28a745; 
+            font-weight: bold; display: flex; align-items: center; 
+            font-size: 15px; cursor: pointer; 
         }
         #photo-toggle-wrap input { margin-right: 12px; transform: scale(1.2); }
 
-        /* ПОДСКАЗКА СВЕРХУ */
+        /* ПОДСКАЗКА СВЕРХУ С ПУЛЬСАЦИЕЙ */
+        @keyframes pulse-animation {
+            0% { transform: translateX(-50%) scale(1); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+            50% { transform: translateX(-50%) scale(1.05); box-shadow: 0 6px 25px rgba(255,0,0,0.2); }
+            100% { transform: translateX(-50%) scale(1); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        }
+
         #hint-box {
             position: absolute; top: 15px; left: 50%; transform: translateX(-50%); z-index: 1000;
             background: rgba(255, 255, 255, 0.95); padding: 8px 18px; border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4); font-family: sans-serif;
-            display: flex; align-items: center; white-space: nowrap; cursor: pointer;
+            font-family: sans-serif; display: flex; align-items: center; white-space: nowrap; cursor: pointer;
+            animation: pulse-animation 2s infinite ease-in-out; /* ПУЛЬСАЦИЯ */
+            transition: background 0.3s;
         }
+        #hint-box:hover { background: #ffffff; animation: none; transform: translateX(-50%) scale(1.1); }
+        
         .hint-text { color: #ff0000; font-weight: bold; font-size: 16px; }
         .hint-circle { width: 18px; height: 18px; border: 2px solid #28a745; background: white; border-radius: 50%; margin-left: 10px; }
 
@@ -71,13 +75,13 @@
         #photo-viewer img { width: 100%; border-radius: 5px; cursor: pointer; }
         #photo-viewer .close-btn { position: absolute; top: -10px; right: -10px; background: red; color: white; border-radius: 50%; width: 22px; height: 22px; text-align: center; line-height: 20px; cursor: pointer; font-weight: bold; border: 2px solid white; }
 
-        /* СТИЛИ МАРКЕРОВ (ШРИФТ 11px) */
+        /* СТИЛИ МАРКЕРОВ */
         .day-marker {
             background: #fff; border-radius: 50%; border: 2.5px solid;
             color: #000; font-weight: bold; font-family: Arial;
             display: flex; justify-content: center; align-items: center;
             box-shadow: 0 2px 8px rgba(0,0,0,0.5); 
-            font-size: 11px; /* УМЕНЬШЕННЫЙ ШРИФТ */
+            font-size: 11px; /* ШРИФТ 11 */
             overflow: hidden; white-space: nowrap;
         }
         .num-wrapper { position: relative; display: inline-block; line-height: 1; }
