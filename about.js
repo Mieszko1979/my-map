@@ -2,13 +2,19 @@ var aboutData = {
     name: "Mieszko",
     bio: "Велопутешественник. Исследую мир на двух колесах. В этом архиве — все мои маршруты и приключения.",
     
+    // СОЦСЕТИ (иконки и текстовые кнопки в верхней части окна)
     socials: [
         { id: "vk", url: "https://vk.com/mieszko_travel" },
-        { id: "dzen", url: "https://dzen.ru/mieszko_travel" }, // Код увидит этот ID и напишет текст
+        { id: "dzen", url: "https://dzen.ru/mieszko_travel" },
+        { id: "odnoklassniki", url: "" }, 
+        { id: "instagram", url: "https://instagram.com/mieszko_travel" },
+        { id: "youtube", url: "https://youtube.com/..." },
         { id: "telegram", url: "https://t.me/..." },
-        { id: "youtube", url: "https://youtube.com/..." }
+        { id: "komoot", url: "https://www.komoot.com/user/..." }, // Новое
+        { id: "strava", url: "https://www.strava.com/athletes/..." } // Новое
     ],
 
+    // КНОПКИ ОПЛАТЫ
     supportTitle: "Поддержать проект",
     supportText: "Вы можете поддержать мои путешествия через удобный вам сервис:",
     paymentButtons: [
@@ -18,6 +24,7 @@ var aboutData = {
         { name: "Дзен", url: "https://dzen.ru/mieszko_travel?donate=true", color: "#000000" }
     ],
 
+    // QR-КОДЫ
     qrCodes: [
         { name: "QR-код СБП", img: "qr_sbp.jpg" }
     ]
