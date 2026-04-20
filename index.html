@@ -37,7 +37,6 @@
         .c2024 { color: #ff8c00; border-color: #ff8c00 !important; }
         .cCurrent { color: #28a745; border-color: #28a745 !important; }
         .trans-center-marker { background: #fff; border-radius: 50%; border: 2.5px solid; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.5); font-size: 18px; cursor: pointer; }
-        .trans-node { border: 2px solid #fff; border-radius: 50%; box-shadow: 0 0 5px rgba(0,0,0,0.5); }
         .photo-marker { background: none !important; border: none !important; display: flex; align-items: center; justify-content: center; box-shadow: none !important; }
         .cam-svg { filter: drop-shadow(0px 0px 3px white) drop-shadow(0px 0px 5px rgba(255,255,255,0.8)); transition: transform 0.2s; }
         .popup-box { text-align: center; font-family: sans-serif; min-width: 180px; color: #333; }
@@ -61,9 +60,9 @@
         <div class="menu-header"><input type="checkbox" id="main-toggle" onchange="toggleList()"> Мои велопутешествия</div>
         <div id="trip-list">
             <div class="trip-item c2018"><input type="checkbox" class="trip-check" id="chk2018" onchange="updateMarkers(false)"> 1. Яранск - Паттайя (2018) - 9 476 км.</div>
-            <div class="trip-item c2019"><input type="checkbox" class="trip-check" id="chk2019" onchange="updateMarkers(false)"> 2. Яранск - Иран (2019) - 6 283 км.</div>
+            <div class="trip-item c2019"><input type="checkbox" class="trip-check" id="chk2019" onchange="updateMarkers(false)"> 2. Яранск - Иссык-Куль - Иран (2019) - 6 283 км.</div>
             <div class="trip-item c2021"><input type="checkbox" class="trip-check" id="chk2021" onchange="updateMarkers(false)"> 3. Яранск - Байкал (2021) - 4 793 км.</div>
-            <div class="trip-item c2024"><input type="checkbox" class="trip-check" id="chk2024" onchange="updateMarkers(false)"> 4. Яранск - Армения (2024) - 7 137 км.</div>
+            <div class="trip-item c2024"><input type="checkbox" class="trip-check" id="chk2024" onchange="updateMarkers(false)"> 4. Яранск - Афганистан - Армения (2024) - 7 137 км.</div>
         </div>
         <div id="photo-toggle-wrap"><input type="checkbox" id="photo-toggle" onchange="updateMarkers(true)"> 📷 Показать фото</div>
     </div>
@@ -111,7 +110,6 @@
                 if (document.getElementById('chk2019').checked) { drawTrip(points2019, archiveLayerGroup, 'c2019', 'archive/2019/'); if(showPhotos) loadPhotos('archive-2019-photos', hexColors['c2019']); }
                 if (document.getElementById('chk2021').checked) { drawTrip(points2021, archiveLayerGroup, 'c2021', 'archive/2021/'); if(showPhotos) loadPhotos('archive-2021-photos', hexColors['c2021']); }
                 if (document.getElementById('chk2024').checked) { drawTrip(points2024, archiveLayerGroup, 'c2024', 'archive/2024/'); if(showPhotos) loadPhotos('archive-2024-photos', hexColors['c2024']); }
-                
                 if (!onlyPhotos) {
                     var layers = archiveLayerGroup.getLayers();
                     if (layers.length > 0) map.fitBounds(new L.featureGroup(layers).getBounds(), {padding: [50, 50]});
@@ -160,13 +158,19 @@
             return html;
         }
 
+        // --- УМНАЯ ЗАГРУЗКА С ОБХОДОМ КЭША ---
         function loadPhotos(repoName, hex) {
-            fetch("https://mieszko1979.github.io/" + repoName + "/photos.json").then(r => r.json()).then(data => {
+            // Добавляем случайное число к ссылке, чтобы обмануть кэш
+            var cacheBuster = "?t=" + new Date().getTime();
+            var url = "https://mieszko1979.github.io/" + repoName + "/photos.json" + cacheBuster;
+
+            fetch(url).then(r => r.json()).then(data => {
                 data.forEach(photo => {
                     var svg = `<svg class="cam-svg" width="30" height="30" viewBox="0 0 24 24" fill="${hex}"><path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><circle cx="12" cy="13" r="4" fill="white" opacity="0.3"/><circle cx="12" cy="13" r="3" fill="${hex}"/><circle cx="18" cy="7" r="1.5" fill="white"/></svg>`;
                     L.marker([photo.lat, photo.lng], {icon: L.divIcon({ className: 'photo-marker', html: svg, iconSize: [30, 30], iconAnchor: [15, 15] })})
                     .addTo(photoLayerGroup).on('click', function() {
-                        document.getElementById('view-img').src = "https://mieszko1979.github.io/" + repoName + "/" + photo.url;
+                        // К ссылке на само фото тоже добавляем защиту от кэша
+                        document.getElementById('view-img').src = "https://mieszko1979.github.io/" + repoName + "/" + photo.url + cacheBuster;
                         document.getElementById('photo-viewer').style.display = 'block';
                     });
                 });
