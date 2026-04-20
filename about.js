@@ -2,17 +2,16 @@ var aboutData = {
     name: "Mieszko",
     bio: "Велопутешественник. Исследую мир на двух колесах. В этом архиве — все мои маршруты и приключения.",
     
-    // СОЦСЕТИ (будут иконками)
-    // Доступные имена: vk, odnoklassniki, instagram, youtube, telegram
+    // Соцсети (иконки появятся только если есть ссылка)
     socials: [
-        { name: "vk", url: "https://vk.com/..." },
-        { name: "odnoklassniki", url: "https://ok.ru/..." },
-        { name: "instagram", url: "https://instagram.com/..." },
-        { name: "youtube", url: "https://youtube.com/..." },
-        { name: "telegram", url: "https://t.me/..." }
+        { id: "vk", url: "https://vk.com/..." },
+        { id: "odnoklassniki", url: "https://ok.ru/..." },
+        { id: "instagram", url: "https://instagram.com/..." },
+        { id: "youtube", url: "https://youtube.com/..." },
+        { id: "telegram", url: "https://t.me/..." }
     ],
 
-    // КНОПКИ ОПЛАТЫ
+    // Кнопки оплаты
     supportTitle: "Поддержать проект",
     supportText: "Вы можете поддержать мои путешествия через удобный вам сервис:",
     paymentButtons: [
@@ -21,7 +20,7 @@ var aboutData = {
         { name: "ЮMoney", url: "https://yoomoney.ru/...", color: "#8b3ffd" }
     ],
 
-    // QR-КОДЫ (будут скрыты под кнопкой)
+    // QR-коды
     qrCodes: [
         { name: "QR-код СБП", img: "qr_sbp.jpg" }
     ]
