@@ -2,26 +2,27 @@ var aboutData = {
     name: "Mieszko",
     bio: "Велопутешественник. Исследую мир на двух колесах. В этом архиве — все мои маршруты и приключения.",
     
-    // Ссылки на соцсети. Если оставить ссылку пустой "", кнопка НЕ появится.
+    // СОЦСЕТИ (будут иконками)
+    // Доступные имена: vk, odnoklassniki, instagram, youtube, telegram
     socials: [
-        { name: "VK", url: "https://vk.com/your_profile", color: "#0077FF" },
-        { name: "YouTube", url: "", color: "#FF0000" }, // Не отобразится, так как ссылка пустая
-        { name: "Instagram", url: "https://instagram.com/your_profile", color: "#E1306C" },
-        { name: "Telegram", url: "https://t.me/your_channel", color: "#0088cc" }
+        { name: "vk", url: "https://vk.com/..." },
+        { name: "odnoklassniki", url: "https://ok.ru/..." },
+        { name: "instagram", url: "https://instagram.com/..." },
+        { name: "youtube", url: "https://youtube.com/..." },
+        { name: "telegram", url: "https://t.me/..." }
     ],
 
-    // Раздел поддержки
-    supportTitle: "Поддержать мои путешествия",
-    supportText: "Если вам нравится то, что я делаю, вы можете помочь проекту:",
-    
-    // Ссылки на оплату (СБП, Boosty, донаты и т.д.)
-    paymentLinks: [
-        { name: "Перевод СБП", url: "https://www.tinkoff.ru/rm/your_link/", color: "#28a745" },
-        { name: "Закинуть на чай", url: "", color: "#ffc107" } // Не отобразится
+    // КНОПКИ ОПЛАТЫ
+    supportTitle: "Поддержать проект",
+    supportText: "Вы можете поддержать мои путешествия через удобный вам сервис:",
+    paymentButtons: [
+        { name: "Сбербанк", url: "https://www.sberbank.ru/...", color: "#21a038" },
+        { name: "Т-Банк", url: "https://www.tbank.ru/...", color: "#ffdd2d", textColor: "#000" },
+        { name: "ЮMoney", url: "https://yoomoney.ru/...", color: "#8b3ffd" }
     ],
 
-    // QR-коды (фотографии должны лежать в корне гитхаба)
+    // QR-КОДЫ (будут скрыты под кнопкой)
     qrCodes: [
-        { name: "Сбербанк / Тинькофф", img: "qr_card.jpg" }
+        { name: "QR-код СБП", img: "qr_sbp.jpg" }
     ]
 };
