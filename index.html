@@ -38,25 +38,26 @@
         .hint-circle { width: 18px; height: 18px; border: 2px solid #28a745; background: white; border-radius: 50%; margin-left: 10px; }
 
         #about-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 2000; justify-content: center; align-items: center; }
-        .modal-content { background: white; width: 90%; max-width: 420px; max-height: 85vh; border-radius: 20px; padding: 25px; overflow-y: auto; position: relative; font-family: sans-serif; text-align: center; }
+        .modal-content { background: white; width: 95%; max-width: 440px; max-height: 85vh; border-radius: 20px; padding: 25px; overflow-y: auto; position: relative; font-family: sans-serif; text-align: center; }
         .modal-content b { font-size: 22px; display: block; margin-bottom: 10px; }
         .close-modal { position: absolute; top: 15px; right: 15px; font-size: 24px; cursor: pointer; color: #aaa; }
         
-        /* СОЦСЕТИ ВЕРХНЯЯ СТРОЧКА */
-        .social-icons { display: flex; justify-content: center; gap: 15px; margin: 20px 0; align-items: center; }
+        /* СОЦСЕТИ */
+        .social-icons { display: flex; justify-content: center; gap: 12px; margin: 20px 0; align-items: center; flex-wrap: wrap; }
         .social-icons a { color: #555; text-decoration: none; transition: 0.2s; display: flex; align-items: center; }
         .social-icons a:hover { transform: scale(1.1); color: #000; }
-        .social-icons i { font-size: 32px; }
+        .social-icons i { font-size: 28px; }
         
-        /* СТИЛЬ ДЛЯ ТЕКСТА "ДЗЕН" ВМЕСТО ИКОНКИ */
-        .dzen-text { font-weight: 900; font-size: 18px; border: 2px solid #555; padding: 2px 8px; border-radius: 8px; color: #555; }
-        .social-icons a:hover .dzen-text { border-color: #000; color: #000; }
+        /* ТЕКСТОВЫЕ КНОПКИ (Дзен, Komoot) */
+        .text-icon-btn { font-weight: 900; font-size: 14px; border: 2px solid #555; padding: 3px 8px; border-radius: 8px; color: #555; text-transform: uppercase; }
+        .social-icons a:hover .text-icon-btn { border-color: #000; color: #000; }
 
         .fa-vk { color: #0077FF; }
         .fa-odnoklassniki { color: #ee8208; }
         .fa-instagram { color: #E1306C; }
         .fa-youtube { color: #FF0000; }
         .fa-telegram { color: #0088cc; }
+        .fa-strava { color: #FC6100; }
 
         .payment-btn { display: block; width: 100%; text-decoration: none; padding: 12px; border-radius: 12px; margin-top: 10px; font-weight: bold; transition: 0.2s; box-sizing: border-box; }
         #qr-section { margin-top: 20px; display: none; border-top: 1px solid #eee; padding-top: 15px; }
@@ -115,7 +116,7 @@
             <div class="trip-item c2018"><input type="checkbox" class="trip-check" id="chk2018" onchange="updateMarkers(false)"> 1. Яранск - Паттайя (2018) - 9 476 км.</div>
             <div class="trip-item c2019"><input type="checkbox" class="trip-check" id="chk2019" onchange="updateMarkers(false)"> 2. Яранск - Иссык-Куль - Иран (2019) - 6 283 км.</div>
             <div class="trip-item c2021"><input type="checkbox" class="trip-check" id="chk2021" onchange="updateMarkers(false)"> 3. Яранск - Байкал (2021) - 4 793 км.</div>
-            <div class="trip-item c2024"><input type="checkbox" class="trip-check" id="chk2024" onchange="updateMarkers(false)"> 4. Яранск - Армения (2024) - 7 137 км.</div>
+            <div class="trip-item c2024"><input type="checkbox" class="trip-check" id="chk2024" onchange="updateMarkers(false)"> 4. Яранск - Афганистан - Армения (2024) - 7 137 км.</div>
         </div>
         <div id="photo-toggle-wrap"><input type="checkbox" id="photo-toggle" onchange="updateMarkers(true)"> 📷 Показать фото</div>
     </div>
@@ -140,15 +141,14 @@
             document.getElementById('support-title').innerText = aboutData.supportTitle;
             document.getElementById('support-text').innerText = aboutData.supportText;
 
-            var iconMap = { 'vk': 'fa-vk', 'odnoklassniki': 'fa-odnoklassniki', 'instagram': 'fa-instagram', 'youtube': 'fa-youtube', 'telegram': 'fa-telegram' };
+            var iconMap = { 'vk': 'fa-vk', 'odnoklassniki': 'fa-odnoklassniki', 'instagram': 'fa-instagram', 'youtube': 'fa-youtube', 'telegram': 'fa-telegram', 'strava': 'fa-strava' };
             var sHtml = "";
             aboutData.socials.forEach(s => {
                 if(s.url) {
-                    if (s.id === 'dzen') {
-                        // Для Дзена выводим текст в рамке
-                        sHtml += `<a href="${s.url}" target="_blank"><span class="dzen-text">Дзен</span></a>`;
+                    if (s.id === 'dzen' || s.id === 'komoot') {
+                        var label = s.id === 'dzen' ? 'Дзен' : 'Komoot';
+                        sHtml += `<a href="${s.url}" target="_blank"><span class="text-icon-btn">${label}</span></a>`;
                     } else {
-                        // Для остальных иконку
                         sHtml += `<a href="${s.url}" target="_blank"><i class="fa-brands ${iconMap[s.id] || 'fa-link'}"></i></a>`;
                     }
                 }
@@ -243,8 +243,7 @@
             });
         }
         function closePhoto() { document.getElementById('photo-viewer').style.display = 'none'; }
-        function focusOnCurrent() { if (typeof myPoints !== 'undefined' && myPoints.length > 0) { var last = myPoints[myPoints.length - 1]; map.setView([last.lat || last.from[0], last.lng || last.from[1]], 8); } }
-        
+        function focusOnCurrent() { if (typeof myPoints !== 'undefined' && myPoints.length > 0) { var last = myPoints[myPoints.length - 1]; map.setView([last.lat || (last.from ? last.from[0] : 50), last.lng || (last.from ? last.from[1] : 80)], 8); } }
         if (typeof myPoints !== 'undefined') { focusOnCurrent(); updateMarkers(true); }
     </script>
 </body>
