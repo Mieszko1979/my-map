@@ -6,7 +6,7 @@ var aboutData = {
     socials: [
         { id: "vk", url: "https://vk.com/mieszko_travel" },
         { id: "dzen", url: "https://dzen.ru/mieszko_travel" },
-        { id: "odnoklassniki", url: "" }, 
+        { id: "odnoklassniki", url: "https://dzen.ru/mieszko_travel" }, 
         { id: "instagram", url: "https://instagram.com/mieszko_travel" },
         { id: "youtube", url: "https://youtube.com/..." },
         { id: "telegram", url: "https://t.me/..." },
