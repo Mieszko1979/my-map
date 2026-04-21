@@ -20,7 +20,7 @@ var aboutData = {
     paymentButtons: [
         { name: "Сбербанк", url: "https://www.sberbank.ru/...", color: "#21a038" },
         { name: "Т-Банк", url: "https://www.tbank.ru/...", color: "#ffdd2d", textColor: "#000" },
-        { name: "ЮMoney", url: "https://yoomoney.ru/...", color: "#8b3ffd" },
+        { name: "ЮMoney", url: "https://yoomoney.ru/to/410014509615752", color: "#8b3ffd" },
         { name: "Дзен", url: "https://dzen.ru/mieszko_travel?donate=true", color: "#000000" }
     ],
 
