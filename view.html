@@ -35,19 +35,16 @@
         <div class="stat-item" id="speed-row"><span class="stat-label">Ср. скорость</span><span id="avg-speed" class="stat-val">--</span> <small style="color:#238aff; font-weight:bold;">км/ч</small></div>
     </div>
     <div id="chart-container"><canvas id="elevationChart"></canvas></div>
-
     <script>
         var map = L.map('map', {attributionControl: true, zoomControl: false}).setView([50, 80], 5);
         map.attributionControl.setPrefix('Мое велопутешествие');
         L.tileLayer('http://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',{ maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3'], attribution: '' }).addTo(map);
-
         var urlParams = new URLSearchParams(window.location.search);
         var fileName = urlParams.get('file');
         var folder = urlParams.get('folder') || 'tracks/';
         var mode = urlParams.get('mode') || 'bike';
         var trackPoints = []; 
         var hoverMarker = L.marker([0,0], { icon: L.divIcon({className: 'hover-dot', iconSize: [14, 14], iconAnchor: [7, 7]}) });
-
         if (fileName) {
             new L.GPX(folder + fileName, {
                 async: true,
@@ -59,24 +56,15 @@
                 document.getElementById('dist').innerText = (g.get_distance()/1000).toFixed(1) + " км";
                 document.getElementById('gain').innerText = g.get_elevation_gain().toFixed(0) + " м";
                 document.getElementById('max-alt').innerText = g.get_elevation_max().toFixed(0) + " м";
-                
                 var ms = g.get_moving_time();
                 var speed = g.get_moving_speed();
-                
-                if (folder.includes('2018')) {
-                    document.getElementById('time-row').style.display = 'none';
-                    document.getElementById('speed-row').style.display = 'none';
-                } else if (ms > 0) {
+                if (folder.includes('2018')) { document.getElementById('time-row').style.display = 'none'; document.getElementById('speed-row').style.display = 'none'; } 
+                else if (ms > 0) {
                     var h = Math.floor(ms / 3600000);
                     var m = Math.floor((ms % 3600000) / 60000);
                     document.getElementById('time').innerText = h + "ч " + m + "м";
                     document.getElementById('avg-speed').innerText = speed.toFixed(1);
-                } else {
-                    // ЗДЕСЬ ИСПРАВЛЕНО НА ТРИ ТИРЕ
-                    document.getElementById('time').innerText = "---";
-                    document.getElementById('avg-speed').innerText = "---";
-                }
-
+                } else { document.getElementById('time').innerText = "---"; document.getElementById('avg-speed').innerText = "---"; }
                 var polyline = g.getLayers()[0];
                 trackPoints = polyline.getLatLngs();
                 L.marker(trackPoints[0], {icon: L.divIcon({className: 'marker-ab', html: 'A', iconSize: [24, 24], iconAnchor: [12, 12]})}).addTo(map);
@@ -85,7 +73,6 @@
                 buildChart(g.get_elevation_data());
             }).addTo(map);
         }
-
         function buildChart(elevationData) {
             var ctx = document.getElementById('elevationChart').getContext('2d');
             new Chart(ctx, {
