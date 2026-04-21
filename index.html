@@ -42,16 +42,12 @@
         .modal-content b { font-size: 22px; display: block; margin-bottom: 10px; }
         .close-modal { position: absolute; top: 15px; right: 15px; font-size: 24px; cursor: pointer; color: #aaa; }
         
-        /* СОЦСЕТИ */
         .social-icons { display: flex; justify-content: center; gap: 12px; margin: 20px 0; align-items: center; flex-wrap: wrap; }
         .social-icons a { color: #555; text-decoration: none; transition: 0.2s; display: flex; align-items: center; }
         .social-icons a:hover { transform: scale(1.1); color: #000; }
         .social-icons i { font-size: 28px; }
-        
-        /* ТЕКСТОВЫЕ КНОПКИ (Дзен, Komoot) */
         .text-icon-btn { font-weight: 900; font-size: 14px; border: 2px solid #555; padding: 3px 8px; border-radius: 8px; color: #555; text-transform: uppercase; }
-        .social-icons a:hover .text-icon-btn { border-color: #000; color: #000; }
-
+        
         .fa-vk { color: #0077FF; }
         .fa-odnoklassniki { color: #ee8208; }
         .fa-instagram { color: #E1306C; }
@@ -116,7 +112,7 @@
             <div class="trip-item c2018"><input type="checkbox" class="trip-check" id="chk2018" onchange="updateMarkers(false)"> 1. Яранск - Паттайя (2018) - 9 476 км.</div>
             <div class="trip-item c2019"><input type="checkbox" class="trip-check" id="chk2019" onchange="updateMarkers(false)"> 2. Яранск - Иссык-Куль - Иран (2019) - 6 283 км.</div>
             <div class="trip-item c2021"><input type="checkbox" class="trip-check" id="chk2021" onchange="updateMarkers(false)"> 3. Яранск - Байкал (2021) - 4 793 км.</div>
-            <div class="trip-item c2024"><input type="checkbox" class="trip-check" id="chk2024" onchange="updateMarkers(false)"> 4. Яранск - Афганистан - Армения (2024) - 7 137 км.</div>
+            <div class="trip-item c2024"><input type="checkbox" class="trip-check" id="chk2024" onchange="updateMarkers(false)"> 4. Яранск - Армения (2024) - 7 137 км.</div>
         </div>
         <div id="photo-toggle-wrap"><input type="checkbox" id="photo-toggle" onchange="updateMarkers(true)"> 📷 Показать фото</div>
     </div>
@@ -157,7 +153,14 @@
 
             var pHtml = "";
             aboutData.paymentButtons.forEach(p => {
-                pHtml += `<a href="${p.url}" target="_blank" class="payment-btn" style="background:${p.color}; color:${p.textColor || 'white'}">${p.name}</a>`;
+                // ПРОВЕРКА НА ВИДЖЕТ ЮMONEY
+                if (p.id === "yoomoney_widget") {
+                    pHtml += `<div style="margin-top:15px; display:flex; justify-content:center;">
+                        <iframe src="https://yoomoney.ru/quickpay/fundraise/button?billNumber=1H9NQ2BDAAD.260421&" width="330" height="50" frameborder="0" allowtransparency="true" scrolling="no"></iframe>
+                    </div>`;
+                } else {
+                    pHtml += `<a href="${p.url}" target="_blank" class="payment-btn" style="background:${p.color}; color:${p.textColor || 'white'}">${p.name}</a>`;
+                }
             });
             document.getElementById('payment-buttons').innerHTML = pHtml;
 
@@ -244,6 +247,7 @@
         }
         function closePhoto() { document.getElementById('photo-viewer').style.display = 'none'; }
         function focusOnCurrent() { if (typeof myPoints !== 'undefined' && myPoints.length > 0) { var last = myPoints[myPoints.length - 1]; map.setView([last.lat || (last.from ? last.from[0] : 50), last.lng || (last.from ? last.from[1] : 80)], 8); } }
+        
         if (typeof myPoints !== 'undefined') { focusOnCurrent(); updateMarkers(true); }
     </script>
 </body>
