@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Детальный анализ трека</title>
+    <title>Анализ трека</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
@@ -10,9 +10,9 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
     
-    <!-- Скрипты библиотек -->
+    <!-- Библиотеки -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.7.0/gpx.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/leaflet-polylinedecorator@1.6.0/dist/leaflet.polylineDecorator.js"></script>
@@ -20,10 +20,9 @@
     <style>
         html, body { height: 100%; margin: 0; padding: 0; font-family: sans-serif; background: #000; overflow: hidden; }
         #map { height: 72%; width: 100%; background: #222; }
-        #chart-container { height: 28%; width: 100%; background: white; padding: 5px 10px; box-sizing: border-box; border-top: 2px solid #333; position: relative; }
-        canvas { width: 100% !important; height: 100% !important; }
+        #chart-container { height: 28%; width: 100%; background: white; padding: 10px; box-sizing: border-box; border-top: 2px solid #333; position: relative; }
         
-        /* ПАНЕЛЬ ИТОГОВ */
+        /* ИНФО-ПАНЕЛЬ Справа */
         #info { 
             position: absolute; top: 15px; right: 15px; z-index: 1000; 
             background: rgba(255,255,255,0.95); padding: 15px; border-radius: 15px; 
@@ -34,20 +33,22 @@
         .stat-label { font-size: 10px; color: #777; text-transform: uppercase; display: block; }
         .stat-val { font-weight: bold; color: #238aff; font-size: 17px; }
 
-        /* МЕНЮ ФОТО */
+        /* МЕНЮ ФОТО Слева */
         #menu-box { position: absolute; top: 15px; left: 15px; z-index: 1000; background: rgba(255, 255, 255, 0.95); padding: 10px 15px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
         #photo-toggle-wrap { color: #28a745; font-weight: bold; display: flex; align-items: center; font-size: 14px; cursor: pointer; }
         #photo-toggle-wrap input { margin-right: 10px; transform: scale(1.2); }
 
-        /* ПРОСМОТР ФОТО */
+        /* ОКНО ФОТО Слева */
         #photo-viewer { position: absolute; bottom: 35%; left: 15px; z-index: 1000; width: 220px; background: white; padding: 5px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none; transition: transform 0.3s ease; cursor: pointer; }
         #photo-viewer:hover { transform: scale(1.1); }
         #photo-viewer img { width: 100%; border-radius: 5px; display: block; }
-        #photo-viewer .close-btn { position: absolute; top: -10px; right: -10px; background: red; color: white; border-radius: 50%; width: 22px; height: 22px; text-align: center; line-height: 20px; cursor: pointer; font-weight: bold; border: 2px solid white; }
+        #photo-viewer .close-btn { position: absolute; top: -10px; right: -10px; background: red; color: white; border-radius: 50%; width: 22px; height: 22px; text-align: center; line-height: 20px; cursor: pointer; font-weight: bold; border: 2px solid white; z-index: 1001; }
 
+        /* МАРКЕРЫ */
         .marker-ab { background: #ff0000; border: 2px solid white; border-radius: 50%; color: white; font-weight: bold; text-align: center; line-height: 24px; font-size: 14px; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
         .hover-dot { background: #fff; border: 3px solid #ff0000; border-radius: 50%; box-shadow: 0 0 10px rgba(255,255,255,0.8); }
         .map-avatar { position: absolute; bottom: 32%; right: 10px; z-index: 1000; width: 50px; height: 50px; border-radius: 50%; border: 2px solid white; opacity: 0.8; pointer-events: none; object-fit: cover; }
+        .photo-marker { background: none !important; border: none !important; display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
@@ -75,7 +76,7 @@
     <div id="chart-container"><canvas id="elevationChart"></canvas></div>
 
     <script>
-        var map = L.map('map', {attributionControl: true, zoomControl: false}).setView([50, 80], 5);
+        var map = L.map('map', {attributionControl: true, zoomControl: false}).setView([50, 80], 4);
         map.attributionControl.setPrefix('Мое велопутешествие');
         L.tileLayer('http://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',{ maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3'], attribution: '' }).addTo(map);
 
@@ -83,13 +84,13 @@
         var trackPoints = []; 
         var hoverMarker = L.marker([0,0], { icon: L.divIcon({className: 'hover-dot', iconSize: [14, 14], iconAnchor: [7, 7]}) });
 
-        var urlParams = new URLSearchParams(window.location.search);
-        var fileName = urlParams.get('file');
-        var folder = urlParams.get('folder') || 'tracks/';
-        var mode = urlParams.get('mode') || 'bike';
+        // Читаем параметры из ссылки
+        var params = new URLSearchParams(window.location.search);
+        var file = params.get('file');
+        var folder = params.get('folder') || 'tracks/';
 
-        if (fileName) {
-            new L.GPX(folder + fileName, {
+        if (file) {
+            new L.GPX(folder + file, {
                 async: true,
                 marker_options: { startIconUrl: null, endIconUrl: null, shadowUrl: null },
                 polyline_options: { color: '#ffea00', weight: 5, opacity: 0.9 }
@@ -97,88 +98,60 @@
                 var g = e.target;
                 map.fitBounds(g.getBounds(), {padding: [40, 40]});
                 
-                // Статистика
-                try {
-                    document.getElementById('dist').innerText = (g.get_distance()/1000).toFixed(1) + " км";
-                    document.getElementById('gain').innerText = g.get_elevation_gain().toFixed(0) + " м";
-                    document.getElementById('max-alt').innerText = g.get_elevation_max().toFixed(0) + " м";
-                    
-                    var ms = g.get_moving_time();
-                    if (folder.includes('2018')) {
-                        document.getElementById('time-row').style.display = 'none';
-                        document.getElementById('speed-row').style.display = 'none';
-                    } else if (ms > 0) {
-                        document.getElementById('time').innerText = Math.floor(ms / 3600000) + "ч " + Math.floor((ms % 3600000) / 60000) + "м";
-                        document.getElementById('avg-speed').innerText = g.get_moving_speed().toFixed(1);
-                    } else {
-                        document.getElementById('time').innerText = "---";
-                        document.getElementById('avg-speed').innerText = "---";
-                    }
-                } catch(err) { console.log("Ошибка статистики:", err); }
+                // 1. Статистика
+                document.getElementById('dist').innerText = (g.get_distance()/1000).toFixed(1) + " км";
+                document.getElementById('gain').innerText = g.get_elevation_gain().toFixed(0) + " м";
+                document.getElementById('max-alt').innerText = g.get_elevation_max().toFixed(0) + " м";
+                
+                var ms = g.get_moving_time();
+                if (folder.includes('2018')) {
+                    document.getElementById('time-row').style.display = 'none';
+                    document.getElementById('speed-row').style.display = 'none';
+                } else if (ms > 0) {
+                    document.getElementById('time').innerText = Math.floor(ms / 3600000) + "ч " + Math.floor((ms % 3600000) / 60000) + "м";
+                    document.getElementById('avg-speed').innerText = g.get_moving_speed().toFixed(1);
+                }
 
-                // Линия и стрелки
-                try {
-                    var layers = g.getLayers();
-                    var polyline = layers[0];
-                    if (polyline && typeof polyline.getLatLngs === 'function') {
-                        trackPoints = polyline.getLatLngs();
-                        if (Array.isArray(trackPoints[0])) trackPoints = trackPoints[0]; // Обработка MultiPolyline
-                        
-                        L.marker(trackPoints[0], {icon: L.divIcon({className: 'marker-ab', html: 'A', iconSize: [24, 24], iconAnchor: [12, 12]})}).addTo(map);
-                        L.marker(trackPoints[trackPoints.length - 1], {icon: L.divIcon({className: 'marker-ab', html: 'B', iconSize: [24, 24], iconAnchor: [12, 12]})}).addTo(map);
-                        L.polylineDecorator(polyline, { patterns: [{offset: '10%', repeat: '20%', symbol: L.Symbol.arrowHead({pixelSize: 12, pathOptions: {color: '#ffff00', fillOpacity: 1, weight: 0, fill: true}})}] }).addTo(map);
-                    }
-                } catch(err) { console.log("Ошибка геометрии:", err); }
+                // 2. Линия и Маркеры A/B
+                var polyline = g.getLayers()[0];
+                trackPoints = polyline.getLatLngs();
+                if (Array.isArray(trackPoints[0])) trackPoints = trackPoints[0]; // На случай MultiPolyline
 
-                // График и Фото
+                L.marker(trackPoints[0], {icon: L.divIcon({className: 'marker-ab', html: 'A', iconSize: [24, 24], iconAnchor: [12, 12]})}).addTo(map);
+                L.marker(trackPoints[trackPoints.length - 1], {icon: L.divIcon({className: 'marker-ab', html: 'B', iconSize: [24, 24], iconAnchor: [12, 12]})}).addTo(map);
+                
+                // Стрелки
+                L.polylineDecorator(polyline, {
+                    patterns: [{offset: '10%', repeat: '20%', symbol: L.Symbol.arrowHead({pixelSize: 12, pathOptions: {color: '#ffff00', fillOpacity: 1, weight: 0, fill: true}})}]
+                }).addTo(map);
+
+                // 3. График
                 buildChart(g.get_elevation_data());
-                loadTrackPhotos(folder);
+                
+                // 4. Загрузка фото (только если папка указана)
+                loadPhotos(folder);
 
-            }).on('error', function(e) {
-                alert("Не удалось загрузить файл трека: " + fileName);
+            }).on('error', function() {
+                alert("Ошибка: файл " + file + " не найден в папке " + folder);
             }).addTo(map);
         }
-
-        function loadTrackPhotos(folderPath) {
-            var repo = folderPath.includes("archive") ? folderPath.split('/')[1] : "archive-2026-photos";
-            if (!repo.startsWith("archive")) repo = "archive-" + repo + "-photos";
-            else repo = repo + "-photos";
-
-            fetch("https://mieszko1979.github.io/" + repo + "/photos.json").then(r => r.json()).then(data => {
-                data.forEach(photo => {
-                    var svg = `<svg width="22" height="22" viewBox="0 0 24 24" fill="#28a745"><path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><circle cx="12" cy="13" r="4" fill="white" opacity="0.3"/><circle cx="12" cy="13" r="3" fill="#28a745"/><circle cx="18" cy="7" r="1.5" fill="white"/></svg>`;
-                    L.marker([photo.lat, photo.lng], {icon: L.divIcon({ className: 'photo-marker', html: svg, iconSize: [22, 22], iconAnchor: [11, 11] })})
-                    .addTo(photoCluster).on('click', function() {
-                        document.getElementById('view-img').src = "https://mieszko1979.github.io/" + repo + "/" + photo.url;
-                        document.getElementById('photo-viewer').style.display = 'block';
-                    });
-                });
-            }).catch(e => console.log("Нет фото для репозитория"));
-        }
-
-        function togglePhotos() {
-            if (document.getElementById('photo-toggle').checked) map.addLayer(photoCluster);
-            else { map.removeLayer(photoCluster); closePhoto(); }
-        }
-
-        function closePhoto() { document.getElementById('photo-viewer').style.display = 'none'; }
 
         function buildChart(elevationData) {
             if (!elevationData || elevationData.length === 0) return;
             var ctx = document.getElementById('elevationChart').getContext('2d');
             new Chart(ctx, {
                 type: 'line',
-                data: { 
-                    labels: elevationData.map(d => d[0].toFixed(1)), 
-                    datasets: [{ data: elevationData.map(d => d[1].toFixed(0)), fill: true, backgroundColor: 'rgba(35, 138, 255, 0.15)', borderColor: '#238aff', borderWidth: 2, pointRadius: 0, tension: 0.1 }] 
+                data: {
+                    labels: elevationData.map(d => d[0].toFixed(1)),
+                    datasets: [{ data: elevationData.map(d => d[1].toFixed(0)), fill: true, backgroundColor: 'rgba(35, 138, 255, 0.15)', borderColor: '#238aff', borderWidth: 2, pointRadius: 0, tension: 0.1 }]
                 },
                 options: {
                     responsive: true, maintainAspectRatio: false,
                     interaction: { intersect: false, mode: 'index', axis: 'x' },
                     plugins: { legend: { display: false }, tooltip: { enabled: false } },
                     scales: {
-                        x: { title: { display: true, text: 'км', font: {weight: 'bold'} }, ticks: { maxTicksLimit: 10 } },
-                        y: { title: { display: true, text: 'м', font: {weight: 'bold'} } }
+                        x: { title: { display: true, text: 'км' }, ticks: { maxTicksLimit: 10 } },
+                        y: { title: { display: true, text: 'м' } }
                     },
                     onHover: (event, activeElements) => {
                         if (activeElements.length > 0 && trackPoints.length > 0) {
@@ -191,6 +164,34 @@
                 }
             });
         }
+
+        function loadPhotos(folderPath) {
+            // Определяем имя репозитория с фото
+            var repo = "archive-2026-photos";
+            if (folderPath.includes("2018")) repo = "archive-2018-photos";
+            else if (folderPath.includes("2019")) repo = "archive-2019-photos";
+            else if (folderPath.includes("2021")) repo = "archive-2021-photos";
+            else if (folderPath.includes("2024")) repo = "archive-2024-photos";
+
+            fetch("https://mieszko1979.github.io/" + repo + "/photos.json?t=" + new Date().getTime())
+            .then(r => r.json())
+            .then(data => {
+                data.forEach(photo => {
+                    var svg = `<svg width="22" height="22" viewBox="0 0 24 24" fill="#28a745"><path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><circle cx="12" cy="13" r="4" fill="white" opacity="0.3"/><circle cx="12" cy="13" r="3" fill="#28a745"/><circle cx="18" cy="7" r="1.5" fill="white"/></svg>`;
+                    L.marker([photo.lat, photo.lng], {icon: L.divIcon({ className: 'photo-marker', html: svg, iconSize: [22, 22], iconAnchor: [11, 11] })})
+                    .addTo(photoCluster).on('click', function() {
+                        document.getElementById('view-img').src = "https://mieszko1979.github.io/" + repo + "/" + photo.url;
+                        document.getElementById('photo-viewer').style.display = 'block';
+                    });
+                });
+            }).catch(() => console.log("Фото не найдены для " + repo));
+        }
+
+        function togglePhotos() {
+            if (document.getElementById('photo-toggle').checked) map.addLayer(photoCluster);
+            else { map.removeLayer(photoCluster); closePhoto(); }
+        }
+        function closePhoto() { document.getElementById('photo-viewer').style.display = 'none'; }
     </script>
 </body>
 </html>
