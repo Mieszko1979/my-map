@@ -5,11 +5,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
+    
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.7.0/gpx.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/leaflet-polylinedecorator@1.6.0/dist/leaflet.polylineDecorator.js"></script>
-    <script src="points.js"></script> <!-- Нужно для поиска фото -->
     <style>
         html, body { height: 100%; margin: 0; padding: 0; font-family: sans-serif; background: #000; overflow: hidden; }
         #map { height: 70%; width: 100%; }
@@ -22,12 +25,10 @@
         .marker-ab { background: #ff0000; border: 2px solid white; border-radius: 50%; color: white; font-weight: bold; text-align: center; line-height: 24px; font-size: 14px; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
         .hover-dot { background: #fff; border: 3px solid #ff0000; border-radius: 50%; box-shadow: 0 0 10px rgba(255,255,255,0.8); }
         .map-avatar { position: absolute; bottom: 32%; right: 10px; z-index: 1000; width: 50px; height: 50px; border-radius: 50%; border: 2px solid white; opacity: 0.8; pointer-events: none; object-fit: cover; }
-        
-        /* ОКНО ПРОСМОТРА ФОТО */
-        #photo-viewer { position: absolute; bottom: 35%; left: 15px; z-index: 1000; width: 220px; background: white; padding: 5px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none; }
-        #photo-viewer img { width: 100%; border-radius: 5px; cursor: pointer; }
-        #photo-viewer .close-btn { position: absolute; top: -10px; right: -10px; background: red; color: white; border-radius: 50%; width: 22px; height: 22px; text-align: center; line-height: 20px; cursor: pointer; font-weight: bold; border: 2px solid white; }
-        .photo-marker { background: none !important; border: none !important; display: flex; align-items: center; justify-content: center; }
+        #photo-viewer { position: absolute; bottom: 35%; left: 15px; z-index: 1000; width: 220px; background: white; padding: 5px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none; transition: transform 0.3s ease; cursor: pointer; }
+        #photo-viewer:hover { transform: scale(1.1); }
+        #photo-viewer img { width: 100%; border-radius: 5px; display: block; }
+        #photo-viewer .close-btn { position: absolute; top: -10px; right: -10px; background: red; color: white; border-radius: 50%; width: 22px; height: 22px; text-align: center; line-height: 20px; cursor: pointer; font-weight: bold; border: 2px solid white; z-index: 1001; }
     </style>
 </head>
 <body>
@@ -49,9 +50,12 @@
         map.attributionControl.setPrefix('Мое велопутешествие');
         L.tileLayer('http://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',{ maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3'], attribution: '' }).addTo(map);
 
+        var photoCluster = L.markerClusterGroup({ showCoverageOnHover: false, spiderfyOnMaxZoom: true, maxClusterRadius: 30 }).addTo(map);
+
         var urlParams = new URLSearchParams(window.location.search);
         var fileName = urlParams.get('file');
         var folder = urlParams.get('folder') || 'tracks/';
+        var mode = urlParams.get('mode') || 'bike';
         var trackPoints = []; 
         var hoverMarker = L.marker([0,0], { icon: L.divIcon({className: 'hover-dot', iconSize: [14, 14], iconAnchor: [7, 7]}) });
 
@@ -82,15 +86,12 @@
                 L.marker(trackPoints[trackPoints.length - 1], {icon: L.divIcon({className: 'marker-ab', html: 'B', iconSize: [24, 24], iconAnchor: [12, 12]})}).addTo(map);
                 L.polylineDecorator(polyline, { patterns: [{offset: '10%', repeat: '20%', symbol: L.Symbol.arrowHead({pixelSize: 12, pathOptions: {color: '#ffff00', fillOpacity: 1, weight: 0, fill: true}})}] }).addTo(map);
                 buildChart(g.get_elevation_data());
-
-                // Загружаем фото для этого конкретного трека
                 loadTrackPhotos(folder);
             }).addTo(map);
         }
 
         function loadTrackPhotos(folderPath) {
-            // Пытаемся найти, к какому репозиторию относится папка
-            var repo = "archive-2026-photos"; // По умолчанию
+            var repo = "archive-2026-photos";
             if (folderPath.includes("2018")) repo = "archive-2018-photos";
             if (folderPath.includes("2019")) repo = "archive-2019-photos";
             if (folderPath.includes("2021")) repo = "archive-2021-photos";
@@ -100,40 +101,20 @@
                 data.forEach(photo => {
                     var svg = `<svg width="22" height="22" viewBox="0 0 24 24" fill="#28a745"><path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><circle cx="12" cy="13" r="4" fill="white" opacity="0.3"/><circle cx="12" cy="13" r="3" fill="#28a745"/><circle cx="18" cy="7" r="1.5" fill="white"/></svg>`;
                     L.marker([photo.lat, photo.lng], {icon: L.divIcon({ className: 'photo-marker', html: svg, iconSize: [22, 22], iconAnchor: [11, 11] })})
-                    .addTo(map).on('click', function() {
+                    .addTo(photoCluster).on('click', function() {
                         document.getElementById('view-img').src = "https://mieszko1979.github.io/" + repo + "/" + photo.url;
                         document.getElementById('photo-viewer').style.display = 'block';
                     });
                 });
             });
         }
-
         function closePhoto() { document.getElementById('photo-viewer').style.display = 'none'; }
-
         function buildChart(elevationData) {
             var ctx = document.getElementById('elevationChart').getContext('2d');
             new Chart(ctx, {
                 type: 'line',
-                data: {
-                    labels: elevationData.map(d => d[0].toFixed(1)),
-                    datasets: [{ data: elevationData.map(d => d[1].toFixed(0)), fill: true, backgroundColor: 'rgba(35, 138, 255, 0.15)', borderColor: '#238aff', borderWidth: 2, pointRadius: 0, tension: 0.1 }]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    interaction: { intersect: false, mode: 'index', axis: 'x' },
-                    plugins: { legend: { display: false }, tooltip: { enabled: false } },
-                    scales: {
-                        x: { title: { display: true, text: 'км', font: {weight: 'bold'} }, ticks: { maxTicksLimit: 10 } },
-                        y: { title: { display: true, text: 'м', font: {weight: 'bold'} } }
-                    },
-                    onHover: (event, activeElements) => {
-                        if (activeElements.length > 0) {
-                            var idx = activeElements[0].index;
-                            var latlng = trackPoints[Math.floor((idx / (elevationData.length - 1)) * (trackPoints.length - 1))];
-                            if (latlng) { hoverMarker.setLatLng(latlng).addTo(map); }
-                        } else { map.removeLayer(hoverMarker); }
-                    }
-                }
+                data: { labels: elevationData.map(d => d[0].toFixed(1)), datasets: [{ data: elevationData.map(d => d[1].toFixed(0)), fill: true, backgroundColor: 'rgba(35, 138, 255, 0.15)', borderColor: '#238aff', borderWidth: 2, pointRadius: 0, tension: 0.1 }] },
+                options: { responsive: true, maintainAspectRatio: false, interaction: { intersect: false, mode: 'index', axis: 'x' }, plugins: { legend: { display: false }, tooltip: { enabled: false } }, scales: { x: { title: { display: true, text: 'км', font: {weight: 'bold'} }, ticks: { maxTicksLimit: 10 } }, y: { title: { display: true, text: 'м', font: {weight: 'bold'} } } }, onHover: (event, activeElements) => { if (activeElements.length > 0) { var idx = activeElements[0].index; var latlng = trackPoints[Math.floor((idx / (elevationData.length - 1)) * (trackPoints.length - 1))]; if (latlng) { hoverMarker.setLatLng(latlng).addTo(map); } } else { map.removeLayer(hoverMarker); } } }
             });
         }
     </script>
