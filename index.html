@@ -9,7 +9,6 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/leaflet-polylinedecorator@1.6.0/dist/leaflet.polylineDecorator.js"></script>
     
-    <!-- ПОДКЛЮЧАЕМ ДАННЫЕ -->
     <script src="about.js"></script>
     <script src="points.js"></script>
     <script src="archive/2018/points.js"></script>
@@ -20,8 +19,7 @@
     <style>
         html, body, #map { height: 100%; margin: 0; padding: 0; overflow: hidden; background: #000; }
         
-        /* ПАНЕЛЬ МЕНЮ СЛЕВА */
-        #menu-box { position: absolute; top: 15px; left: 15px; z-index: 1000; background: rgba(255, 255, 255, 0.95); padding: 15px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); font-family: sans-serif; min-width: 300px; }
+        #menu-box { position: absolute; top: 15px; left: 15px; z-index: 1000; background: rgba(255, 255, 255, 0.95); padding: 15px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); font-family: sans-serif; min-width: 280px; }
         .menu-header { font-weight: bold; font-size: 16px; display: flex; align-items: center; cursor: pointer; color: #333; }
         .menu-header input { margin-right: 12px; transform: scale(1.3); }
         #trip-list { margin-top: 12px; padding-top: 12px; border-top: 1px solid #ccc; display: none; }
@@ -30,7 +28,6 @@
         #photo-toggle-wrap { margin-top: 18px; padding-top: 12px; border-top: 1px dashed #ccc; color: #28a745; font-weight: bold; display: flex; align-items: center; font-size: 15px; cursor: pointer; }
         #photo-toggle-wrap input { margin-right: 12px; transform: scale(1.2); }
 
-        /* КНОПКА "ЖМИ СЮДА" СВЕРХУ */
         #hint-box {
             position: absolute; top: 15px; left: 50%; transform: translateX(-50%); z-index: 1000;
             background: rgba(255, 255, 255, 0.95); padding: 10px 25px; border-radius: 12px;
@@ -40,19 +37,17 @@
         #hint-box:hover { transform: translateX(-50%) scale(1.1); background: #fff; }
         .hint-text { color: #ff0000; font-weight: 900; font-size: 17px; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* МОДАЛЬНОЕ ОКНО */
         #about-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 2000; justify-content: center; align-items: center; }
         .modal-content { background: white; width: 95%; max-width: 440px; max-height: 85vh; border-radius: 20px; padding: 25px; overflow-y: auto; position: relative; font-family: sans-serif; text-align: center; }
         .modal-content b { font-size: 22px; display: block; margin-bottom: 10px; }
         .close-modal { position: absolute; top: 15px; right: 15px; font-size: 24px; cursor: pointer; color: #aaa; }
         
-        /* СОЦСЕТИ */
         .social-icons { display: flex; justify-content: center; gap: 12px; margin: 20px 0; align-items: center; flex-wrap: wrap; }
         .social-icons a { color: #555; text-decoration: none; transition: 0.2s; display: flex; align-items: center; }
         .social-icons a:hover { transform: scale(1.1); color: #000; }
         .social-icons i { font-size: 28px; }
         .text-icon-btn { font-weight: 900; font-size: 14px; border: 2px solid #555; padding: 3px 8px; border-radius: 8px; color: #555; text-transform: uppercase; }
-        .social-icons a:hover .text-icon-btn { border-color: #000; color: #000; }
+
         .fa-vk { color: #0077FF; }
         .fa-odnoklassniki { color: #ee8208; }
         .fa-instagram { color: #E1306C; }
@@ -60,12 +55,20 @@
         .fa-telegram { color: #0088cc; }
         .fa-strava { color: #FC6100; }
 
-        /* ОПЛАТА */
         .payment-btn { display: block; width: 100%; text-decoration: none; padding: 12px; border-radius: 12px; margin-top: 10px; font-weight: bold; transition: 0.2s; box-sizing: border-box; }
         #qr-section { margin-top: 20px; display: none; border-top: 1px solid #eee; padding-top: 15px; }
         .qr-img { width: 220px; height: auto; margin: 10px auto; display: block; border-radius: 10px; }
 
-        /* КРУЖКИ ДНЕЙ */
+        /* ОКНО ПРОСМОТРА ФОТО (МАЛЕНЬКОЕ СЛЕВА) */
+        #photo-viewer { 
+            position: absolute; bottom: 100px; left: 15px; z-index: 1000; 
+            width: 220px; background: white; padding: 5px; border-radius: 8px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none; 
+        }
+        #photo-viewer img { width: 100%; border-radius: 5px; cursor: pointer; }
+        #photo-viewer .close-btn { position: absolute; top: -10px; right: -10px; background: red; color: white; border-radius: 50%; width: 22px; height: 22px; text-align: center; line-height: 20px; cursor: pointer; font-weight: bold; border: 2px solid white; }
+
+        /* МАРКЕРЫ ДНЕЙ */
         .day-marker { background: #fff; border-radius: 50%; border: 2.5px solid; color: #000; font-weight: bold; font-family: Arial; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.5); font-size: 11px; overflow: hidden; white-space: nowrap; }
         .c2018 { color: #ff0000; border-color: #ff0000 !important; }
         .c2019 { color: #007bff; border-color: #007bff !important; }
@@ -73,6 +76,10 @@
         .c2024 { color: #ff8c00; border-color: #ff8c00 !important; }
         .cCurrent { color: #28a745; border-color: #28a745 !important; }
         
+        /* МАЛЕНЬКИЙ ФОТОАППАРАТ */
+        .photo-marker { background: none !important; border: none !important; display: flex; align-items: center; justify-content: center; box-shadow: none !important; }
+        .cam-svg { filter: drop-shadow(0px 0px 3px white); }
+
         .popup-box { text-align: center; font-family: sans-serif; min-width: 180px; }
         .popup-box b { font-size: 19px; display: block; margin-bottom: 5px; }
         .popup-box p { font-size: 16px; margin: 8px 0; }
@@ -106,7 +113,6 @@
         </div>
     </div>
 
-    <!-- ОБНОВЛЕННАЯ КНОПКА ПОДСКАЗКИ -->
     <div id="hint-box" onclick="openAbout()">
         <span class="hint-text">ЖМИ СЮДА</span>
     </div>
@@ -124,7 +130,9 @@
         <div id="photo-toggle-wrap"><input type="checkbox" id="photo-toggle" onchange="updateMarkers(true)"> 📷 Показать фото</div>
     </div>
 
+    <!-- ТО САМОЕ ОКНО ДЛЯ ФОТО -->
     <div id="photo-viewer"><div class="close-btn" onclick="closePhoto()">×</div><img id="view-img" src="" onclick="window.open(this.src)"></div>
+    
     <div id="map"></div>
 
     <script>
@@ -148,8 +156,7 @@
             aboutData.socials.forEach(s => {
                 if(s.url) {
                     if (s.id === 'dzen' || s.id === 'komoot') {
-                        var label = s.id === 'dzen' ? 'Дзен' : 'Komoot';
-                        sHtml += `<a href="${s.url}" target="_blank"><span class="text-icon-btn">${label}</span></a>`;
+                        sHtml += `<a href="${s.url}" target="_blank"><span class="text-icon-btn">${s.id === 'dzen' ? 'Дзен' : 'Komoot'}</span></a>`;
                     } else {
                         sHtml += `<a href="${s.url}" target="_blank"><i class="fa-brands ${iconMap[s.id] || 'fa-link'}"></i></a>`;
                     }
@@ -157,9 +164,7 @@
             });
             document.getElementById('about-socials').innerHTML = sHtml;
             var pHtml = "";
-            aboutData.paymentButtons.forEach(p => {
-                pHtml += `<a href="${p.url}" target="_blank" class="payment-btn" style="background:${p.color}; color:${p.textColor || 'white'}">${p.name}</a>`;
-            });
+            aboutData.paymentButtons.forEach(p => { pHtml += `<a href="${p.url}" target="_blank" class="payment-btn" style="background:${p.color}; color:${p.textColor || 'white'}">${p.name}</a>`; });
             document.getElementById('payment-buttons').innerHTML = pHtml;
             var qHtml = "";
             aboutData.qrCodes.forEach(q => { qHtml += `<div style="margin-top:15px;"><b>${q.name}</b><img src="${q.img}" class="qr-img"></div>`; });
@@ -233,8 +238,9 @@
         function loadPhotos(repoName, hex) {
             fetch("https://mieszko1979.github.io/" + repoName + "/photos.json?t=" + new Date().getTime()).then(r => r.json()).then(data => {
                 data.forEach(photo => {
-                    var svg = `<svg class="cam-svg" width="30" height="30" viewBox="0 0 24 24" fill="${hex}"><path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><circle cx="12" cy="13" r="4" fill="white" opacity="0.3"/><circle cx="12" cy="13" r="3" fill="${hex}"/><circle cx="18" cy="7" r="1.5" fill="white"/></svg>`;
-                    L.marker([photo.lat, photo.lng], {icon: L.divIcon({ className: 'photo-marker', html: svg, iconSize: [30, 30], iconAnchor: [15, 15] })})
+                    // ЗНАЧОК ФОТОАППАРАТА (РАЗМЕР 22)
+                    var svg = `<svg class="cam-svg" width="22" height="22" viewBox="0 0 24 24" fill="${hex}"><path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><circle cx="12" cy="13" r="4" fill="white" opacity="0.3"/><circle cx="12" cy="13" r="3" fill="${hex}"/><circle cx="18" cy="7" r="1.5" fill="white"/></svg>`;
+                    L.marker([photo.lat, photo.lng], {icon: L.divIcon({ className: 'photo-marker', html: svg, iconSize: [22, 22], iconAnchor: [11, 11] })})
                     .addTo(photoLayerGroup).on('click', function() { document.getElementById('view-img').src = "https://mieszko1979.github.io/" + repoName + "/" + photo.url; document.getElementById('photo-viewer').style.display = 'block'; });
                 });
             });
