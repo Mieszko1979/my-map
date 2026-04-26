@@ -4,30 +4,38 @@
     <title>Анализ трека</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
+    
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.7.0/gpx.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/leaflet-polylinedecorator@1.6.0/dist/leaflet.polylineDecorator.js"></script>
+    <script src="points.js"></script>
+
     <style>
         html, body { height: 100%; margin: 0; padding: 0; font-family: sans-serif; background: #000; overflow: hidden; }
         #map { height: 70%; width: 100%; background: #222; }
         #chart-container { height: 30%; width: 100%; background: white; padding: 10px; box-sizing: border-box; border-top: 2px solid #333; position: relative; }
+        
         #info { position: absolute; top: 15px; right: 15px; z-index: 1000; background: rgba(255,255,255,0.95); padding: 15px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); width: 190px; }
         .divider { font-size: 16px; font-weight: bold; border-bottom: 1px solid #ddd; margin-bottom: 10px; padding-bottom: 5px; color: #000; }
         .stat-item { margin-bottom: 8px; }
         .stat-label { font-size: 10px; color: #777; text-transform: uppercase; display: block; }
         .stat-val { font-weight: bold; color: #238aff; font-size: 17px; }
+
         #menu-box { position: absolute; top: 15px; left: 15px; z-index: 1000; background: rgba(255, 255, 255, 0.95); padding: 10px 15px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
         #photo-toggle-wrap { color: #28a745; font-weight: bold; display: flex; align-items: center; font-size: 14px; cursor: pointer; }
         #photo-toggle-wrap input { margin-right: 10px; transform: scale(1.2); }
+
         #photo-viewer { position: absolute; bottom: 35%; left: 15px; z-index: 1000; width: 220px; background: white; padding: 5px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none; transition: transform 0.3s ease; cursor: pointer; }
         #photo-viewer:hover { transform: scale(1.1); }
         #photo-viewer img { width: 100%; border-radius: 5px; display: block; }
         #photo-viewer .close-btn { position: absolute; top: -10px; right: -10px; background: red; color: white; border-radius: 50%; width: 22px; height: 22px; text-align: center; line-height: 20px; cursor: pointer; font-weight: bold; border: 2px solid white; z-index: 1001; }
+
         .marker-ab { background: #ff0000; border: 2px solid white; border-radius: 50%; color: white; font-weight: bold; text-align: center; line-height: 24px; font-size: 14px; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
         .hover-dot { background: #fff; border: 3px solid #ff0000; border-radius: 50%; box-shadow: 0 0 10px rgba(255,255,255,0.8); }
         .map-avatar { position: absolute; bottom: 32%; right: 10px; z-index: 1000; width: 50px; height: 50px; border-radius: 50%; border: 2px solid white; opacity: 0.8; pointer-events: none; object-fit: cover; }
@@ -48,15 +56,19 @@
         <div class="stat-item" id="speed-row"><span class="stat-label">Ср. скорость</span><span id="avg-speed" class="stat-val">--</span> <small style="color:#238aff; font-weight:bold;">км/ч</small></div>
     </div>
     <div id="chart-container"><canvas id="elevationChart"></canvas></div>
+
     <script>
-        var map = L.map('map', {attributionControl: true, zoomControl: false}).setView([50, 80], 4);
+        var map = L.map('map', {attributionControl: true, zoomControl: false}).setView([50, 80], 5);
         map.attributionControl.setPrefix('Мое велопутешествие');
         L.tileLayer('http://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',{ maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3'], attribution: '' }).addTo(map);
+
         var photoCluster = L.markerClusterGroup({ showCoverageOnHover: false, spiderfyOnMaxZoom: true, maxClusterRadius: 30 });
         var trackPoints = []; 
         var hoverMarker = L.marker([0,0], { icon: L.divIcon({className: 'hover-dot', iconSize: [14, 14], iconAnchor: [7, 7]}) });
+
         var params = new URLSearchParams(window.location.search);
         var file = params.get('file'), folder = params.get('folder') || 'tracks/';
+        
         if (file) {
             new L.GPX(folder + file, { async: true, marker_options: { startIconUrl: null, endIconUrl: null, shadowUrl: null }, polyline_options: { color: '#ffea00', weight: 5, opacity: 0.9 }
             }).on('loaded', function(e) {
@@ -64,10 +76,14 @@
                 document.getElementById('dist').innerText = (g.get_distance()/1000).toFixed(1) + " км";
                 document.getElementById('gain').innerText = g.get_elevation_gain().toFixed(0) + " м";
                 document.getElementById('max-alt').innerText = g.get_elevation_max().toFixed(0) + " м";
+                
                 var ms = g.get_moving_time(), speed = g.get_moving_speed();
                 if (folder.includes('2018')) { document.getElementById('time-row').style.display = 'none'; document.getElementById('speed-row').style.display = 'none'; } 
-                else if (ms > 0) { document.getElementById('time').innerText = Math.floor(ms/3600000)+"ч "+Math.floor((ms%3600000)/60000)+"м"; document.getElementById('avg-speed').innerText = speed.toFixed(1); }
-                else { document.getElementById('time').innerText = "---"; document.getElementById('avg-speed').innerText = "---"; }
+                else if (ms > 0) {
+                    document.getElementById('time').innerText = Math.floor(ms/3600000)+"ч "+Math.floor((ms%3600000)/60000)+"м";
+                    document.getElementById('avg-speed').innerText = speed.toFixed(1);
+                } else { document.getElementById('time').innerText = "---"; document.getElementById('avg-speed').innerText = "---"; }
+                
                 var polyline = g.getLayers()[0]; trackPoints = polyline.getLatLngs(); if (Array.isArray(trackPoints[0])) trackPoints = trackPoints[0];
                 L.marker(trackPoints[0], {icon: L.divIcon({className: 'marker-ab', html: 'A', iconSize: [24, 24], iconAnchor: [12, 12]})}).addTo(map);
                 L.marker(trackPoints[trackPoints.length - 1], {icon: L.divIcon({className: 'marker-ab', html: 'B', iconSize: [24, 24], iconAnchor: [12, 12]})}).addTo(map);
@@ -75,6 +91,7 @@
                 buildChart(g.get_elevation_data()); loadPhotos(folder);
             }).addTo(map);
         }
+
         function loadPhotos(folderPath) {
             var repo = folderPath.includes("archive") ? folderPath.split('/')[1] : "archive-2026-photos";
             if (!repo.startsWith("archive")) repo = "archive-" + repo + "-photos"; else repo = repo + "-photos";
@@ -91,7 +108,7 @@
         function buildChart(elevationData) {
             var ctx = document.getElementById('elevationChart').getContext('2d');
             new Chart(ctx, { type: 'line', data: { labels: elevationData.map(d => d[0].toFixed(1)), datasets: [{ data: elevationData.map(d => d[1].toFixed(0)), fill: true, backgroundColor: 'rgba(35, 138, 255, 0.15)', borderColor: '#238aff', borderWidth: 2, pointRadius: 0, tension: 0.1 }] },
-                options: { responsive: true, maintainAspectRatio: false, interaction: { intersect: false, mode: 'index', axis: 'x' }, plugins: { legend: { display: false }, tooltip: { enabled: false } }, scales: { x: { title: { display: true, text: 'км' }, ticks: { maxTicksLimit: 10 } }, y: { title: { display: true, text: 'м' } } }, onHover: (event, activeElements) => { if (activeElements.length > 0 && trackPoints.length > 0) { var idx = activeElements[0].index; var ratio = idx / (elevationData.length - 1); var pIdx = Math.floor(ratio * (trackPoints.length - 1)); if (trackPoints[pIdx]) hoverMarker.setLatLng(trackPoints[pIdx]).addTo(map); } else { map.removeLayer(hoverMarker); } } }
+                options: { responsive: true, maintainAspectRatio: false, interaction: { intersect: false, mode: 'index', axis: 'x' }, plugins: { legend: { display: false }, tooltip: { enabled: false } }, scales: { x: { title: { display: true, text: 'км' }, ticks: { maxTicksLimit: 10 } }, y: { title: { display: true, text: 'м' } } }, onHover: (event, activeElements) => { if (activeElements.length > 0 && trackPoints.length > 0) { var idx = activeElements[0].index; var latlng = trackPoints[Math.floor((idx / (elevationData.length - 1)) * (trackPoints.length - 1))]; if (latlng) { hoverMarker.setLatLng(latlng).addTo(map); } } else { map.removeLayer(hoverMarker); } } }
             });
         }
     </script>
