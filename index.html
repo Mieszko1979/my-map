@@ -3,7 +3,7 @@
 <head>
     <title>Мой Велоархив</title>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
@@ -24,7 +24,7 @@
 
     <style>
         html, body, #map { height: 100%; margin: 0; padding: 0; overflow: hidden; background: #000; }
-        #menu-box { position: absolute; top: 15px; left: 15px; z-index: 1000; background: rgba(255, 255, 255, 0.95); padding: 15px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); font-family: sans-serif; min-width: 280px; }
+        #menu-box { position: absolute; top: 15px; left: 15px; z-index: 1000; background: rgba(255, 255, 255, 0.95); padding: 15px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); font-family: sans-serif; min-width: 280px; transition: all 0.3s ease; }
         .menu-header { font-weight: bold; font-size: 16px; display: flex; align-items: center; cursor: pointer; color: #333; }
         .menu-header input { margin-right: 12px; transform: scale(1.3); }
         #trip-list { margin-top: 12px; padding-top: 12px; border-top: 1px solid #ccc; display: none; }
@@ -36,7 +36,7 @@
         #hint-box:hover { transform: translateX(-50%) scale(1.1); background: #fff; }
         .hint-text { color: #ff0000; font-weight: 900; font-size: 17px; text-transform: uppercase; letter-spacing: 1px; }
         #about-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 2000; justify-content: center; align-items: center; }
-        .modal-content { background: white; width: 95%; max-width: 440px; max-height: 85vh; border-radius: 20px; padding: 25px; overflow-y: auto; position: relative; font-family: sans-serif; text-align: center; }
+        .modal-content { background: white; width: 95%; max-width: 440px; max-height: 85vh; border-radius: 20px; padding: 25px; overflow-y: auto; position: relative; font-family: sans-serif; text-align: center; box-sizing: border-box; }
         .modal-content b { font-size: 22px; display: block; margin-bottom: 10px; }
         .close-modal { position: absolute; top: 15px; right: 15px; font-size: 24px; cursor: pointer; color: #aaa; }
         .social-icons { display: flex; justify-content: center; gap: 12px; margin: 20px 0; align-items: center; flex-wrap: wrap; }
@@ -65,7 +65,7 @@
         .cCurrent { color: #28a745; border-color: #28a745 !important; }
         .photo-marker { background: none !important; border: none !important; display: flex; align-items: center; justify-content: center; box-shadow: none !important; }
         .cam-svg { filter: drop-shadow(0px 0px 3px white); }
-        .popup-box { text-align: center; font-family: sans-serif; min-width: 180px; }
+        .popup-box { text-align: center; font-family: sans-serif; min-width: 180px; box-sizing: border-box; }
         .popup-box b { font-size: 19px; display: block; margin-bottom: 5px; color: #000; }
         .popup-box p { font-size: 16px; margin: 8px 0; }
         .coords { font-size: 13px; color: #666; font-family: monospace; margin-bottom: 10px; }
@@ -74,10 +74,63 @@
         .btn-track { background: #28a745; color: white !important; }
         .btn-vk { border: 1px solid #0077FF; color: #0077FF !important; background: white; }
         .btn-3d { background: #ffdb00; color: #000 !important; border: 1px solid #cca300; }
-        .map-avatar { position: absolute; bottom: 24px; right: 10px; z-index: 1000; width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; opacity: 0.7; pointer-events: none; object-fit: cover; }
+        .map-avatar { position: absolute; bottom: 24px; right: 10px; z-index: 1000; width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; opacity: 0.7; pointer-events: none; object-fit: cover; transition: all 0.3s ease; }
         .num-wrapper { position: relative; display: inline-block; line-height: 1; }
         .suffix { position: absolute; left: 100%; top: 0; }
         .trans-center-marker { background: #fff; border-radius: 50%; border: 2.5px solid; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.5); font-size: 18px; cursor: pointer; }
+
+        /* ======================================================= */
+        /* 📱 МОБИЛЬНАЯ АДАПТАЦИЯ (Media Queries & Touch Targets)  */
+        /* ======================================================= */
+
+        /* 1. Невидимые Хитбоксы (увеличиваем зону тапа до 44px для пальцев) */
+        .day-marker, .photo-marker, .trans-center-marker { position: relative; }
+        .day-marker::after, .photo-marker::after, .trans-center-marker::after {
+            content: ''; position: absolute;
+            top: -10px; bottom: -10px; left: -10px; right: -10px;
+            border-radius: 50%;
+        }
+
+        /* Ограничение ширины попапа Leaflet, чтобы не вылезал за экран на мобилках */
+        .leaflet-popup-content { max-width: 85vw !important; margin: 14px 12px !important; }
+        .popup-box { min-width: auto; width: 100%; }
+
+        /* 2. Перестроение интерфейса для экранов телефонов (уже чем 768px) */
+        @media (max-width: 768px) {
+            /* Меню: растягиваем на всю ширину с отступами */
+            #menu-box { 
+                left: 5%; width: 90%; top: 15px; 
+                box-sizing: border-box; min-width: auto; 
+                padding: 12px;
+            }
+            
+            /* Кнопка "ЖМИ СЮДА": переносим вниз экрана, чтобы не мешала меню */
+            #hint-box { 
+                top: auto; bottom: 30px; 
+                padding: 12px 35px;
+            }
+            #hint-box:hover { transform: translateX(-50%); } /* Убираем scale на тачах */
+            
+            /* Аватарка: поднимаем чуть выше, чтобы не конфликтовать с кнопкой внизу */
+            .map-avatar { 
+                bottom: 85px; right: 10px; 
+                width: 45px; height: 45px; 
+            }
+            
+            /* Просмотрщик фото: по центру экрана как лайтбокс */
+            #photo-viewer { 
+                left: 50%; bottom: 50%; 
+                transform: translate(-50%, 50%); 
+                width: 85%; max-width: 380px; 
+            }
+            #photo-viewer:hover { transform: translate(-50%, 50%); } /* Убираем scale на тачах */
+            
+            /* Модальное окно "Обо мне": используем всё доступное пространство */
+            .modal-content {
+                width: 92%; padding: 20px 15px;
+            }
+            .modal-content b { font-size: 20px; }
+        }
     </style>
 </head>
 <body>
@@ -182,7 +235,7 @@
                     var fullDay = String(p.day ? p.day : (i + 1));
                     var parts = fullDay.split('-');
                     var markerHtml = '<span class="num-wrapper">' + fullDay.split('-')[0] + '<span class="suffix">' + (fullDay.split('-')[1] ? '-' + fullDay.split('-')[1] : '') + '</span></span>';
-                    var icon = L.divIcon({ className: 'day-marker ' + colorClass, html: markerHtml, iconSize: [24, 24], iconAnchor: [12, 12] });
+                    var icon = L.divIcon({ className: 'day-marker ' + colorClass, html: markerHtml, iconSize: [24, 24], iconAnchor:[12, 12] });
                     L.marker([p.lat, p.lng], {icon: icon}).addTo(targetLayer).bindPopup(createPopup(p, folder));
                 }
                 if (p.type === 'transfer' && p.from && p.to) {
@@ -190,7 +243,7 @@
                     var tIcons = { 'plane': '✈️', 'train': '🚂', 'bus': '🚌', 'car': '🚗' };
                     var tIcon = L.divIcon({ className: 'trans-center-marker ' + colorClass, html: tIcons[p.transport] || '🚀', iconSize: [32, 32], iconAnchor: [16, 16] });
                     L.marker(L.latLng(p.from[0] + (p.to[0] - p.from[0]) / 2, p.from[1] + (p.to[1] - p.from[1]) / 2), {icon: tIcon}).addTo(targetLayer).bindPopup(createPopup(p, folder));
-                    L.polylineDecorator(line, { patterns: [{ offset: '20%', repeat: '40%', symbol: L.Symbol.arrowHead({pixelSize: 12, pathOptions: {color: tripHex, fillOpacity: 1, weight: 0}}) }] }).addTo(targetLayer);
+                    L.polylineDecorator(line, { patterns:[{ offset: '20%', repeat: '40%', symbol: L.Symbol.arrowHead({pixelSize: 12, pathOptions: {color: tripHex, fillOpacity: 1, weight: 0}}) }] }).addTo(targetLayer);
                 }
             });
         }
