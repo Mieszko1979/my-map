@@ -57,6 +57,7 @@
         #photo-viewer:hover { transform: scale(1.1); }
         #photo-viewer img { width: 100%; border-radius: 5px; display: block; }
         #photo-viewer .close-btn { position: absolute; top: -10px; right: -10px; background: red; color: white; border-radius: 50%; width: 22px; height: 22px; text-align: center; line-height: 20px; cursor: pointer; font-weight: bold; border: 2px solid white; z-index: 1001; }
+        
         .day-marker { background: #fff; border-radius: 50%; border: 2.5px solid; color: #000; font-weight: bold; font-family: Arial; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.5); font-size: 11px; overflow: hidden; white-space: nowrap; }
         .c2018 { color: #ff0000; border-color: #ff0000 !important; }
         .c2019 { color: #007bff; border-color: #007bff !important; }
@@ -83,51 +84,41 @@
         /* 📱 МОБИЛЬНАЯ АДАПТАЦИЯ (Media Queries & Touch Targets)  */
         /* ======================================================= */
 
-        /* 1. Невидимые Хитбоксы (увеличиваем зону тапа до 44px для пальцев) */
-        .day-marker, .photo-marker, .trans-center-marker { position: relative; }
+        /* 1. Невидимые Хитбоксы (увеличиваем зону тапа до 44px) */
         .day-marker::after, .photo-marker::after, .trans-center-marker::after {
-            content: ''; position: absolute;
+            content: ''; 
+            position: absolute;
             top: -10px; bottom: -10px; left: -10px; right: -10px;
             border-radius: 50%;
         }
 
-        /* Ограничение ширины попапа Leaflet, чтобы не вылезал за экран на мобилках */
+        /* Ограничение ширины попапа Leaflet */
         .leaflet-popup-content { max-width: 85vw !important; margin: 14px 12px !important; }
         .popup-box { min-width: auto; width: 100%; }
 
-        /* 2. Перестроение интерфейса для экранов телефонов (уже чем 768px) */
+        /* 2. Перестроение интерфейса для телефонов (уже чем 768px) */
         @media (max-width: 768px) {
-            /* Меню: растягиваем на всю ширину с отступами */
             #menu-box { 
                 left: 5%; width: 90%; top: 15px; 
-                box-sizing: border-box; min-width: auto; 
-                padding: 12px;
+                box-sizing: border-box; min-width: auto; padding: 12px;
             }
-            
-            /* Кнопка "ЖМИ СЮДА": переносим вниз экрана, чтобы не мешала меню */
             #hint-box { 
-                top: auto; bottom: 30px; 
-                padding: 12px 35px;
+                top: auto; bottom: 30px; padding: 12px 35px;
             }
-            #hint-box:hover { transform: translateX(-50%); } /* Убираем scale на тачах */
+            #hint-box:hover { transform: translateX(-50%); } 
             
-            /* Аватарка: поднимаем чуть выше, чтобы не конфликтовать с кнопкой внизу */
             .map-avatar { 
-                bottom: 85px; right: 10px; 
-                width: 45px; height: 45px; 
+                bottom: 85px; right: 10px; width: 45px; height: 45px; 
             }
             
-            /* Просмотрщик фото: по центру экрана как лайтбокс */
             #photo-viewer { 
-                left: 50%; bottom: 50%; 
-                transform: translate(-50%, 50%); 
+                left: 50%; bottom: 50%; transform: translate(-50%, 50%); 
                 width: 85%; max-width: 380px; 
             }
-            #photo-viewer:hover { transform: translate(-50%, 50%); } /* Убираем scale на тачах */
+            #photo-viewer:hover { transform: translate(-50%, 50%); } 
             
-            /* Модальное окно "Обо мне": используем всё доступное пространство */
             .modal-content {
-                width: 92%; padding: 20px 15px;
+                width: 92%; padding: 20px 15px; box-sizing: border-box;
             }
             .modal-content b { font-size: 20px; }
         }
@@ -167,7 +158,7 @@
     <script>
         var map = L.map('map', {zoomControl: false, attributionControl: true}).setView([50, 80], 4);
         map.attributionControl.setPrefix('Мое велопутешествие');
-        L.tileLayer('http://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20, subdomains: ['mt0','mt1','mt2','mt3'], attribution: '' }).addTo(map);
+        L.tileLayer('http://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3'], attribution: '' }).addTo(map);
 
         var currentTripLayer = L.layerGroup().addTo(map);
         var archiveLayerGroup = L.layerGroup().addTo(map);
@@ -235,13 +226,13 @@
                     var fullDay = String(p.day ? p.day : (i + 1));
                     var parts = fullDay.split('-');
                     var markerHtml = '<span class="num-wrapper">' + fullDay.split('-')[0] + '<span class="suffix">' + (fullDay.split('-')[1] ? '-' + fullDay.split('-')[1] : '') + '</span></span>';
-                    var icon = L.divIcon({ className: 'day-marker ' + colorClass, html: markerHtml, iconSize: [24, 24], iconAnchor:[12, 12] });
+                    var icon = L.divIcon({ className: 'day-marker ' + colorClass, html: markerHtml, iconSize: [24, 24], iconAnchor: [12, 12] });
                     L.marker([p.lat, p.lng], {icon: icon}).addTo(targetLayer).bindPopup(createPopup(p, folder));
                 }
                 if (p.type === 'transfer' && p.from && p.to) {
                     var line = L.polyline([p.from, p.to], { color: tripHex, weight: 3, dashArray: '8, 12', opacity: 0.8 }).addTo(targetLayer);
                     var tIcons = { 'plane': '✈️', 'train': '🚂', 'bus': '🚌', 'car': '🚗' };
-                    var tIcon = L.divIcon({ className: 'trans-center-marker ' + colorClass, html: tIcons[p.transport] || '🚀', iconSize: [32, 32], iconAnchor: [16, 16] });
+                    var tIcon = L.divIcon({ className: 'trans-center-marker ' + colorClass, html: tIcons[p.transport] || '🚀', iconSize: [32, 32], iconAnchor:[16, 16] });
                     L.marker(L.latLng(p.from[0] + (p.to[0] - p.from[0]) / 2, p.from[1] + (p.to[1] - p.from[1]) / 2), {icon: tIcon}).addTo(targetLayer).bindPopup(createPopup(p, folder));
                     L.polylineDecorator(line, { patterns:[{ offset: '20%', repeat: '40%', symbol: L.Symbol.arrowHead({pixelSize: 12, pathOptions: {color: tripHex, fillOpacity: 1, weight: 0}}) }] }).addTo(targetLayer);
                 }
@@ -266,7 +257,7 @@
             fetch("https://mieszko1979.github.io/" + repoName + "/photos.json" + cacheB).then(r => r.json()).then(data => {
                 data.forEach(photo => {
                     var svg = `<svg class="cam-svg" width="22" height="22" viewBox="0 0 24 24" fill="${hex}"><path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><circle cx="12" cy="13" r="4" fill="white" opacity="0.3"/><circle cx="12" cy="13" r="3" fill="${hex}"/><circle cx="18" cy="7" r="1.5" fill="white"/></svg>`;
-                    L.marker([photo.lat, photo.lng], {icon: L.divIcon({ className: 'photo-marker', html: svg, iconSize: [22, 22], iconAnchor: [11, 11] })})
+                    L.marker([photo.lat, photo.lng], {icon: L.divIcon({ className: 'photo-marker', html: svg, iconSize: [22, 22], iconAnchor:[11, 11] })})
                     // --- ДОБАВЛЯЕМ В КЛАСТЕР ---
                     .addTo(photoClusterGroup)
                     .on('click', function() {
