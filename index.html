@@ -119,7 +119,8 @@
             #hint-box { top: auto; bottom: 30px; padding: 12px 35px; }
             #hint-box:hover { transform: translateX(-50%); } 
             
-            .map-avatar { bottom: 85px; right: 10px; width: 45px; height: 45px; }
+            /* Аватарка опущена, чтобы касаться надписи 'Мое велопутешествие' */
+            .map-avatar { bottom: 20px; right: 10px; width: 45px; height: 45px; }
             
             #photo-viewer { 
                 left: 50%; bottom: 50%; transform: translate(-50%, 50%); 
@@ -256,12 +257,13 @@
                     var fullDay = String(p.day ? p.day : (i + 1));
                     var parts = fullDay.split('-');
                     var markerHtml = '<span class="num-wrapper">' + fullDay.split('-')[0] + '<span class="suffix">' + (fullDay.split('-')[1] ? '-' + fullDay.split('-')[1] : '') + '</span></span>';
-                    var icon = L.divIcon({ className: 'day-marker ' + colorClass, html: markerHtml, iconSize: [24, 24], iconAnchor: [12, 12] });
+                    var icon = L.divIcon({ className: 'day-marker ' + colorClass, html: markerHtml, iconSize: [24, 24], iconAnchor:[12, 12] });
                     L.marker([p.lat, p.lng], {icon: icon}).addTo(targetLayer).bindPopup(createPopup(p, folder));
                 }
                 if (p.type === 'transfer' && p.from && p.to) {
                     var line = L.polyline([p.from, p.to], { color: tripHex, weight: 3, dashArray: '8, 12', opacity: 0.8 }).addTo(targetLayer);
-                    var tIcons = { 'plane': '✈️', 'train': '🚂', 'bus': '🚌', 'car': '🚗' };
+                    // Добавлена иконка грузовика (truck)
+                    var tIcons = { 'plane': '✈️', 'train': '🚂', 'bus': '🚌', 'car': '🚗', 'truck': '🚚' };
                     var tIcon = L.divIcon({ className: 'trans-center-marker ' + colorClass, html: tIcons[p.transport] || '🚀', iconSize:[32, 32], iconAnchor:[16, 16] });
                     L.marker(L.latLng(p.from[0] + (p.to[0] - p.from[0]) / 2, p.from[1] + (p.to[1] - p.from[1]) / 2), {icon: tIcon}).addTo(targetLayer).bindPopup(createPopup(p, folder));
                     L.polylineDecorator(line, { patterns:[{ offset: '20%', repeat: '40%', symbol: L.Symbol.arrowHead({pixelSize: 12, pathOptions: {color: tripHex, fillOpacity: 1, weight: 0}}) }] }).addTo(targetLayer);
@@ -287,7 +289,7 @@
             fetch("https://mieszko1979.github.io/" + repoName + "/photos.json" + cacheB).then(r => r.json()).then(data => {
                 data.forEach(photo => {
                     var svg = `<svg class="cam-svg" width="22" height="22" viewBox="0 0 24 24" fill="${hex}"><path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><circle cx="12" cy="13" r="4" fill="white" opacity="0.3"/><circle cx="12" cy="13" r="3" fill="${hex}"/><circle cx="18" cy="7" r="1.5" fill="white"/></svg>`;
-                    L.marker([photo.lat, photo.lng], {icon: L.divIcon({ className: 'photo-marker', html: svg, iconSize: [22, 22], iconAnchor:[11, 11] })})
+                    L.marker([photo.lat, photo.lng], {icon: L.divIcon({ className: 'photo-marker', html: svg, iconSize:[22, 22], iconAnchor:[11, 11] })})
                     .addTo(photoClusterGroup)
                     .on('click', function() {
                         document.getElementById('view-img').src = "https://mieszko1979.github.io/" + repoName + "/" + photo.url + cacheB;
