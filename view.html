@@ -14,25 +14,28 @@
         html, body { height: 100%; margin: 0; padding: 0; font-family: Arial, sans-serif; background: #000; overflow: hidden; }
         #map { height: 100%; width: 100%; z-index: 1; }
 
-        /* ИТОГИ ДНЯ */
-        #info-panel { position: absolute; top: 15px; right: 15px; z-index: 1000; background: rgba(255, 255, 255, 0.9); padding: 15px; border-radius: 15px; width: 180px; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        /* ПАНЕЛЬ ИТОГОВ (PC) */
+        #info-panel { position: absolute; top: 15px; right: 15px; z-index: 1000; background: rgba(255, 255, 255, 0.9); padding: 15px; border-radius: 15px; width: 180px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
         .panel-close { position: absolute; top: 5px; right: 10px; cursor: pointer; color: #888; font-size: 18px; }
         .divider { font-size: 15px; font-weight: bold; border-bottom: 1px solid #ddd; margin-bottom: 10px; padding-bottom: 5px; text-align: center; }
         .stat-item { margin-bottom: 8px; text-align: center; }
         .stat-label { font-size: 9px; color: #777; text-transform: uppercase; display: block; }
         .stat-val { font-weight: bold; color: #238aff; font-size: 17px; }
+        
+        /* ЧЕКБОКС ФОТО (PC) */
+        #pc-photo-wrap { margin-top: 10px; padding-top: 10px; border-top: 1px dashed #ccc; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 13px; color: #28a745; cursor: pointer; }
+        #pc-photo-wrap input { margin-right: 8px; cursor: pointer; }
 
         /* ГРАФИК */
         #chart-box { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; width: 90%; max-width: 900px; height: 180px; background: rgba(255, 255, 255, 0.9); padding: 10px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
 
         /* КНОПКИ УПРАВЛЕНИЯ */
-        .ctrl-btn { position: absolute; z-index: 1001; background: white; border: none; width: 45px; height: 45px; border-radius: 50%; box-shadow: 0 2px 10px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; cursor: pointer; color: #333; font-size: 18px; }
+        .ctrl-btn { position: absolute; z-index: 1001; background: white; border: none; width: 45px; height: 45px; border-radius: 50%; box-shadow: 0 2px 10px rgba(0,0,0,0.3); display: none; align-items: center; justify-content: center; cursor: pointer; color: #333; font-size: 18px; }
         #btn-back { top: 15px; left: 15px; background: #ff0000; color: white; }
-        #btn-stats { top: 15px; right: 15px; display: none; }
-        #btn-chart { bottom: 20px; left: 15px; display: none; }
-        #btn-photo { bottom: 80px; left: 15px; color: #28a745; }
+        #btn-stats { top: 15px; right: 15px; }
+        #btn-photo { top: 75px; right: 15px; color: #28a745; } /* Перенесен наверх */
+        #btn-chart { bottom: 20px; left: 15px; }
 
-        /* Кнопки восстановления */
         .restore-btn { position: absolute; z-index: 999; background: rgba(255,255,255,0.8); border: 1px solid #ccc; padding: 5px 10px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; display: none; }
         #res-stats { top: 15px; right: 15px; }
         #res-chart { bottom: 20px; left: 50%; transform: translateX(-50%); }
@@ -41,19 +44,18 @@
         #photo-viewer { position: absolute; bottom: 100px; left: 15px; z-index: 2000; width: 220px; background: white; padding: 5px; border-radius: 8px; display: none; cursor: pointer; touch-action: none; overflow: hidden; }
         #photo-viewer img { width: 100%; border-radius: 5px; display: block; transition: transform 0.1s ease-out; }
 
-        /* МАРКЕРЫ AB */
         .marker-ab { background: #ff0000; border: 2px solid white; border-radius: 50%; color: white; font-weight: bold; text-align: center; line-height: 24px; font-size: 14px; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
         .hover-dot { background: #fff; border: 3px solid #ff0000; border-radius: 50%; box-shadow: 0 0 10px rgba(255,255,255,0.8); }
         .photo-marker { background: none !important; border: none !important; display: flex; align-items: center; justify-content: center; overflow: visible !important; }
-        .map-avatar { position: absolute; bottom: 25px; right: 10px; z-index: 500; width: 50px; height: 50px; border-radius: 50%; border: 2px solid white; opacity: 0.8; object-fit: cover; }
 
         @media (max-width: 768px) {
-            #btn-stats, #btn-chart { display: flex; }
+            .ctrl-btn { display: flex; }
             #info-panel, #chart-box { display: none; }
-            #info-panel { width: 150px; right: 10px; top: 75px; background: rgba(255,255,255,0.95); }
-            #btn-photo { bottom: 140px; }
+            #pc-photo-wrap { display: none; } /* Прячем ПК чекбокс */
+            #info-panel { width: 150px; right: 10px; top: 135px; background: rgba(255,255,255,0.95); }
+            #chart-box { bottom: 80px; height: 160px; width: 95%; } /* Приподнят над кнопкой */
             #photo-viewer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; padding: 0; border-radius: 0; justify-content: center; align-items: center; bottom: auto; z-index: 9999; }
-            #photo-viewer img { max-width: 100%; max-height: 100%; border-radius: 0; }
+            #photo-viewer img { max-width: 100%; max-height: 100%; }
         }
     </style>
 </head>
@@ -68,7 +70,6 @@
     <button id="res-chart" class="restore-btn" onclick="toggleChart()">Показать график</button>
 
     <div id="map"></div>
-    <img src="avatar.jpg" class="map-avatar">
 
     <div id="info-panel">
         <div class="panel-close" onclick="toggleStats()">&times;</div>
@@ -76,8 +77,10 @@
         <div class="stat-item"><span class="stat-label">Дистанция</span><span id="dist" class="stat-val">--</span></div>
         <div class="stat-item"><span class="stat-label">Набор высоты</span><span id="gain" class="stat-val">--</span></div>
         <div class="stat-item"><span class="stat-label">Макс. высота</span><span id="max-alt" class="stat-val">--</span></div>
-        <div class="stat-item analytics-hide" id="time-row"><span class="stat-label">В движении</span><span id="time" class="stat-val">--</span></div>
-        <div class="stat-item analytics-hide" id="speed-row"><span class="stat-label">Ср. скорость</span><span id="avg-speed" class="stat-val">--</span></div>
+        <div class="stat-item analytics-hide"><span class="stat-label">В движении</span><span id="time" class="stat-val">--</span></div>
+        <div class="stat-item analytics-hide"><span class="stat-label">Ср. скорость</span><span id="avg-speed" class="stat-val">--</span></div>
+        <!-- Чекбокс только для PC -->
+        <label id="pc-photo-wrap"><input type="checkbox" id="pc-photo-check" onchange="togglePhotos(this.checked)"> 📷 Фото</label>
     </div>
 
     <div id="chart-box">
@@ -94,24 +97,40 @@
         map.attributionControl.setPrefix('Мое велопутешествие');
         L.tileLayer('http://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',{ maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3'] }).addTo(map);
 
-        var trackPoints = [], photoLayer = L.layerGroup().addTo(map);
+        var trackPoints = [], photoLayer = L.layerGroup(); // Фото изначально не в слое (OFF)
         var hoverMarker = L.marker([0,0], { icon: L.divIcon({className: 'hover-dot', iconSize: [14, 14], iconAnchor: [7, 7]}) });
 
         function goBack() { if(window.parent && window.parent.closeTrackView) window.parent.closeTrackView(); else window.history.back(); }
+        
         function toggleStats() { 
             var p = document.getElementById('info-panel'), b = document.getElementById('res-stats'); 
-            if(p.style.display === 'block' || (window.innerWidth > 768 && p.style.display !== 'none')) { p.style.display = 'none'; if(window.innerWidth > 768) b.style.display = 'block'; }
+            var isPC = window.innerWidth > 768;
+            if(p.style.display === 'block' || (isPC && p.style.display !== 'none')) { p.style.display = 'none'; if(isPC) b.style.display = 'block'; }
             else { p.style.display = 'block'; b.style.display = 'none'; }
         }
+
         function toggleChart() { 
             var p = document.getElementById('chart-box'), b = document.getElementById('res-chart'); 
-            if(p.style.display === 'block' || (window.innerWidth > 768 && p.style.display !== 'none')) { p.style.display = 'none'; if(window.innerWidth > 768) b.style.display = 'block'; }
+            var isPC = window.innerWidth > 768;
+            if(p.style.display === 'block' || (isPC && p.style.display !== 'none')) { p.style.display = 'none'; if(isPC) b.style.display = 'block'; }
             else { p.style.display = 'block'; b.style.display = 'none'; }
         }
-        function togglePhotos() {
-            var btn = document.getElementById('btn-photo');
-            if (map.hasLayer(photoLayer)) { map.removeLayer(photoLayer); btn.style.color = '#ccc'; closePhoto(); }
-            else { map.addLayer(photoLayer); btn.style.color = '#28a745'; }
+
+        function togglePhotos(forceState) {
+            var isChecked = (forceState !== undefined) ? forceState : !map.hasLayer(photoLayer);
+            var btnMobile = document.getElementById('btn-photo');
+            var checkPC = document.getElementById('pc-photo-check');
+            
+            if (isChecked) {
+                map.addLayer(photoLayer);
+                btnMobile.style.background = '#28a745'; btnMobile.style.color = '#fff';
+                checkPC.checked = true;
+            } else {
+                map.removeLayer(photoLayer);
+                btnMobile.style.background = '#fff'; btnMobile.style.color = '#28a745';
+                checkPC.checked = false;
+                closePhoto();
+            }
         }
 
         if (file) {
@@ -135,7 +154,6 @@
                 trackPoints = g.getLayers()[0].getLatLngs(); if (Array.isArray(trackPoints[0])) trackPoints = trackPoints[0];
                 L.marker(trackPoints[0], {icon: L.divIcon({className: 'marker-ab', html: 'A', iconSize: [24, 24], iconAnchor: [12, 12]})}).addTo(map);
                 L.marker(trackPoints[trackPoints.length - 1], {icon: L.divIcon({className: 'marker-ab', html: 'B', iconSize: [24, 24], iconAnchor: [12, 12]})}).addTo(map);
-                
                 buildChart(g.get_elevation_data()); loadPhotos(folder);
             }).addTo(map);
         }
@@ -153,8 +171,8 @@
                     interaction: { intersect: false, mode: 'index' },
                     plugins: { legend: { display: false }, tooltip: { enabled: false } },
                     scales: {
-                        x: { ticks: { font: { size: 8 } } },
-                        y: { ticks: { font: { size: 8 } } }
+                        x: { display: true, ticks: { font: { size: 8 } }, title: { display: true, text: 'км', font: { size: 9, weight: 'bold' } } },
+                        y: { display: true, ticks: { font: { size: 8 } }, title: { display: true, text: 'м', font: { size: 9, weight: 'bold' } } }
                     },
                     onHover: (event, el) => {
                         if (el.length > 0) {
