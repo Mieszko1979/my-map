@@ -94,7 +94,7 @@
 </head>
 <body>
     <div id="photo-viewer" onclick="closePhoto()">
-        <div class="close-btn">×</div>
+        <div class="close-btn" onclick="closePhoto()">×</div>
         <img id="view-img" src="" onclick="onPhotoClick(event)">
     </div>
 
@@ -152,7 +152,6 @@
         function closeAbout() { document.getElementById('about-modal').style.display = 'none'; }
         function toggleQR() { var s = document.getElementById('qr-section'); s.style.display = s.style.display === 'block' ? 'none' : 'block'; }
 
-        // --- ЛОГИКА ЗУМА ФОТО ДЛЯ МОБИЛОК ---
         var photoImg = document.getElementById('view-img');
         var scale = 1, startDist = 0;
         photoImg.addEventListener('touchstart', e => { if (e.touches.length === 2) startDist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY); });
@@ -201,8 +200,7 @@
             var show = document.getElementById('main-toggle').checked;
             document.getElementById('trip-list').style.display = show ? 'block' : 'none';
             if(!show) { 
-                currentTripLayer.addTo(map); 
-                archiveLayerGroup.clearLayers(); photoClusterGroup.clearLayers(); 
+                currentTripLayer.addTo(map); archiveLayerGroup.clearLayers(); photoClusterGroup.clearLayers(); 
                 document.querySelectorAll('.trip-check').forEach(c => c.checked = false);
                 focusOnCurrent();
             } else { map.removeLayer(currentTripLayer); }
@@ -212,6 +210,7 @@
         function updateMarkers(onlyPhotos) {
             archiveLayerGroup.clearLayers(); photoClusterGroup.clearLayers();
             var showPhotos = document.getElementById('photo-toggle').checked;
+            if (!showPhotos) closePhoto(); // ФИКС: Закрываем окно при снятии галочки
             var isArchive = document.getElementById('main-toggle').checked;
             if (isArchive) {
                 if (document.getElementById('chk2018').checked) { drawTrip(points2018, archiveLayerGroup, 'c2018', 'archive/2018/'); if(showPhotos) loadPhotos('archive-2018-photos', hexColors['c2018']); }
