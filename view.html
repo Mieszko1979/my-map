@@ -4,166 +4,124 @@
     <title>Анализ трека</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.7.0/gpx.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/leaflet-polylinedecorator@1.6.0/dist/leaflet.polylineDecorator.js"></script>
 
     <style>
         html, body { height: 100%; margin: 0; padding: 0; font-family: Arial, sans-serif; background: #000; overflow: hidden; }
         #map { height: 100%; width: 100%; z-index: 1; }
 
-        /* ПАНЕЛЬ СТАТИСТИКИ (ИТОГИ ДНЯ) */
-        #info-panel { 
-            position: absolute; top: 15px; right: 15px; z-index: 1000; 
-            background: rgba(255, 255, 255, 0.9); padding: 15px; border-radius: 15px; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3); width: 180px; transition: 0.3s;
-        }
-        .panel-close { position: absolute; top: 8px; right: 10px; cursor: pointer; color: #888; font-size: 18px; }
-        .divider { font-size: 15px; font-weight: bold; border-bottom: 1px solid #ddd; margin-bottom: 10px; padding-bottom: 5px; color: #000; text-align: center; }
+        /* ИТОГИ ДНЯ */
+        #info-panel { position: absolute; top: 15px; right: 15px; z-index: 1000; background: rgba(255, 255, 255, 0.9); padding: 15px; border-radius: 15px; width: 180px; transition: 0.3s; }
+        .divider { font-size: 15px; font-weight: bold; border-bottom: 1px solid #ddd; margin-bottom: 10px; padding-bottom: 5px; text-align: center; }
         .stat-item { margin-bottom: 8px; text-align: center; }
-        .stat-label { font-size: 10px; color: #777; text-transform: uppercase; display: block; }
+        .stat-label { font-size: 9px; color: #777; text-transform: uppercase; display: block; }
         .stat-val { font-weight: bold; color: #238aff; font-size: 17px; }
 
-        /* КОНТЕЙНЕР ГРАФИКА */
-        #chart-box { 
-            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); 
-            z-index: 1000; width: 90%; max-width: 900px; height: 180px; 
-            background: rgba(255, 255, 255, 0.9); padding: 10px; border-radius: 15px; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3); transition: 0.3s;
-        }
+        /* ГРАФИК */
+        #chart-box { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; width: 90%; max-width: 900px; height: 180px; background: rgba(255, 255, 255, 0.9); padding: 10px; border-radius: 15px; display: block; }
 
-        /* КНОПКИ УПРАВЛЕНИЯ (Mobile) */
-        .ctrl-btn { 
-            position: absolute; z-index: 1001; background: white; border: none; 
-            width: 45px; height: 45px; border-radius: 50%; box-shadow: 0 2px 10px rgba(0,0,0,0.3); 
-            display: none; align-items: center; justify-content: center; cursor: pointer; color: #333; font-size: 18px;
-        }
-        #btn-stats { top: 15px; right: 15px; }
-        #btn-chart { bottom: 20px; left: 15px; }
-        #btn-fs { top: 15px; left: 15px; }
+        /* КНОПКИ */
+        .ctrl-btn { position: absolute; z-index: 1001; background: white; border: none; width: 45px; height: 45px; border-radius: 50%; box-shadow: 0 2px 10px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; cursor: pointer; color: #333; font-size: 18px; }
+        #btn-back { top: 15px; left: 15px; background: #ff0000; color: white; }
+        #btn-stats { top: 15px; right: 15px; display: none; }
+        #btn-chart { bottom: 20px; left: 15px; display: none; }
+        #btn-photo { bottom: 80px; left: 15px; color: #28a745; }
 
-        /* ФОТО VIEWER (Lightbox) */
-        #photo-viewer { 
-            position: absolute; bottom: 100px; left: 15px; z-index: 2000; width: 220px; 
-            background: white; padding: 5px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); 
-            display: none; cursor: pointer; touch-action: none; overflow: hidden;
-        }
+        /* ФОТО */
+        #photo-viewer { position: absolute; bottom: 100px; left: 15px; z-index: 2000; width: 220px; background: white; padding: 5px; border-radius: 8px; display: none; cursor: pointer; touch-action: none; overflow: hidden; }
         #photo-viewer img { width: 100%; border-radius: 5px; display: block; transition: transform 0.1s ease-out; }
-        #photo-viewer .close-btn { 
-            position: absolute; top: -10px; right: -10px; background: red; color: white; 
-            border-radius: 50%; width: 22px; height: 22px; text-align: center; line-height: 20px; 
-            font-weight: bold; border: 2px solid white; z-index: 2001; 
-        }
 
-        /* БРЕНДИНГ */
-        .map-avatar { position: absolute; bottom: 25px; right: 10px; z-index: 500; width: 50px; height: 50px; border-radius: 50%; border: 2px solid white; opacity: 0.8; pointer-events: none; object-fit: cover; }
-        .hover-dot { background: #fff; border: 3px solid #ff0000; border-radius: 50%; box-shadow: 0 0 10px rgba(255,255,255,0.8); }
+        .map-avatar { position: absolute; bottom: 25px; right: 10px; z-index: 500; width: 50px; height: 50px; border-radius: 50%; border: 2px solid white; opacity: 0.8; object-fit: cover; }
+        .hover-dot { background: #fff; border: 3px solid #ff0000; border-radius: 50%; }
         .photo-marker { background: none !important; border: none !important; display: flex; align-items: center; justify-content: center; overflow: visible !important; }
 
-        /* АДАПТАЦИЯ */
         @media (max-width: 768px) {
-            .ctrl-btn { display: flex; }
-            #info-panel { display: none; width: 160px; right: 10px; top: 70px; background: rgba(255,255,255,0.95); }
-            #chart-box { display: none; bottom: 10px; width: 95%; height: 140px; }
-            .map-avatar { bottom: 20px; width: 40px; height: 40px; }
-            
-            #photo-viewer { 
-                position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-                background: black; padding: 0; border-radius: 0; justify-content: center; align-items: center; bottom: auto;
-            }
+            #btn-stats, #btn-chart { display: flex; }
+            #info-panel, #chart-box { display: none; }
+            #info-panel { width: 150px; right: 10px; top: 75px; }
+            #btn-photo { bottom: 140px; }
+            #photo-viewer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; padding: 0; border-radius: 0; justify-content: center; align-items: center; bottom: auto; z-index: 9999; }
             #photo-viewer img { max-width: 100%; max-height: 100%; border-radius: 0; }
-            #photo-viewer .close-btn { display: none; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Кнопки управления (только для мобилок) -->
-    <button id="btn-fs" class="ctrl-btn" onclick="toggleFullscreen()"><i class="fa-solid fa-expand"></i></button>
+    <button id="btn-back" class="ctrl-btn" onclick="goBack()" title="Назад к карте"><i class="fa-solid fa-arrow-left"></i></button>
     <button id="btn-stats" class="ctrl-btn" onclick="toggleStats()"><i class="fa-solid fa-chart-simple"></i></button>
+    <button id="btn-photo" class="ctrl-btn" onclick="togglePhotos()" title="Скрыть/показать фото"><i class="fa-solid fa-camera"></i></button>
     <button id="btn-chart" class="ctrl-btn" onclick="toggleChart()"><i class="fa-solid fa-mountain-sun"></i></button>
 
     <div id="map"></div>
     <img src="avatar.jpg" class="map-avatar">
 
-    <!-- Панель итогов -->
     <div id="info-panel">
-        <div class="panel-close" onclick="toggleStats()">&times;</div>
         <div class="divider">ИТОГИ ДНЯ</div>
         <div class="stat-item"><span class="stat-label">Дистанция</span><span id="dist" class="stat-val">--</span></div>
         <div class="stat-item"><span class="stat-label">Набор высоты</span><span id="gain" class="stat-val">--</span></div>
         <div class="stat-item"><span class="stat-label">Макс. высота</span><span id="max-alt" class="stat-val">--</span></div>
         <div class="stat-item analytics-hide" id="time-row"><span class="stat-label">В движении</span><span id="time" class="stat-val">--</span></div>
-        <div class="stat-item analytics-hide" id="speed-row"><span class="stat-label">Ср. скорость</span><span id="avg-speed" class="stat-val">--</span> <small style="color:#238aff; font-weight:bold;">км/ч</small></div>
+        <div class="stat-item analytics-hide" id="speed-row"><span class="stat-label">Ср. скорость</span><span id="avg-speed" class="stat-val">--</span></div>
     </div>
 
-    <!-- Контейнер графика -->
-    <div id="chart-box">
-        <div class="panel-close" onclick="toggleChart()">&times;</div>
-        <canvas id="elevationChart"></canvas>
-    </div>
+    <div id="chart-box"><canvas id="elevationChart"></canvas></div>
 
-    <!-- Лайтбокс фото -->
     <div id="photo-viewer" onclick="handleBackgroundClick()">
-        <div class="close-btn" onclick="closePhoto()">×</div>
         <img id="view-img" src="" onclick="handlePhotoClick(event)">
     </div>
 
     <script>
         var params = new URLSearchParams(window.location.search);
-        var file = params.get('file');
-        var folder = params.get('folder') || 'tracks/';
-        
+        var file = params.get('file'), folder = params.get('folder') || 'tracks/';
         var map = L.map('map', {attributionControl: true, zoomControl: false}).setView([50, 80], 4);
         map.attributionControl.setPrefix('Мое велопутешествие');
         L.tileLayer('http://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',{ maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3'] }).addTo(map);
 
-        var trackPoints = [];
-        var hoverMarker = L.marker([0,0], { icon: L.divIcon({className: 'hover-dot', iconSize: [14, 14], iconAnchor: [7, 7]}) });
-        var elevationChart;
+        var trackPoints = [], photoLayer = L.layerGroup().addTo(map);
+        var hoverMarker = L.marker([0,0], { icon: L.divIcon({className: 'hover-dot', iconSize: [14, 14]}) });
+
+        function goBack() { if(window.parent && window.parent.closeTrackView) window.parent.closeTrackView(); else window.history.back(); }
+        function toggleStats() { var p = document.getElementById('info-panel'); p.style.display = (p.style.display === 'block') ? 'none' : 'block'; }
+        function toggleChart() { var c = document.getElementById('chart-box'); c.style.display = (c.style.display === 'block') ? 'none' : 'block'; }
+        function togglePhotos() {
+            var btn = document.getElementById('btn-photo');
+            if (map.hasLayer(photoLayer)) { map.removeLayer(photoLayer); btn.style.color = '#ccc'; closePhoto(); }
+            else { map.addLayer(photoLayer); btn.style.color = '#28a745'; }
+        }
 
         if (file) {
             new L.GPX(folder + file, {
                 async: true,
-                marker_options: { startIconUrl: null, endIconUrl: null, shadowUrl: null },
                 polyline_options: { color: '#ffea00', weight: 6, opacity: 0.9 }
             }).on('loaded', function(e) {
                 var g = e.target;
                 map.fitBounds(g.getBounds(), {padding: [50, 50]});
-                
-                // 1. Статистика
                 document.getElementById('dist').innerText = (g.get_distance()/1000).toFixed(1) + " км";
                 document.getElementById('gain').innerText = g.get_elevation_gain().toFixed(0) + " м";
                 document.getElementById('max-alt').innerText = g.get_elevation_max().toFixed(0) + " м";
                 
-                // Умная аналитика
                 var speed = g.get_moving_speed();
                 if (folder.includes('2018') || speed > 60) {
                     document.querySelectorAll('.analytics-hide').forEach(el => el.style.display = 'none');
                 } else {
                     var ms = g.get_moving_time();
-                    document.getElementById('time').innerText = Math.floor(ms / 3600000) + "ч " + Math.floor((ms % 3600000) / 60000) + "м";
-                    document.getElementById('avg-speed').innerText = speed.toFixed(1);
+                    document.getElementById('time').innerText = Math.floor(ms/3600000)+"ч "+Math.floor((ms%3600000)/60000)+"м";
+                    document.getElementById('avg-speed').innerText = speed.toFixed(1) + " км/ч";
                 }
-
                 trackPoints = g.getLayers()[0].getLatLngs();
                 if (Array.isArray(trackPoints[0])) trackPoints = trackPoints[0];
-
                 buildChart(g.get_elevation_data());
                 loadPhotos(folder);
-
             }).addTo(map);
         }
 
         function buildChart(elevationData) {
-            if (!elevationData || elevationData.length === 0) return;
             var ctx = document.getElementById('elevationChart').getContext('2d');
-            elevationChart = new Chart(ctx, {
+            new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: elevationData.map(d => d[0].toFixed(1)),
@@ -174,59 +132,28 @@
                     interaction: { intersect: false, mode: 'index' },
                     plugins: { legend: { display: false }, tooltip: { enabled: false } },
                     scales: {
-                        x: { ticks: { font: { size: 9 } }, title: { display: true, text: 'км', font: { size: 9 } } },
-                        y: { ticks: { font: { size: 9 } }, title: { display: true, text: 'м', font: { size: 9 } } }
+                        x: { ticks: { font: { size: 8 } } },
+                        y: { ticks: { font: { size: 8 } } }
                     },
-                    onHover: (event, activeElements) => {
-                        if (activeElements.length > 0 && trackPoints.length > 0) {
-                            var idx = Math.floor((activeElements[0].index / elevationData.length) * trackPoints.length);
-                            if (trackPoints[idx]) hoverMarker.setLatLng(trackPoints[idx]).addTo(map);
+                    onHover: (event, el) => {
+                        if (el.length > 0) {
+                            var idx = Math.floor((el[0].index / elevationData.length) * trackPoints.length);
+                            hoverMarker.setLatLng(trackPoints[idx]).addTo(map);
                         } else { map.removeLayer(hoverMarker); }
                     }
                 }
             });
         }
 
-        // ПАНЕЛИ
-        function toggleStats() {
-            var p = document.getElementById('info-panel');
-            p.style.display = (p.style.display === 'block') ? 'none' : 'block';
-        }
-        function toggleChart() {
-            var c = document.getElementById('chart-box');
-            c.style.display = (c.style.display === 'block') ? 'none' : 'block';
-        }
-        function toggleFullscreen() {
-            if (!document.fullscreenElement) document.documentElement.requestFullscreen();
-            else document.exitFullscreen();
-        }
-
-        // ФОТО ЛОГИКА
         var img = document.getElementById('view-img');
         var scale = 1, lastScale = 1, startDist = 0, posX = 0, posY = 0, startX = 0, startY = 0, isDragging = false;
-
-        img.addEventListener('touchstart', function(e) {
-            if (e.touches.length === 1) { isDragging = true; startX = e.touches[0].pageX - posX; startY = e.touches[0].pageY - posY; } 
-            else if (e.touches.length === 2) { isDragging = false; startDist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY); lastScale = scale; }
-        });
-        img.addEventListener('touchmove', function(e) {
-            if (scale > 1) e.preventDefault();
-            if (e.touches.length === 1 && isDragging && scale > 1) { posX = e.touches[0].pageX - startX; posY = e.touches[0].pageY - startY; updateTransform(); } 
-            else if (e.touches.length === 2) {
-                var dist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY);
-                scale = Math.min(Math.max(1, lastScale * (dist / startDist)), 5); updateTransform();
-            }
-        });
-        img.addEventListener('touchend', function() { isDragging = false; lastScale = scale; });
+        img.addEventListener('touchstart', e => { if (e.touches.length === 1) { isDragging = true; startX = e.touches[0].pageX - posX; startY = e.touches[0].pageY - posY; } else if (e.touches.length === 2) { isDragging = false; startDist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY); lastScale = scale; } });
+        img.addEventListener('touchmove', e => { if (scale > 1) e.preventDefault(); if (e.touches.length === 1 && isDragging && scale > 1) { posX = e.touches[0].pageX - startX; posY = e.touches[0].pageY - startY; updateTransform(); } else if (e.touches.length === 2) { var dist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY); scale = Math.min(Math.max(1, lastScale * (dist / startDist)), 5); updateTransform(); } });
+        img.addEventListener('touchend', () => { isDragging = false; lastScale = scale; });
         function updateTransform() { if (scale <= 1) { posX = 0; posY = 0; } img.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`; }
-
-        function handlePhotoClick(e) {
-            e.stopPropagation();
-            if (window.innerWidth > 768) { window.open(e.target.src, '_blank'); } 
-            else { if (scale > 1.1) { scale = 1; posX = 0; posY = 0; updateTransform(); } else { closePhoto(); } }
-        }
+        function handlePhotoClick(e) { e.stopPropagation(); if (window.innerWidth > 768) { window.open(e.target.src, '_blank'); } else { if (scale > 1.1) { scale = 1; posX = 0; posY = 0; updateTransform(); } else { closePhoto(); } } }
         function handleBackgroundClick() { if (window.innerWidth <= 768) closePhoto(); }
-        function closePhoto() { scale = 1; lastScale = 1; posX = 0; posY = 0; updateTransform(); document.getElementById('photo-viewer').style.display = 'none'; }
+        function closePhoto() { scale = 1; posX = 0; posY = 0; updateTransform(); document.getElementById('photo-viewer').style.display = 'none'; }
 
         function loadPhotos(folderPath) {
             var repo = "archive-2026-photos";
@@ -234,22 +161,13 @@
             else if (folderPath.includes("2019")) repo = "archive-2019-photos";
             else if (folderPath.includes("2021")) repo = "archive-2021-photos";
             else if (folderPath.includes("2024")) repo = "archive-2024-photos";
-
-            var hex = "#28a745"; // Цвет по умолчанию
-            if (repo.includes("2018")) hex = "#ff0000";
-            if (repo.includes("2019")) hex = "#007bff";
-            if (repo.includes("2021")) hex = "#9b59b6";
-            if (repo.includes("2024")) hex = "#ff8c00";
-
-            fetch("https://mieszko1979.github.io/" + repo + "/photos.json?t=" + Date.now())
-            .then(r => r.json()).then(data => {
+            var hex = folderPath.includes("2018") ? "#ff0000" : folderPath.includes("2019") ? "#007bff" : folderPath.includes("2021") ? "#9b59b6" : folderPath.includes("2024") ? "#ff8c00" : "#28a745";
+            
+            fetch(`https://mieszko1979.github.io/${repo}/photos.json?t=${Date.now()}`).then(r => r.json()).then(data => {
                 data.forEach(photo => {
                     var svg = `<svg width="34" height="42" viewBox="0 0 34 42"><path d="M17 0C7.6 0 0 7.6 0 17c0 12.8 17 25 17 25s17-12.2 17-25c0-9.4-7.6-17-17-17z" fill="${hex}"/><circle cx="17" cy="17" r="10" fill="white"/><g transform="translate(10, 12) scale(0.6)"><path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" fill="${hex}"/><circle cx="12" cy="13" r="3.5" fill="white" /><circle cx="12" cy="13" r="2" fill="${hex}" /></g></svg>`;
-                    L.marker([photo.lat, photo.lng], {icon: L.divIcon({ className: 'photo-marker', html: svg, iconSize: [34, 42], iconAnchor: [17, 42] })})
-                    .addTo(map).on('click', () => {
-                        document.getElementById('view-img').src = "https://mieszko1979.github.io/" + repo + "/" + photo.url;
-                        document.getElementById('photo-viewer').style.display = (window.innerWidth <= 768) ? 'flex' : 'block';
-                    });
+                    L.marker([photo.lat, photo.lng], {icon: L.divIcon({ className: 'photo-marker', html: svg, iconSize: [34, 42], iconAnchor: [0, 42] })})
+                    .addTo(photoLayer).on('click', () => { document.getElementById('view-img').src = `https://mieszko1979.github.io/${repo}/${photo.url}`; document.getElementById('photo-viewer').style.display = 'flex'; });
                 });
             });
         }
