@@ -49,7 +49,6 @@
         #about-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 2000; justify-content: center; align-items: center; }
         .modal-content { background: white; width: 95%; max-width: 440px; max-height: 85vh; border-radius: 20px; padding: 25px; overflow-y: auto; position: relative; font-family: sans-serif; text-align: center; box-sizing: border-box; }
         .close-modal { position: absolute; top: 15px; right: 15px; font-size: 24px; cursor: pointer; color: #aaa; }
-        .social-icons { display: flex; justify-content: center; gap: 12px; margin: 20px 0; align-items: center; flex-wrap: wrap; }
         .social-icons i { font-size: 28px; }
         .text-icon-btn { font-weight: 900; font-size: 14px; border: 2px solid #555; padding: 3px 8px; border-radius: 8px; color: #555; text-transform: uppercase; }
         .payment-btn { display: block; width: 100%; text-decoration: none; padding: 12px; border-radius: 12px; margin-top: 10px; font-weight: bold; transition: 0.2s; color: white; }
@@ -69,12 +68,11 @@
         .c2024 { color: #ff8c00; border-color: #ff8c00 !important; }
         .cCurrent { color: #28a745; border-color: #28a745 !important; }
         
-        /* ОБНОВЛЕННЫЙ ЗНАЧОК ФОТО */
-        .photo-marker { background: white !important; border: 2px solid; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,0.4); }
-        
-        .trans-center-marker { background: #fff; border-radius: 50%; border: 2.5px solid; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.5); font-size: 18px; cursor: pointer; }
+        /* НОВАЯ "ПРОЗРАЧНАЯ" ФОТО-ИКОНКА СО ВСПЫШКОЙ */
+        .photo-marker { background: none !important; border: none !important; display: flex; align-items: center; justify-content: center; overflow: visible !important; }
+        .flash-rays { filter: drop-shadow(0 0 2px rgba(255,255,255,0.8)); }
 
-        /* АВАТАРКА */
+        .trans-center-marker { background: #fff; border-radius: 50%; border: 2.5px solid; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.5); font-size: 18px; cursor: pointer; }
         .map-avatar { position: absolute; bottom: 24px; right: 10px; z-index: 1000; width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; opacity: 0.8; pointer-events: none; object-fit: cover; transition: 0.3s; }
 
         /* ПОПАПЫ */
@@ -110,7 +108,7 @@
             <div style="background: #f8f9fa; padding: 20px; border-radius: 15px;">
                 <h3 id="support-title"></h3><p id="support-text"></p>
                 <div id="payment-buttons"></div>
-                <button onclick="toggleQR()" id="qr-btn" style="margin-top:15px; border:1px solid #ccc; padding:8px 15px; border-radius:10px; cursor:pointer; background:none;">QR-коды</button>
+                <button onclick="toggleQR()" id="qr-btn" style="margin-top:15px; border:1px solid #ccc; padding:8px 15px; border-radius:10px; cursor:pointer;">QR-коды</button>
                 <div id="qr-section" style="display:none;"><div id="qr-container"></div></div>
             </div>
         </div>
@@ -157,9 +155,7 @@
         function toggleQR() { var s = document.getElementById('qr-section'); s.style.display = s.style.display === 'block' ? 'none' : 'block'; }
 
         var img = document.getElementById('view-img');
-        var scale = 1, lastScale = 1, startDist = 0;
-        var posX = 0, posY = 0, startX = 0, startY = 0;
-        var isDragging = false;
+        var scale = 1, lastScale = 1, startDist = 0, posX = 0, posY = 0, startX = 0, startY = 0, isDragging = false;
 
         img.addEventListener('touchstart', function(e) {
             if (e.touches.length === 1) { isDragging = true; startX = e.touches[0].pageX - posX; startY = e.touches[0].pageY - posY; } 
@@ -174,7 +170,6 @@
             }
         });
         img.addEventListener('touchend', function() { isDragging = false; lastScale = scale; });
-
         function updateTransform() { if (scale <= 1) { posX = 0; posY = 0; } img.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`; }
 
         function handlePhotoClick(e) {
@@ -244,7 +239,6 @@
                     L.marker([p.lat, p.lng], {icon: icon}).addTo(target).bindPopup(createPopup(p, folder));
                 } else if (p.type === 'transfer') {
                     var line = L.polyline([p.from, p.to], { color: hex, weight: 3, dashArray: '8, 12', opacity: 0.8 }).addTo(target);
-                    // Точки начала и конца переброски
                     L.circleMarker(p.from, { radius: 5, color: hex, fillColor: 'white', fillOpacity: 1, weight: 2 }).addTo(target);
                     L.circleMarker(p.to, { radius: 5, color: hex, fillColor: 'white', fillOpacity: 1, weight: 2 }).addTo(target);
                     var tIcons = { 'plane':'✈️','train':'🚂','bus':'🚌','car':'🚗','truck':'🚚' };
@@ -266,8 +260,24 @@
         function loadPhotos(repo, hex) {
             fetch(`https://mieszko1979.github.io/${repo}/photos.json?t=${Date.now()}`).then(r => r.json()).then(data => {
                 data.forEach(photo => {
-                    var svg = `<svg width="18" height="18" viewBox="0 0 24 24" fill="${hex}"><path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><circle cx="12" cy="13" r="3" fill="${hex}"/><circle cx="18" cy="7" r="1.5" fill="${hex}"/></svg>`;
-                    L.marker([photo.lat, photo.lng], {icon: L.divIcon({ className: 'photo-marker', style: `border-color: ${hex}`, html: svg, iconSize: [26, 26], iconAnchor: [13, 13] })})
+                    // SVG с раритетной вспышкой (лучами) и без плотного фона центра
+                    var svg = `<svg width="36" height="36" viewBox="0 0 36 36" class="flash-rays">
+                        <g transform="translate(18,18)">
+                            <line x1="0" y1="-12" x2="0" y2="-18" stroke="#FFD700" stroke-width="2" />
+                            <line x1="0" y1="12" x2="0" y2="18" stroke="#FFD700" stroke-width="2" />
+                            <line x1="-12" y1="0" x2="-18" y2="0" stroke="#FFD700" stroke-width="2" />
+                            <line x1="12" y1="0" x2="18" y2="0" stroke="#FFD700" stroke-width="2" />
+                            <line x1="8" y1="8" x2="13" y2="13" stroke="#FFD700" stroke-width="2" />
+                            <line x1="-8" y1="-8" x2="-13" y2="-13" stroke="#FFD700" stroke-width="2" />
+                            <line x1="8" y1="-8" x2="13" y2="-13" stroke="#FFD700" stroke-width="2" />
+                            <line x1="-8" y1="8" x2="-13" y2="13" stroke="#FFD700" stroke-width="2" />
+                        </g>
+                        <rect x="10" y="13" width="16" height="12" rx="2" fill="white" stroke="${hex}" stroke-width="1.5" />
+                        <circle cx="18" cy="19" r="3.5" stroke="${hex}" stroke-width="1.5" fill="none" />
+                        <rect x="13" y="11" width="4" height="2" fill="${hex}" />
+                    </svg>`;
+                    // Смещение иконки (iconAnchor), чтобы камера не была ровно в центре точки ночевки
+                    L.marker([photo.lat, photo.lng], {icon: L.divIcon({ className: 'photo-marker', html: svg, iconSize: [36, 36], iconAnchor: [0, 36] })})
                     .addTo(photoClusterGroup).on('click', () => { document.getElementById('view-img').src = `https://mieszko1979.github.io/${repo}/${photo.url}`; document.getElementById('photo-viewer').style.display = 'flex'; });
                 });
             });
