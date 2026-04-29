@@ -34,7 +34,7 @@ var points2024 = [
   { day: "37", lat: 41.382654, lng: 60.357894, title: "06.08.2024", desc: "Хостел", link: "", vk: "https://vk.com/wall-171082824_1363" },
   { day: "38", lat: 41.287333, lng: 61.294869, title: "07.08.2024", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_1363" },
   { day: "39", lat: 40.866852, lng: 62.295458, title: "08.08.2024", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_1365" },
-  { type: "transfer",   transport: "car", from: [40.58170501802926, 62.68008108974445], to: [39.83349834414147, 64.3763952590251], title: "", desc: "Подкинули на автовозе MAN", link: "", vk: "https://vk.com/wall-171082824_1373" },
+  { type: "transfer",   transport: "truck", from: [40.58170501802926, 62.68008108974445], to: [39.83349834414147, 64.3763952590251], title: "", desc: "Подкинули на автовозе MAN", link: "", vk: "https://vk.com/wall-171082824_1373" },
   { day: "40-41", lat: 39.784063, lng: 64.422211, title: "09.08.2024 - 10.08.2024", desc: "Хостел", link: "", vk: "https://vk.com/wall-171082824_1373" },
   { day: "42", lat: 40.076787, lng: 64.92373, title: "11.08.2024", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_1378" },
   { day: "43", lat: 39.951853, lng: 65.955909, title: "12.08.2024", desc: "В гостях у местных", link: "", vk: "https://vk.com/wall-171082824_1380" },
