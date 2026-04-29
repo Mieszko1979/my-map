@@ -51,11 +51,12 @@
         .close-modal { position: absolute; top: 15px; right: 15px; font-size: 24px; cursor: pointer; color: #aaa; }
         .social-icons { display: flex; justify-content: center; gap: 12px; margin: 20px 0; align-items: center; flex-wrap: wrap; }
         .social-icons i { font-size: 28px; }
+        .text-icon-btn { font-weight: 900; font-size: 14px; border: 2px solid #555; padding: 3px 8px; border-radius: 8px; color: #555; text-transform: uppercase; }
         .payment-btn { display: block; width: 100%; text-decoration: none; padding: 12px; border-radius: 12px; margin-top: 10px; font-weight: bold; transition: 0.2s; color: white; }
 
         /* ФОТО ПРОСМОТРЩИК */
         #photo-viewer { position: absolute; bottom: 100px; left: 15px; z-index: 1000; width: 220px; background: white; padding: 5px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none; cursor: pointer; touch-action: none; overflow: hidden; }
-        #photo-viewer img { width: 100%; border-radius: 5px; display: block; transition: transform 0.1s ease-out; will-change: transform; }
+        #photo-viewer img { width: 100%; border-radius: 5px; display: block; transition: transform 0.1s ease-out; }
         #photo-viewer .close-btn { position: absolute; top: -10px; right: -10px; background: red; color: white; border-radius: 50%; width: 22px; height: 22px; text-align: center; line-height: 20px; font-weight: bold; border: 2px solid white; }
 
         /* МАРКЕРЫ */
@@ -67,7 +68,10 @@
         .c2021 { color: #9b59b6; border-color: #9b59b6 !important; }
         .c2024 { color: #ff8c00; border-color: #ff8c00 !important; }
         .cCurrent { color: #28a745; border-color: #28a745 !important; }
-        .photo-marker { background: none !important; border: none !important; display: flex; align-items: center; justify-content: center; }
+        
+        /* ОБНОВЛЕННЫЙ ЗНАЧОК ФОТО */
+        .photo-marker { background: white !important; border: 2px solid; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,0.4); }
+        
         .trans-center-marker { background: #fff; border-radius: 50%; border: 2.5px solid; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.5); font-size: 18px; cursor: pointer; }
 
         /* АВАТАРКА */
@@ -152,60 +156,34 @@
         function closeAbout() { document.getElementById('about-modal').style.display = 'none'; }
         function toggleQR() { var s = document.getElementById('qr-section'); s.style.display = s.style.display === 'block' ? 'none' : 'block'; }
 
-        // --- НОВАЯ ЛОГИКА ЗУМА И ПАНОРАМИРОВАНИЯ ---
         var img = document.getElementById('view-img');
         var scale = 1, lastScale = 1, startDist = 0;
-        var posX = 0, posY = 0, lastPosX = 0, lastPosY = 0, startX = 0, startY = 0;
+        var posX = 0, posY = 0, startX = 0, startY = 0;
         var isDragging = false;
 
         img.addEventListener('touchstart', function(e) {
-            if (e.touches.length === 1) {
-                isDragging = true;
-                startX = e.touches[0].pageX - posX;
-                startY = e.touches[0].pageY - posY;
-            } else if (e.touches.length === 2) {
-                isDragging = false;
-                startDist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY);
-                lastScale = scale;
-            }
+            if (e.touches.length === 1) { isDragging = true; startX = e.touches[0].pageX - posX; startY = e.touches[0].pageY - posY; } 
+            else if (e.touches.length === 2) { isDragging = false; startDist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY); lastScale = scale; }
         });
-
         img.addEventListener('touchmove', function(e) {
             e.preventDefault();
-            if (e.touches.length === 1 && isDragging && scale > 1) {
-                posX = e.touches[0].pageX - startX;
-                posY = e.touches[0].pageY - startY;
-                updateTransform();
-            } else if (e.touches.length === 2) {
+            if (e.touches.length === 1 && isDragging && scale > 1) { posX = e.touches[0].pageX - startX; posY = e.touches[0].pageY - startY; updateTransform(); } 
+            else if (e.touches.length === 2) {
                 var dist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY);
-                scale = Math.min(Math.max(1, lastScale * (dist / startDist)), 5);
-                updateTransform();
+                scale = Math.min(Math.max(1, lastScale * (dist / startDist)), 5); updateTransform();
             }
         });
-
         img.addEventListener('touchend', function() { isDragging = false; lastScale = scale; });
 
-        function updateTransform() {
-            // Ограничиваем улет картинки за края при масштабе 1
-            if (scale <= 1) { posX = 0; posY = 0; }
-            img.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
-        }
+        function updateTransform() { if (scale <= 1) { posX = 0; posY = 0; } img.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`; }
 
         function handlePhotoClick(e) {
             e.stopPropagation();
             if (window.innerWidth > 768) { window.open(e.target.src, '_blank'); } 
-            else {
-                if (scale > 1.1) { scale = 1; posX = 0; posY = 0; updateTransform(); } 
-                else { closePhoto(); }
-            }
+            else { if (scale > 1.1) { scale = 1; posX = 0; posY = 0; updateTransform(); } else { closePhoto(); } }
         }
-
         function handleBackgroundClick() { if (window.innerWidth <= 768) closePhoto(); }
-
-        function closePhoto() { 
-            scale = 1; lastScale = 1; posX = 0; posY = 0; updateTransform();
-            document.getElementById('photo-viewer').style.display = 'none'; 
-        }
+        function closePhoto() { scale = 1; lastScale = 1; posX = 0; posY = 0; updateTransform(); document.getElementById('photo-viewer').style.display = 'none'; }
 
         function openAbout() {
             if (typeof aboutData === 'undefined') return;
@@ -234,11 +212,8 @@
         function toggleList() { 
             var show = document.getElementById('main-toggle').checked;
             document.getElementById('trip-list').style.display = show ? 'block' : 'none';
-            if(!show) { 
-                currentTripLayer.addTo(map); archiveLayerGroup.clearLayers(); photoClusterGroup.clearLayers(); 
-                document.querySelectorAll('.trip-check').forEach(c => c.checked = false);
-                focusOnCurrent();
-            } else { map.removeLayer(currentTripLayer); }
+            if(!show) { currentTripLayer.addTo(map); archiveLayerGroup.clearLayers(); photoClusterGroup.clearLayers(); document.querySelectorAll('.trip-check').forEach(c => c.checked = false); focusOnCurrent(); } 
+            else { map.removeLayer(currentTripLayer); }
             updateMarkers(true);
         }
 
@@ -269,6 +244,9 @@
                     L.marker([p.lat, p.lng], {icon: icon}).addTo(target).bindPopup(createPopup(p, folder));
                 } else if (p.type === 'transfer') {
                     var line = L.polyline([p.from, p.to], { color: hex, weight: 3, dashArray: '8, 12', opacity: 0.8 }).addTo(target);
+                    // Точки начала и конца переброски
+                    L.circleMarker(p.from, { radius: 5, color: hex, fillColor: 'white', fillOpacity: 1, weight: 2 }).addTo(target);
+                    L.circleMarker(p.to, { radius: 5, color: hex, fillColor: 'white', fillOpacity: 1, weight: 2 }).addTo(target);
                     var tIcons = { 'plane':'✈️','train':'🚂','bus':'🚌','car':'🚗','truck':'🚚' };
                     var tIcon = L.divIcon({ className: 'trans-center-marker', html: tIcons[p.transport] || '🚀', iconSize:[32,32], iconAnchor:[16,16] });
                     L.marker([(p.from[0]+p.to[0])/2, (p.from[1]+p.to[1])/2], {icon: tIcon}).addTo(target).bindPopup(createPopup(p, folder));
@@ -288,12 +266,9 @@
         function loadPhotos(repo, hex) {
             fetch(`https://mieszko1979.github.io/${repo}/photos.json?t=${Date.now()}`).then(r => r.json()).then(data => {
                 data.forEach(photo => {
-                    var svg = `<svg width="22" height="22" viewBox="0 0 24 24" fill="${hex}"><path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><circle cx="12" cy="13" r="3" fill="${hex}"/><circle cx="18" cy="7" r="1.5" fill="white"/></svg>`;
-                    L.marker([photo.lat, photo.lng], {icon: L.divIcon({ className: 'photo-marker', html: svg, iconSize: [22, 22], iconAnchor: [11, 11] })})
-                    .addTo(photoClusterGroup).on('click', () => {
-                        document.getElementById('view-img').src = `https://mieszko1979.github.io/${repo}/${photo.url}`;
-                        document.getElementById('photo-viewer').style.display = 'flex';
-                    });
+                    var svg = `<svg width="18" height="18" viewBox="0 0 24 24" fill="${hex}"><path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><circle cx="12" cy="13" r="3" fill="${hex}"/><circle cx="18" cy="7" r="1.5" fill="${hex}"/></svg>`;
+                    L.marker([photo.lat, photo.lng], {icon: L.divIcon({ className: 'photo-marker', style: `border-color: ${hex}`, html: svg, iconSize: [26, 26], iconAnchor: [13, 13] })})
+                    .addTo(photoClusterGroup).on('click', () => { document.getElementById('view-img').src = `https://mieszko1979.github.io/${repo}/${photo.url}`; document.getElementById('photo-viewer').style.display = 'flex'; });
                 });
             });
         }
