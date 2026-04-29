@@ -68,10 +68,9 @@
         .c2024 { color: #ff8c00; border-color: #ff8c00 !important; }
         .cCurrent { color: #28a745; border-color: #28a745 !important; }
         
-        /* НОВАЯ "ПРОЗРАЧНАЯ" ФОТО-ИКОНКА СО ВСПЫШКОЙ */
+        /* ЗНАЧОК ФОТО С ГРАДИЕНТОМ */
         .photo-marker { background: none !important; border: none !important; display: flex; align-items: center; justify-content: center; overflow: visible !important; }
-        .flash-rays { filter: drop-shadow(0 0 2px rgba(255,255,255,0.8)); }
-
+        
         .trans-center-marker { background: #fff; border-radius: 50%; border: 2.5px solid; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.5); font-size: 18px; cursor: pointer; }
         .map-avatar { position: absolute; bottom: 24px; right: 10px; z-index: 1000; width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; opacity: 0.8; pointer-events: none; object-fit: cover; transition: 0.3s; }
 
@@ -108,7 +107,7 @@
             <div style="background: #f8f9fa; padding: 20px; border-radius: 15px;">
                 <h3 id="support-title"></h3><p id="support-text"></p>
                 <div id="payment-buttons"></div>
-                <button onclick="toggleQR()" id="qr-btn" style="margin-top:15px; border:1px solid #ccc; padding:8px 15px; border-radius:10px; cursor:pointer;">QR-коды</button>
+                <button onclick="toggleQR()" id="qr-btn" style="margin-top:15px; border:1px solid #ccc; padding:8px 15px; border-radius:10px; cursor:pointer; background:none;">QR-коды</button>
                 <div id="qr-section" style="display:none;"><div id="qr-container"></div></div>
             </div>
         </div>
@@ -251,33 +250,24 @@
 
         function createPopup(p, folder) {
             var html = '<div class="popup-box"><b>' + p.title + '</b><p>' + p.desc + '</p><div class="btn-row">';
-            if (p.link) html += '<a href="view.html?folder='+folder+'&file='+p.link+'" class="btn btn-track" target="_blank">Трек</a>';
-            if (p.vk) html += '<a href="'+p.vk+'" class="btn btn-vk" target="_blank">VK</a>';
-            if (p.relive) html += '<a href="'+p.relive+'" class="btn btn-3d" target="_blank">3D</a>';
+            if (p.link) html += `<a href="view.html?folder=${folder}&file=${p.link}" class="btn btn-track" target="_blank">Трек</a>`;
+            if (p.vk) html += `<a href="${p.vk}" class="btn btn-vk" target="_blank">VK</a>`;
+            if (p.relive) html += `<a href="${p.relive}" class="btn btn-3d" target="_blank">3D</a>`;
             return html + '</div></div>';
         }
 
         function loadPhotos(repo, hex) {
             fetch(`https://mieszko1979.github.io/${repo}/photos.json?t=${Date.now()}`).then(r => r.json()).then(data => {
                 data.forEach(photo => {
-                    // SVG с раритетной вспышкой (лучами) и без плотного фона центра
-                    var svg = `<svg width="36" height="36" viewBox="0 0 36 36" class="flash-rays">
-                        <g transform="translate(18,18)">
-                            <line x1="0" y1="-12" x2="0" y2="-18" stroke="#FFD700" stroke-width="2" />
-                            <line x1="0" y1="12" x2="0" y2="18" stroke="#FFD700" stroke-width="2" />
-                            <line x1="-12" y1="0" x2="-18" y2="0" stroke="#FFD700" stroke-width="2" />
-                            <line x1="12" y1="0" x2="18" y2="0" stroke="#FFD700" stroke-width="2" />
-                            <line x1="8" y1="8" x2="13" y2="13" stroke="#FFD700" stroke-width="2" />
-                            <line x1="-8" y1="-8" x2="-13" y2="-13" stroke="#FFD700" stroke-width="2" />
-                            <line x1="8" y1="-8" x2="13" y2="-13" stroke="#FFD700" stroke-width="2" />
-                            <line x1="-8" y1="8" x2="-13" y2="13" stroke="#FFD700" stroke-width="2" />
-                        </g>
-                        <rect x="10" y="13" width="16" height="12" rx="2" fill="white" stroke="${hex}" stroke-width="1.5" />
-                        <circle cx="18" cy="19" r="3.5" stroke="${hex}" stroke-width="1.5" fill="none" />
-                        <rect x="13" y="11" width="4" height="2" fill="${hex}" />
+                    // Фото со смещением и "мягким" радиальным градиентом
+                    var svg = `<svg width="32" height="32" viewBox="0 0 32 32">
+                        <defs><radialGradient id="glow${hex.replace('#','')}" cx="50%" cy="50%" r="50%"><stop offset="0%" style="stop-color:white;stop-opacity:0.6" /><stop offset="100%" style="stop-color:white;stop-opacity:0" /></radialGradient></defs>
+                        <circle cx="16" cy="16" r="14" fill="url(#glow${hex.replace('#','')})" />
+                        <path d="M7 10h4l2-3h6l2 3h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V12a2 2 0 0 1 2-2z" fill="none" stroke="${hex}" stroke-width="2"/>
+                        <circle cx="16" cy="17" r="4" fill="none" stroke="${hex}" stroke-width="2"/>
                     </svg>`;
-                    // Смещение иконки (iconAnchor), чтобы камера не была ровно в центре точки ночевки
-                    L.marker([photo.lat, photo.lng], {icon: L.divIcon({ className: 'photo-marker', html: svg, iconSize: [36, 36], iconAnchor: [0, 36] })})
+                    // Anchor смещен (0, 0), чтобы иконка была сбоку от точки
+                    L.marker([photo.lat, photo.lng], {icon: L.divIcon({ className: 'photo-marker', html: svg, iconSize: [32, 32], iconAnchor: [0, 0] })})
                     .addTo(photoClusterGroup).on('click', () => { document.getElementById('view-img').src = `https://mieszko1979.github.io/${repo}/${photo.url}`; document.getElementById('photo-viewer').style.display = 'flex'; });
                 });
             });
