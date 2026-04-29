@@ -33,18 +33,30 @@
         #photo-toggle-wrap { margin-top: 12px; padding-top: 12px; border-top: 1px dashed #ccc; color: #28a745; font-weight: bold; display: flex; align-items: center; cursor: pointer; }
         #photo-toggle-wrap input { margin-right: 12px; transform: scale(1.2); }
         .fs-btn { background: none; border: none; cursor: pointer; font-size: 18px; color: #666; margin-left: 10px; }
+        
         #hint-box { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); z-index: 1000; background: rgba(255, 255, 255, 0.95); padding: 10px 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); cursor: pointer; }
         .hint-text { color: #ff0000; font-weight: 900; font-size: 17px; text-transform: uppercase; }
+        
         #about-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 2000; justify-content: center; align-items: center; }
         .modal-content { background: white; width: 95%; max-width: 440px; border-radius: 20px; padding: 25px; text-align: center; position: relative; }
         .close-modal { position: absolute; top: 15px; right: 15px; font-size: 24px; cursor: pointer; color: #aaa; }
-        .social-icons { display: flex; justify-content: center; gap: 15px; margin: 20px 0; flex-wrap: wrap; }
-        .social-icons i { font-size: 30px; }
-        .payment-btn { display: block; width: 100%; text-decoration: none; padding: 12px; border-radius: 12px; margin-top: 10px; font-weight: bold; color: white; }
         
+        .social-icons { display: flex; justify-content: center; gap: 15px; margin: 20px 0; flex-wrap: wrap; align-items: center; }
+        .social-icons a { text-decoration: none; display: flex; align-items: center; }
+        .social-icons i { font-size: 32px; }
+        .fa-vk { color: #0077FF; }
+        .fa-odnoklassniki { color: #ee8208; }
+        .fa-instagram { color: #E1306C; }
+        .fa-youtube { color: #FF0000; }
+        .fa-telegram { color: #0088cc; }
+        .fa-strava { color: #FC6100; }
+        .text-icon-btn { font-weight: 900; font-size: 13px; border: 2px solid #555; padding: 4px 10px; border-radius: 8px; color: #333; text-transform: uppercase; }
+
+        .payment-btn { display: block; width: 100%; text-decoration: none; padding: 12px; border-radius: 12px; margin-top: 10px; font-weight: bold; color: white; }
+
         #photo-viewer { position: absolute; bottom: 100px; left: 15px; z-index: 1000; width: 220px; background: white; padding: 5px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none; cursor: pointer; }
         #photo-viewer img { width: 100%; border-radius: 5px; display: block; }
-        #photo-viewer .close-btn { position: absolute; top: -10px; right: -10px; background: red; color: white; border-radius: 50%; width: 22px; height: 22px; text-align: center; line-height: 20px; font-weight: bold; border: 2px solid white; }
+        #photo-viewer .close-btn { position: absolute; top: -12px; right: -12px; background: red; color: white; border-radius: 50%; width: 26px; height: 26px; text-align: center; line-height: 24px; font-weight: bold; border: 2px solid white; z-index: 1100; }
 
         .day-marker { background: #fff; border-radius: 50%; border: 2.5px solid; color: #000; font-weight: bold; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.5); font-size: 11px; z-index: 500 !important; }
         .num-wrapper { position: relative; display: inline-block; line-height: 1; }
@@ -57,33 +69,27 @@
         .photo-marker { background: none !important; border: none !important; display: flex; align-items: center; justify-content: center; overflow: visible !important; }
         .map-avatar { position: absolute; bottom: 25px; right: 10px; z-index: 1000; width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; opacity: 0.8; pointer-events: none; object-fit: cover; }
 
-        .popup-box { text-align: center; min-width: 180px; }
+        .popup-box { text-align: center; min-width: 180px; padding: 5px; }
         .btn-row { display: flex; justify-content: center; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
-        .btn { text-decoration: none; font-weight: bold; font-size: 13px; padding: 6px 12px; border-radius: 15px; cursor: pointer; transition: 0.2s; }
+        .btn { text-decoration: none; font-weight: bold; font-size: 13px; padding: 6px 12px; border-radius: 15px; cursor: pointer; transition: 0.2s; display: inline-block; }
         .btn-track { background: #28a745; color: white !important; }
         .btn-vk { background: #0077FF; color: white !important; }
         .btn-3d { background: #ffdb00; color: #000 !important; }
 
-        /* ОКНО ДЕТАЛИЗАЦИИ ТРЕКА (ВСЁ В ОДНОМ) */
         #detail-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 5000; background: #000; display: none; border: none; }
 
         @media (max-width: 768px) {
             #menu-box { left: 5%; width: 90%; top: 15px; box-sizing: border-box; min-width: auto; }
             #hint-box { top: auto; bottom: 30px; }
             .map-avatar { bottom: 18px; right: 5px; width: 45px; height: 45px; }
-            #photo-viewer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; padding: 0; border-radius: 0; display: none; justify-content: center; align-items: center; bottom: auto; z-index: 9999; }
-            #photo-viewer img { max-width: 100%; max-height: 100%; border-radius: 0; }
-            #photo-viewer .close-btn { display: none; }
+            #photo-viewer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; display: none; justify-content: center; align-items: center; bottom: auto; z-index: 9999; }
+            #photo-viewer img { max-width: 100%; max-height: 100%; }
         }
     </style>
 </head>
 <body>
     <iframe id="detail-overlay" src=""></iframe>
-
-    <div id="photo-viewer" onclick="handleBackgroundClick()">
-        <div class="close-btn" onclick="closePhoto()">×</div>
-        <img id="view-img" src="" onclick="handlePhotoClick(event)">
-    </div>
+    <div id="photo-viewer" onclick="handleBackgroundClick()"><div class="close-btn" onclick="closePhoto()">×</div><img id="view-img" src="" onclick="handlePhotoClick(event)"></div>
 
     <div id="about-modal" onclick="closeAbout()">
         <div class="modal-content" onclick="event.stopPropagation()">
@@ -91,9 +97,9 @@
             <b id="about-name"></b><p id="about-bio"></p>
             <div class="social-icons" id="about-socials"></div>
             <div style="background: #f8f9fa; padding: 20px; border-radius: 15px;">
-                <h3 id="support-title"></h3><p id="support-text"></p>
+                <h3 id="support-title" style="margin:0"></h3><p id="support-text" style="font-size:14px;"></p>
                 <div id="payment-buttons"></div>
-                <button onclick="toggleQR()" id="qr-btn" style="margin-top:15px; border:1px solid #ccc; padding:8px 15px; border-radius:10px; cursor:pointer; background:#fff;">QR-коды</button>
+                <button onclick="toggleQR()" style="margin-top:15px; border:1px solid #ccc; padding:8px 15px; border-radius:10px; cursor:pointer; background:#fff; font-weight:bold;">QR-коды</button>
                 <div id="qr-section" style="display:none;"><div id="qr-container"></div></div>
             </div>
         </div>
@@ -103,12 +109,9 @@
     <img src="avatar.jpg" class="map-avatar">
     
     <div id="menu-box">
-        <div class="menu-collapse-btn">
-            <span onclick="toggleMenu()"><i class="fa-solid fa-map-location-dot" style="margin-right:8px; color:#28a745;"></i>Управление</span>
-            <div>
-                <button class="fs-btn" onclick="toggleFullscreen()"><i class="fa-solid fa-expand"></i></button>
-                <i class="fa-solid fa-chevron-up" id="menu-chevron" onclick="toggleMenu()" style="margin-left:10px;"></i>
-            </div>
+        <div class="menu-collapse-btn" onclick="toggleMenu()">
+            <span><i class="fa-solid fa-map-location-dot" style="margin-right:8px; color:#28a745;"></i>Управление</span>
+            <div><button class="fs-btn" onclick="event.stopPropagation(); toggleFullscreen()"><i class="fa-solid fa-expand"></i></button><i class="fa-solid fa-chevron-up" id="menu-chevron" style="margin-left:10px;"></i></div>
         </div>
         <div id="menu-content">
             <div class="menu-header"><input type="checkbox" id="main-toggle" onchange="toggleList()"> Мои велопутешествия</div>
@@ -121,7 +124,6 @@
             <div id="photo-toggle-wrap"><input type="checkbox" id="photo-toggle" onchange="updateMarkers(true)"> 📷 Показать фото</div>
         </div>
     </div>
-
     <div id="map"></div>
 
     <script>
@@ -129,51 +131,28 @@
         map.attributionControl.setPrefix('Мое велопутешествие');
         L.tileLayer('http://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3'] }).addTo(map);
 
-        var currentTripLayer = L.layerGroup().addTo(map);
-        var archiveLayerGroup = L.layerGroup().addTo(map);
-        var photoClusterGroup = L.markerClusterGroup({ showCoverageOnHover: false, maxClusterRadius: 40 }).addTo(map);
+        var currentTripLayer = L.layerGroup().addTo(map), archiveLayerGroup = L.layerGroup().addTo(map), photoClusterGroup = L.markerClusterGroup({ showCoverageOnHover: false, maxClusterRadius: 40 }).addTo(map);
         var hexColors = { 'c2018': '#ff0000', 'c2019': '#007bff', 'c2021': '#9b59b6', 'c2024': '#ff8c00', 'cCurrent': '#28a745' };
 
         function openTrackView(url) {
-            var overlay = document.getElementById('detail-overlay');
-            overlay.src = url;
-            overlay.style.display = 'block';
+            if (/Android|iPhone|iPad/i.test(navigator.userAgent)) {
+                var overlay = document.getElementById('detail-overlay');
+                overlay.src = url; overlay.style.display = 'block';
+            } else { window.open(url, '_blank'); }
         }
-
-        window.closeTrackView = function() {
-            var overlay = document.getElementById('detail-overlay');
-            overlay.style.display = 'none';
-            overlay.src = "";
-        };
+        window.closeTrackView = function() { var overlay = document.getElementById('detail-overlay'); overlay.style.display = 'none'; overlay.src = ""; };
 
         function toggleMenu() { document.getElementById('menu-box').classList.toggle('collapsed'); }
-        function toggleFullscreen() { if (!document.fullscreenElement) { document.documentElement.requestFullscreen(); } else { document.exitFullscreen(); } }
+        function toggleFullscreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
         function closeAbout() { document.getElementById('about-modal').style.display = 'none'; }
         function toggleQR() { var s = document.getElementById('qr-section'); s.style.display = s.style.display === 'block' ? 'none' : 'block'; }
 
-        var img = document.getElementById('view-img');
-        var scale = 1, lastScale = 1, startDist = 0, posX = 0, posY = 0, startX = 0, startY = 0, isDragging = false;
-
-        img.addEventListener('touchstart', function(e) {
-            if (e.touches.length === 1) { isDragging = true; startX = e.touches[0].pageX - posX; startY = e.touches[0].pageY - posY; } 
-            else if (e.touches.length === 2) { isDragging = false; startDist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY); lastScale = scale; }
-        });
-        img.addEventListener('touchmove', function(e) {
-            if (scale > 1) e.preventDefault();
-            if (e.touches.length === 1 && isDragging && scale > 1) { posX = e.touches[0].pageX - startX; posY = e.touches[0].pageY - startY; updateTransform(); } 
-            else if (e.touches.length === 2) {
-                var dist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY);
-                scale = Math.min(Math.max(1, lastScale * (dist / startDist)), 5); updateTransform();
-            }
-        });
+        var img = document.getElementById('view-img'), scale = 1, lastScale = 1, startDist = 0, posX = 0, posY = 0, startX = 0, startY = 0, isDragging = false;
+        img.addEventListener('touchstart', function(e) { if (e.touches.length === 1) { isDragging = true; startX = e.touches[0].pageX - posX; startY = e.touches[0].pageY - posY; } else if (e.touches.length === 2) { isDragging = false; startDist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY); lastScale = scale; } });
+        img.addEventListener('touchmove', function(e) { if (scale > 1) e.preventDefault(); if (e.touches.length === 1 && isDragging && scale > 1) { posX = e.touches[0].pageX - startX; posY = e.touches[0].pageY - startY; updateTransform(); } else if (e.touches.length === 2) { var dist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY); scale = Math.min(Math.max(1, lastScale * (dist / startDist)), 5); updateTransform(); } });
         img.addEventListener('touchend', function() { isDragging = false; lastScale = scale; });
         function updateTransform() { if (scale <= 1) { posX = 0; posY = 0; } img.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`; }
-
-        function handlePhotoClick(e) {
-            e.stopPropagation();
-            if (window.innerWidth > 768) { window.open(e.target.src, '_blank'); } 
-            else { if (scale > 1.1) { scale = 1; posX = 0; posY = 0; updateTransform(); } else { closePhoto(); } }
-        }
+        function handlePhotoClick(e) { e.stopPropagation(); if (window.innerWidth > 768) window.open(e.target.src, '_blank'); else { if (scale > 1.1) { scale = 1; posX = 0; posY = 0; updateTransform(); } else closePhoto(); } }
         function handleBackgroundClick() { if (window.innerWidth <= 768) closePhoto(); }
         function closePhoto() { scale = 1; lastScale = 1; posX = 0; posY = 0; updateTransform(); document.getElementById('photo-viewer').style.display = 'none'; }
 
@@ -187,16 +166,14 @@
             var sHtml = "";
             aboutData.socials.forEach(s => {
                 if(s.url) {
-                    if (s.id === 'dzen' || s.id === 'komoot') { sHtml += `<a href="${s.url}" target="_blank"><span class="text-icon-btn">${s.id === 'dzen' ? 'Дзен' : 'Komoot'}</span></a>`; }
-                    else { sHtml += `<a href="${s.url}" target="_blank"><i class="fa-brands ${iconMap[s.id] || 'fa-link'}"></i></a>`; }
+                    if (s.id === 'dzen' || s.id === 'komoot') sHtml += `<a href="${s.url}" target="_blank"><span class="text-icon-btn">${s.id === 'dzen' ? 'Дзен' : 'Komoot'}</span></a>`;
+                    else sHtml += `<a href="${s.url}" target="_blank"><i class="fa-brands ${iconMap[s.id] || 'fa-link'}"></i></a>`;
                 }
             });
             document.getElementById('about-socials').innerHTML = sHtml;
-            var pHtml = "";
-            aboutData.paymentButtons.forEach(p => { pHtml += `<a href="${p.url}" target="_blank" class="payment-btn" style="background:${p.color};">${p.name}</a>`; });
+            var pHtml = ""; aboutData.paymentButtons.forEach(p => { pHtml += `<a href="${p.url}" target="_blank" class="payment-btn" style="background:${p.color};">${p.name}</a>`; });
             document.getElementById('payment-buttons').innerHTML = pHtml;
-            var qHtml = "";
-            aboutData.qrCodes.forEach(q => { qHtml += `<div style="margin-top:15px;"><b>${q.name}</b><img src="${q.img}" class="qr-img"></div>`; });
+            var qHtml = ""; aboutData.qrCodes.forEach(q => { qHtml += `<div style="margin-top:15px;"><b>${q.name}</b><img src="${q.img}" class="qr-img"></div>`; });
             document.getElementById('qr-container').innerHTML = qHtml;
             document.getElementById('about-modal').style.display = 'flex';
         }
@@ -205,8 +182,7 @@
             var show = document.getElementById('main-toggle').checked;
             document.getElementById('trip-list').style.display = show ? 'block' : 'none';
             if(!show) { currentTripLayer.addTo(map); archiveLayerGroup.clearLayers(); photoClusterGroup.clearLayers(); document.querySelectorAll('.trip-check').forEach(c => c.checked = false); focusOnCurrent(); } 
-            else { map.removeLayer(currentTripLayer); }
-            updateMarkers(true);
+            else { map.removeLayer(currentTripLayer); } updateMarkers(true);
         }
 
         function updateMarkers(onlyPhotos) {
@@ -232,15 +208,13 @@
                 if (!p.type || p.type === 'day') {
                     var fullDay = String(p.day ? p.day : (i + 1));
                     var markerHtml = '<span class="num-wrapper">' + fullDay.split('-')[0] + '<span class="suffix">' + (fullDay.split('-')[1] ? '-' + fullDay.split('-')[1] : '') + '</span></span>';
-                    var icon = L.divIcon({ className: 'day-marker ' + colorClass, html: markerHtml, iconSize: [24, 24], iconAnchor: [12, 12] });
-                    L.marker([p.lat, p.lng], {icon: icon}).addTo(target).bindPopup(createPopup(p, folder));
+                    L.marker([p.lat, p.lng], {icon: L.divIcon({ className: 'day-marker ' + colorClass, html: markerHtml, iconSize: [24, 24], iconAnchor: [12, 12] })}).addTo(target).bindPopup(createPopup(p, folder));
                 } else if (p.type === 'transfer') {
                     var line = L.polyline([p.from, p.to], { color: hex, weight: 3, dashArray: '8, 12', opacity: 0.8 }).addTo(target);
                     L.circleMarker(p.from, { radius: 5, color: hex, fillColor: 'white', fillOpacity: 1, weight: 2 }).addTo(target);
                     L.circleMarker(p.to, { radius: 5, color: hex, fillColor: 'white', fillOpacity: 1, weight: 2 }).addTo(target);
                     var tIcons = { 'plane':'✈️','train':'🚂','bus':'🚌','car':'🚗','truck':'🚚' };
-                    var tIcon = L.divIcon({ className: 'trans-center-marker', html: tIcons[p.transport] || '🚀', iconSize:[32,32], iconAnchor:[16,16] });
-                    L.marker([(p.from[0]+p.to[0])/2, (p.from[1]+p.to[1])/2], {icon: tIcon}).addTo(target).bindPopup(createPopup(p, folder));
+                    L.marker([(p.from[0]+p.to[0])/2, (p.from[1]+p.to[1])/2], {icon: L.divIcon({ className: 'trans-center-marker', html: tIcons[p.transport] || '🚀', iconSize:[32,32], iconAnchor:[16,16] })}).addTo(target).bindPopup(createPopup(p, folder));
                     L.polylineDecorator(line, { patterns: [{ offset: '20%', repeat: '40%', symbol: L.Symbol.arrowHead({pixelSize: 12, pathOptions: {color: hex, fillOpacity: 1, weight: 0}}) }] }).addTo(target);
                 }
             });
@@ -258,12 +232,12 @@
             fetch(`https://mieszko1979.github.io/${repo}/photos.json?t=${Date.now()}`).then(r => r.json()).then(data => {
                 data.forEach(photo => {
                     var svg = `<svg width="34" height="42" viewBox="0 0 34 42"><path d="M17 0C7.6 0 0 7.6 0 17c0 12.8 17 25 17 25s17-12.2 17-25c0-9.4-7.6-17-17-17z" fill="${hex}"/><circle cx="17" cy="17" r="10" fill="white"/><g transform="translate(10, 12) scale(0.6)"><path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" fill="${hex}"/><circle cx="12" cy="13" r="3.5" fill="white" /><circle cx="12" cy="13" r="2" fill="${hex}" /></g></svg>`;
-                    L.marker([photo.lat, photo.lng], {icon: L.divIcon({ className: 'photo-marker', html: svg, iconSize: [34, 42], iconAnchor: [0, 42] })})
+                    L.marker([photo.lat, photo.lng], {icon: L.divIcon({ className: 'photo-marker', html: svg, iconSize: [34, 42], iconAnchor: [17, 42] })})
                     .addTo(photoClusterGroup).on('click', () => { document.getElementById('view-img').src = `https://mieszko1979.github.io/${repo}/${photo.url}`; document.getElementById('photo-viewer').style.display = 'flex'; });
                 });
             });
         }
-        function focusOnCurrent() { if (typeof myPoints !== 'undefined' && myPoints.length > 0) { var last = myPoints[myPoints.length-1]; var lat = last.lat || (last.from ? last.from[0] : 50); var lng = last.lng || (last.from ? last.from[1] : 80); map.setView([lat, lng], 8); } }
+        function focusOnCurrent() { if (typeof myPoints !== 'undefined' && myPoints.length > 0) { var last = myPoints[myPoints.length-1]; map.setView([last.lat || (last.from ? last.from[0] : 50), last.lng || (last.from ? last.from[1] : 80)], 8); } }
         if (typeof myPoints !== 'undefined') { focusOnCurrent(); updateMarkers(true); }
     </script>
 </body>
