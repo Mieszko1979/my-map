@@ -3,7 +3,7 @@
 <head>
     <title>Мой Велоархив</title>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
@@ -51,12 +51,11 @@
         .close-modal { position: absolute; top: 15px; right: 15px; font-size: 24px; cursor: pointer; color: #aaa; }
         .social-icons { display: flex; justify-content: center; gap: 12px; margin: 20px 0; align-items: center; flex-wrap: wrap; }
         .social-icons i { font-size: 28px; }
-        .text-icon-btn { font-weight: 900; font-size: 14px; border: 2px solid #555; padding: 3px 8px; border-radius: 8px; color: #555; text-transform: uppercase; }
         .payment-btn { display: block; width: 100%; text-decoration: none; padding: 12px; border-radius: 12px; margin-top: 10px; font-weight: bold; transition: 0.2s; color: white; }
 
-        /* ФОТО ПРОСМОТРЩИК */
-        #photo-viewer { position: absolute; bottom: 100px; left: 15px; z-index: 1000; width: 220px; background: white; padding: 5px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none; cursor: pointer; }
-        #photo-viewer img { width: 100%; border-radius: 5px; display: block; }
+        /* ФОТО VIEWER */
+        #photo-viewer { position: absolute; bottom: 100px; left: 15px; z-index: 1000; width: 220px; background: white; padding: 5px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none; cursor: pointer; touch-action: none; }
+        #photo-viewer img { width: 100%; border-radius: 5px; display: block; transition: transform 0.1s ease-out; transform-origin: center; }
         #photo-viewer .close-btn { position: absolute; top: -10px; right: -10px; background: red; color: white; border-radius: 50%; width: 22px; height: 22px; text-align: center; line-height: 20px; font-weight: bold; border: 2px solid white; }
 
         /* МАРКЕРЫ */
@@ -87,7 +86,6 @@
             #menu-box { left: 5%; width: 90%; top: 15px; box-sizing: border-box; min-width: auto; }
             #hint-box { top: auto; bottom: 30px; }
             .map-avatar { bottom: 18px; right: 5px; width: 45px; height: 45px; }
-            /* Мобильный просмотрщик: на весь экран */
             #photo-viewer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; padding: 0; border-radius: 0; display: none; justify-content: center; align-items: center; bottom: auto; z-index: 9999; }
             #photo-viewer img { max-width: 100%; max-height: 100%; border-radius: 0; }
             #photo-viewer .close-btn { display: none; }
@@ -96,7 +94,7 @@
 </head>
 <body>
     <div id="photo-viewer" onclick="closePhoto()">
-        <div class="close-btn" onclick="closePhoto()">×</div>
+        <div class="close-btn">×</div>
         <img id="view-img" src="" onclick="onPhotoClick(event)">
     </div>
 
@@ -154,9 +152,24 @@
         function closeAbout() { document.getElementById('about-modal').style.display = 'none'; }
         function toggleQR() { var s = document.getElementById('qr-section'); s.style.display = s.style.display === 'block' ? 'none' : 'block'; }
 
+        // --- ЛОГИКА ЗУМА ФОТО ДЛЯ МОБИЛОК ---
+        var photoImg = document.getElementById('view-img');
+        var scale = 1, startDist = 0;
+        photoImg.addEventListener('touchstart', e => { if (e.touches.length === 2) startDist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY); });
+        photoImg.addEventListener('touchmove', e => {
+            if (e.touches.length === 2) {
+                e.preventDefault();
+                var dist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY);
+                scale = Math.min(Math.max(1, scale * (dist / startDist)), 4);
+                photoImg.style.transform = `scale(${scale})`;
+                startDist = dist;
+            }
+        });
+
         function onPhotoClick(event) {
             event.stopPropagation();
             if (window.innerWidth > 768) { window.open(event.target.src, '_blank'); } 
+            else if (scale > 1.1) { scale = 1; photoImg.style.transform = 'scale(1)'; } 
             else { closePhoto(); }
         }
 
@@ -250,7 +263,7 @@
                 });
             });
         }
-        function closePhoto() { document.getElementById('photo-viewer').style.display = 'none'; }
+        function closePhoto() { scale = 1; photoImg.style.transform = 'scale(1)'; document.getElementById('photo-viewer').style.display = 'none'; }
         function focusOnCurrent() { if (typeof myPoints !== 'undefined' && myPoints.length > 0) { var last = myPoints[myPoints.length-1]; var lat = last.lat || (last.from ? last.from[0] : 50); var lng = last.lng || (last.from ? last.from[1] : 80); map.setView([lat, lng], 8); } }
         if (typeof myPoints !== 'undefined') { focusOnCurrent(); updateMarkers(true); }
     </script>
