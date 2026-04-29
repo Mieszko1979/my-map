@@ -14,7 +14,7 @@
         html, body { height: 100%; margin: 0; padding: 0; font-family: Arial, sans-serif; background: #000; overflow: hidden; }
         #map { height: 100%; width: 100%; z-index: 1; }
 
-        /* МЕНЮ ФОТО ДЛЯ КОМПЬЮТЕРА (Слева вверху) */
+        /* --- КОМПЬЮТЕРНАЯ ВЕРСИЯ (PC) --- */
         #pc-photo-menu { 
             position: absolute; top: 15px; left: 15px; z-index: 1000; 
             background: rgba(255, 255, 255, 0.9); padding: 10px 15px; 
@@ -23,7 +23,6 @@
         }
         #pc-photo-menu input { margin-right: 10px; transform: scale(1.2); cursor: pointer; }
 
-        /* ИТОГИ ДНЯ (Справа вверху) */
         #info-panel { 
             position: absolute; top: 15px; right: 15px; z-index: 1000; 
             background: rgba(255, 255, 255, 0.9); padding: 15px; border-radius: 15px; 
@@ -35,7 +34,6 @@
         .stat-label { font-size: 9px; color: #777; text-transform: uppercase; display: block; }
         .stat-val { font-weight: bold; color: #238aff; font-size: 17px; }
 
-        /* ГРАФИК */
         #chart-box { 
             position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); 
             z-index: 1000; width: 90%; max-width: 900px; height: 180px; 
@@ -43,14 +41,14 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
         }
 
-        /* КНОПКИ УПРАВЛЕНИЯ (Mobile) */
+        /* --- КНОПКИ МОБИЛЬНОЙ ВЕРСИИ --- */
         .ctrl-btn { 
             position: absolute; z-index: 1001; background: white; border: none; 
             width: 45px; height: 45px; border-radius: 50%; box-shadow: 0 2px 10px rgba(0,0,0,0.3); 
             display: none; align-items: center; justify-content: center; cursor: pointer; color: #333; font-size: 18px; 
         }
         #btn-back { top: 15px; left: 15px; background: #ff0000; color: white; }
-        #btn-photo { top: 15px; left: 50%; transform: translateX(-50%); color: #28a745; } /* Вверху посередине */
+        #btn-photo { top: 15px; left: 50%; transform: translateX(-50%); color: #28a745; }
         #btn-stats { top: 15px; right: 15px; }
         #btn-chart { bottom: 20px; left: 15px; }
 
@@ -58,12 +56,12 @@
         #res-stats { top: 15px; right: 15px; }
         #res-chart { bottom: 20px; left: 50%; transform: translateX(-50%); }
 
-        /* ПРОСМОТР ФОТО */
+        /* --- ПРОСМОТР ФОТО (LIGHTBOX) --- */
         #photo-viewer { 
             position: absolute; bottom: 100px; left: 15px; z-index: 2000; width: 220px; 
             background: white; padding: 5px; border-radius: 8px; display: none; cursor: pointer; touch-action: none; overflow: hidden; 
         }
-        #photo-viewer img { width: 100%; border-radius: 5px; display: block; transition: transform 0.1s ease-out; }
+        #photo-viewer img { width: 100%; border-radius: 5px; display: block; transition: transform 0.1s ease-out; object-fit: contain; }
         #photo-viewer .close-btn { 
             position: absolute; top: -12px; right: -12px; background: red; color: white; 
             border-radius: 50%; width: 26px; height: 26px; text-align: center; line-height: 24px; 
@@ -76,6 +74,7 @@
         .photo-marker { background: none !important; border: none !important; display: flex; align-items: center; justify-content: center; overflow: visible !important; }
         .map-avatar { position: absolute; bottom: 25px; right: 10px; z-index: 500; width: 50px; height: 50px; border-radius: 50%; border: 2px solid white; opacity: 0.8; object-fit: cover; }
 
+        /* --- АДАПТАЦИЯ (ТЕЛЕФОНЫ) --- */
         @media (max-width: 768px) {
             .ctrl-btn { display: flex; }
             #pc-photo-menu { display: none; }
@@ -84,22 +83,22 @@
             #chart-box { bottom: 85px; height: 160px; width: 95%; } 
             
             #photo-viewer { 
-                position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
                 background: black; padding: 0; border-radius: 0; justify-content: center; align-items: center; bottom: auto; z-index: 9999; 
             }
-            #photo-viewer img { max-width: 100%; max-height: 100%; }
-            #photo-viewer .close-btn { display: none; } /* Скрываем красный кружок на мобилках */
+            #photo-viewer img { width: 100%; height: 100%; max-width: 100%; max-height: 100%; border-radius: 0; object-fit: contain; }
+            #photo-viewer .close-btn { display: none !important; } /* ЖЕСТКОЕ СКРЫТИЕ КРАСНОЙ ТОЧКИ */
         }
     </style>
 </head>
 <body>
 
-    <!-- Меню для PC -->
+    <!-- PC Фото меню -->
     <label id="pc-photo-menu">
         <input type="checkbox" id="pc-photo-check" onchange="togglePhotos(this.checked)"> 📷 Показать фото
     </label>
 
-    <!-- Кнопки для Mobile -->
+    <!-- Mobile Кнопки -->
     <button id="btn-back" class="ctrl-btn" onclick="goBack()"><i class="fa-solid fa-arrow-left"></i></button>
     <button id="btn-photo" class="ctrl-btn" onclick="togglePhotos()"><i class="fa-solid fa-camera"></i></button>
     <button id="btn-stats" class="ctrl-btn" onclick="toggleStats()"><i class="fa-solid fa-chart-simple"></i></button>
@@ -111,7 +110,6 @@
     <div id="map"></div>
     <img src="avatar.jpg" class="map-avatar">
 
-    <!-- Итоги дня -->
     <div id="info-panel">
         <div class="panel-close" onclick="toggleStats()">&times;</div>
         <div class="divider">ИТОГИ ДНЯ</div>
@@ -122,13 +120,11 @@
         <div class="stat-item analytics-hide"><span class="stat-label">Ср. скорость</span><span id="avg-speed" class="stat-val">--</span></div>
     </div>
 
-    <!-- График высот -->
     <div id="chart-box">
         <div class="panel-close" onclick="toggleChart()">&times;</div>
         <canvas id="elevationChart"></canvas>
     </div>
 
-    <!-- Фото -->
     <div id="photo-viewer" onclick="handleBackgroundClick()">
         <div class="close-btn" onclick="closePhoto()">×</div>
         <img id="view-img" src="" onclick="handlePhotoClick(event)">
@@ -178,15 +174,13 @@
 
         if (file) {
             new L.GPX(folder + file, {
-                async: true,
-                marker_options: { startIconUrl: null, endIconUrl: null, shadowUrl: null },
+                async: true, marker_options: { startIconUrl: null, endIconUrl: null, shadowUrl: null },
                 polyline_options: { color: '#ffea00', weight: 6, opacity: 0.9 }
             }).on('loaded', function(e) {
                 var g = e.target; map.fitBounds(g.getBounds(), {padding: [50, 50]});
                 document.getElementById('dist').innerText = (g.get_distance()/1000).toFixed(1) + " км";
                 document.getElementById('gain').innerText = g.get_elevation_gain().toFixed(0) + " м";
                 document.getElementById('max-alt').innerText = g.get_elevation_max().toFixed(0) + " м";
-                
                 var speed = g.get_moving_speed();
                 if (folder.includes('2018') || speed > 60) { document.querySelectorAll('.analytics-hide').forEach(el => el.style.display = 'none'); } 
                 else {
@@ -232,7 +226,12 @@
         img.addEventListener('touchmove', e => { if (scale > 1) e.preventDefault(); if (e.touches.length === 1 && isDragging && scale > 1) { posX = e.touches[0].pageX - startX; posY = e.touches[0].pageY - startY; updateTransform(); } else if (e.touches.length === 2) { var dist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY); scale = Math.min(Math.max(1, lastScale * (dist / startDist)), 5); updateTransform(); } });
         img.addEventListener('touchend', () => { isDragging = false; lastScale = scale; });
         function updateTransform() { if (scale <= 1) { posX = 0; posY = 0; } img.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`; }
-        function handlePhotoClick(e) { e.stopPropagation(); if (window.innerWidth > 768) window.open(e.target.src, '_blank'); else { if (scale > 1.1) { scale = 1; posX = 0; posY = 0; updateTransform(); } else closePhoto(); } }
+        
+        function handlePhotoClick(e) { 
+            e.stopPropagation(); 
+            if (window.innerWidth > 768) window.open(e.target.src, '_blank'); 
+            else { if (scale > 1.1) { scale = 1; posX = 0; posY = 0; updateTransform(); } else closePhoto(); } 
+        }
         function handleBackgroundClick() { if (window.innerWidth <= 768) closePhoto(); }
         function closePhoto() { scale = 1; lastScale = 1; posX = 0; posY = 0; updateTransform(); document.getElementById('photo-viewer').style.display = 'none'; }
 
