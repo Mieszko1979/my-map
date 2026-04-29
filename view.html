@@ -9,232 +9,87 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.7.0/gpx.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <style>
         html, body { height: 100%; margin: 0; padding: 0; font-family: Arial, sans-serif; background: #000; overflow: hidden; }
         #map { height: 100%; width: 100%; z-index: 1; }
-
-        /* --- КОМПЬЮТЕРНАЯ ВЕРСИЯ (PC) --- */
-        #pc-photo-menu { 
-            position: absolute; top: 15px; left: 15px; z-index: 1000; 
-            background: rgba(255, 255, 255, 0.9); padding: 10px 15px; 
-            border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            display: flex; align-items: center; font-weight: bold; color: #28a745; font-size: 14px; cursor: pointer;
-        }
-        #pc-photo-menu input { margin-right: 10px; transform: scale(1.2); cursor: pointer; }
-
-        #info-panel { 
-            position: absolute; top: 15px; right: 15px; z-index: 1000; 
-            background: rgba(255, 255, 255, 0.9); padding: 15px; border-radius: 15px; 
-            width: 180px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: 0.3s;
-        }
+        #pc-photo-menu { position: absolute; top: 15px; left: 15px; z-index: 1000; background: rgba(255, 255, 255, 0.9); padding: 10px 15px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: flex; align-items: center; font-weight: bold; color: #28a745; font-size: 14px; cursor: pointer; }
+        #pc-photo-menu input { margin-right: 10px; transform: scale(1.2); }
+        #info-panel { position: absolute; top: 15px; right: 15px; z-index: 1000; background: rgba(255, 255, 255, 0.9); padding: 15px; border-radius: 15px; width: 180px; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.2); text-align: center; }
         .panel-close { position: absolute; top: 5px; right: 10px; cursor: pointer; color: #888; font-size: 18px; }
-        .divider { font-size: 15px; font-weight: bold; border-bottom: 1px solid #ddd; margin-bottom: 10px; padding-bottom: 5px; text-align: center; }
-        .stat-item { margin-bottom: 8px; text-align: center; }
+        .divider { font-size: 15px; font-weight: bold; border-bottom: 1px solid #ddd; margin-bottom: 10px; padding-bottom: 5px; }
+        .stat-item { margin-bottom: 8px; }
         .stat-label { font-size: 9px; color: #777; text-transform: uppercase; display: block; }
         .stat-val { font-weight: bold; color: #238aff; font-size: 17px; }
-
-        #chart-box { 
-            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); 
-            z-index: 1000; width: 90%; max-width: 900px; height: 180px; 
-            background: rgba(255, 255, 255, 0.9); padding: 10px; border-radius: 15px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
-        }
-
-        /* --- КНОПКИ МОБИЛЬНОЙ ВЕРСИИ --- */
-        .ctrl-btn { 
-            position: absolute; z-index: 1001; background: white; border: none; 
-            width: 45px; height: 45px; border-radius: 50%; box-shadow: 0 2px 10px rgba(0,0,0,0.3); 
-            display: none; align-items: center; justify-content: center; cursor: pointer; color: #333; font-size: 18px; 
-        }
+        #chart-box { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; width: 90%; max-width: 900px; height: 180px; background: rgba(255, 255, 255, 0.9); padding: 10px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .ctrl-btn { position: absolute; z-index: 1001; background: white; border: none; width: 45px; height: 45px; border-radius: 50%; box-shadow: 0 2px 10px rgba(0,0,0,0.3); display: none; align-items: center; justify-content: center; cursor: pointer; color: #333; font-size: 18px; }
         #btn-back { top: 15px; left: 15px; background: #ff0000; color: white; }
         #btn-photo { top: 15px; left: 50%; transform: translateX(-50%); color: #28a745; }
         #btn-stats { top: 15px; right: 15px; }
         #btn-chart { bottom: 20px; left: 15px; }
-
         .restore-btn { position: absolute; z-index: 999; background: rgba(255,255,255,0.8); border: 1px solid #ccc; padding: 5px 10px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; display: none; }
-        #res-stats { top: 15px; right: 15px; }
-        #res-chart { bottom: 20px; left: 50%; transform: translateX(-50%); }
-
-        /* --- ПРОСМОТР ФОТО (LIGHTBOX) --- */
-        #photo-viewer { 
-            position: absolute; bottom: 100px; left: 15px; z-index: 2000; width: 220px; 
-            background: white; padding: 5px; border-radius: 8px; display: none; cursor: pointer; touch-action: none; overflow: hidden; 
-        }
+        #res-stats { top: 15px; right: 15px; } #res-chart { bottom: 20px; left: 50%; transform: translateX(-50%); }
+        #photo-viewer { position: absolute; bottom: 100px; left: 15px; z-index: 2000; width: 220px; background: white; padding: 5px; border-radius: 8px; display: none; cursor: pointer; touch-action: none; overflow: hidden; }
         #photo-viewer img { width: 100%; border-radius: 5px; display: block; transition: transform 0.1s ease-out; object-fit: contain; }
-        #photo-viewer .close-btn { 
-            position: absolute; top: -12px; right: -12px; background: red; color: white; 
-            border-radius: 50%; width: 26px; height: 26px; text-align: center; line-height: 24px; 
-            font-weight: bold; border: 2px solid white; z-index: 2100; 
-        }
-
-        /* МАРКЕРЫ */
+        #photo-viewer .close-btn { position: absolute; top: -12px; right: -12px; background: red; color: white; border-radius: 50%; width: 26px; height: 26px; text-align: center; line-height: 24px; font-weight: bold; border: 2px solid white; z-index: 2100; }
         .marker-ab { background: #ff0000; border: 2px solid white; border-radius: 50%; color: white; font-weight: bold; text-align: center; line-height: 24px; font-size: 14px; }
         .hover-dot { background: #fff; border: 3px solid #ff0000; border-radius: 50%; box-shadow: 0 0 10px rgba(255,255,255,0.8); }
         .photo-marker { background: none !important; border: none !important; display: flex; align-items: center; justify-content: center; overflow: visible !important; }
         .map-avatar { position: absolute; bottom: 25px; right: 10px; z-index: 500; width: 50px; height: 50px; border-radius: 50%; border: 2px solid white; opacity: 0.8; object-fit: cover; }
-
-        /* --- АДАПТАЦИЯ (ТЕЛЕФОНЫ) --- */
         @media (max-width: 768px) {
-            .ctrl-btn { display: flex; }
-            #pc-photo-menu { display: none; }
-            #info-panel, #chart-box { display: none; }
+            .ctrl-btn { display: flex; } #pc-photo-menu { display: none; } #info-panel, #chart-box { display: none; }
             #info-panel { width: 150px; right: 10px; top: 75px; background: rgba(255,255,255,0.95); }
             #chart-box { bottom: 85px; height: 160px; width: 95%; } 
-            
-            #photo-viewer { 
-                position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
-                background: black; padding: 0; border-radius: 0; justify-content: center; align-items: center; bottom: auto; z-index: 9999; 
-            }
-            #photo-viewer img { width: 100%; height: 100%; max-width: 100%; max-height: 100%; border-radius: 0; object-fit: contain; }
-            #photo-viewer .close-btn { display: none !important; } /* ЖЕСТКОЕ СКРЫТИЕ КРАСНОЙ ТОЧКИ */
+            #photo-viewer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: black; padding: 0; display: none; justify-content: center; align-items: center; bottom: auto; z-index: 9999; }
+            #photo-viewer img { width: 100%; height: 100%; object-fit: contain; }
+            #photo-viewer .close-btn { display: none !important; }
         }
     </style>
 </head>
 <body>
-
-    <!-- PC Фото меню -->
-    <label id="pc-photo-menu">
-        <input type="checkbox" id="pc-photo-check" onchange="togglePhotos(this.checked)"> 📷 Показать фото
-    </label>
-
-    <!-- Mobile Кнопки -->
+    <label id="pc-photo-menu"><input type="checkbox" id="pc-photo-check" onchange="togglePhotos(this.checked)"> 📷 Показать фото</label>
     <button id="btn-back" class="ctrl-btn" onclick="goBack()"><i class="fa-solid fa-arrow-left"></i></button>
     <button id="btn-photo" class="ctrl-btn" onclick="togglePhotos()"><i class="fa-solid fa-camera"></i></button>
     <button id="btn-stats" class="ctrl-btn" onclick="toggleStats()"><i class="fa-solid fa-chart-simple"></i></button>
     <button id="btn-chart" class="ctrl-btn" onclick="toggleChart()"><i class="fa-solid fa-mountain-sun"></i></button>
-
     <button id="res-stats" class="restore-btn" onclick="toggleStats()">Показать итоги</button>
     <button id="res-chart" class="restore-btn" onclick="toggleChart()">Показать график</button>
-
-    <div id="map"></div>
-    <img src="avatar.jpg" class="map-avatar">
-
-    <div id="info-panel">
-        <div class="panel-close" onclick="toggleStats()">&times;</div>
-        <div class="divider">ИТОГИ ДНЯ</div>
-        <div class="stat-item"><span class="stat-label">Дистанция</span><span id="dist" class="stat-val">--</span></div>
-        <div class="stat-item"><span class="stat-label">Набор высоты</span><span id="gain" class="stat-val">--</span></div>
-        <div class="stat-item"><span class="stat-label">Макс. высота</span><span id="max-alt" class="stat-val">--</span></div>
-        <div class="stat-item analytics-hide"><span class="stat-label">В движении</span><span id="time" class="stat-val">--</span></div>
-        <div class="stat-item analytics-hide"><span class="stat-label">Ср. скорость</span><span id="avg-speed" class="stat-val">--</span></div>
-    </div>
-
-    <div id="chart-box">
-        <div class="panel-close" onclick="toggleChart()">&times;</div>
-        <canvas id="elevationChart"></canvas>
-    </div>
-
-    <div id="photo-viewer" onclick="handleBackgroundClick()">
-        <div class="close-btn" onclick="closePhoto()">×</div>
-        <img id="view-img" src="" onclick="handlePhotoClick(event)">
-    </div>
-
+    <div id="map"></div><img src="avatar.jpg" class="map-avatar">
+    <div id="info-panel"><div class="panel-close" onclick="toggleStats()">&times;</div><div class="divider">ИТОГИ ДНЯ</div><div class="stat-item"><span class="stat-label">Дистанция</span><span id="dist" class="stat-val">--</span></div><div class="stat-item"><span class="stat-label">Набор высоты</span><span id="gain" class="stat-val">--</span></div><div class="stat-item"><span class="stat-label">Макс. высота</span><span id="max-alt" class="stat-val">--</span></div><div class="stat-item analytics-hide"><span class="stat-label">В движении</span><span id="time" class="stat-val">--</span></div><div class="stat-item analytics-hide"><span class="stat-label">Ср. скорость</span><span id="avg-speed" class="stat-val">--</span></div></div>
+    <div id="chart-box"><div class="panel-close" onclick="toggleChart()">&times;</div><canvas id="elevationChart"></canvas></div>
+    <div id="photo-viewer" onclick="handleBackgroundClick()"><div class="close-btn" onclick="closePhoto()">×</div><img id="view-img" src="" onclick="handlePhotoClick(event)"></div>
     <script>
-        var params = new URLSearchParams(window.location.search);
-        var file = params.get('file'), folder = params.get('folder') || 'tracks/';
+        var params = new URLSearchParams(window.location.search), file = params.get('file'), folder = params.get('folder') || 'tracks/';
         var map = L.map('map', {attributionControl: true, zoomControl: false}).setView([50, 80], 4);
         map.attributionControl.setPrefix('Мое велопутешествие');
         L.tileLayer('http://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',{ maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3'] }).addTo(map);
-
-        var trackPoints = [], photoLayer = L.layerGroup();
-        var hoverMarker = L.marker([0,0], { icon: L.divIcon({className: 'hover-dot', iconSize: [14, 14], iconAnchor: [7, 7]}) });
-
+        var trackPoints = [], photoLayer = L.layerGroup(), hoverMarker = L.marker([0,0], { icon: L.divIcon({className: 'hover-dot', iconSize: [14, 14], iconAnchor: [7, 7]}) });
         function goBack() { if(window.parent && window.parent.closeTrackView) window.parent.closeTrackView(); else window.history.back(); }
-        
-        function toggleStats() { 
-            var p = document.getElementById('info-panel'), b = document.getElementById('res-stats'); 
-            var isPC = window.innerWidth > 768;
-            if(p.style.display === 'block' || (isPC && p.style.display !== 'none')) { p.style.display = 'none'; if(isPC) b.style.display = 'block'; }
-            else { p.style.display = 'block'; b.style.display = 'none'; }
-        }
-
-        function toggleChart() { 
-            var p = document.getElementById('chart-box'), b = document.getElementById('res-chart'); 
-            var isPC = window.innerWidth > 768;
-            if(p.style.display === 'block' || (isPC && p.style.display !== 'none')) { p.style.display = 'none'; if(isPC) b.style.display = 'block'; }
-            else { p.style.display = 'block'; b.style.display = 'none'; }
-        }
-
-        function togglePhotos(forceState) {
-            var isChecked = (forceState !== undefined) ? forceState : !map.hasLayer(photoLayer);
-            var btnMobile = document.getElementById('btn-photo');
-            var checkPC = document.getElementById('pc-photo-check');
-            if (isChecked) {
-                map.addLayer(photoLayer);
-                btnMobile.style.background = '#28a745'; btnMobile.style.color = '#fff';
-                checkPC.checked = true;
-            } else {
-                map.removeLayer(photoLayer);
-                btnMobile.style.background = '#fff'; btnMobile.style.color = '#28a745';
-                checkPC.checked = false;
-                closePhoto();
-            }
-        }
-
+        function toggleStats() { var p = document.getElementById('info-panel'), b = document.getElementById('res-stats'), isPC = window.innerWidth > 768; if(p.style.display === 'block' || (isPC && p.style.display !== 'none')) { p.style.display = 'none'; if(isPC) b.style.display = 'block'; } else { p.style.display = 'block'; b.style.display = 'none'; } }
+        function toggleChart() { var p = document.getElementById('chart-box'), b = document.getElementById('res-chart'), isPC = window.innerWidth > 768; if(p.style.display === 'block' || (isPC && p.style.display !== 'none')) { p.style.display = 'none'; if(isPC) b.style.display = 'block'; } else { p.style.display = 'block'; b.style.display = 'none'; } }
+        function togglePhotos(forceState) { var isChecked = (forceState !== undefined) ? forceState : !map.hasLayer(photoLayer), btnMobile = document.getElementById('btn-photo'), checkPC = document.getElementById('pc-photo-check'); if (isChecked) { map.addLayer(photoLayer); btnMobile.style.background = '#28a745'; btnMobile.style.color = '#fff'; checkPC.checked = true; } else { map.removeLayer(photoLayer); btnMobile.style.background = '#fff'; btnMobile.style.color = '#28a745'; checkPC.checked = false; closePhoto(); } }
         if (file) {
-            new L.GPX(folder + file, {
-                async: true, marker_options: { startIconUrl: null, endIconUrl: null, shadowUrl: null },
-                polyline_options: { color: '#ffea00', weight: 6, opacity: 0.9 }
-            }).on('loaded', function(e) {
+            new L.GPX(folder + file, { async: true, marker_options: { startIconUrl: null, endIconUrl: null }, polyline_options: { color: '#ffea00', weight: 6, opacity: 0.9 } }).on('loaded', function(e) {
                 var g = e.target; map.fitBounds(g.getBounds(), {padding: [50, 50]});
-                document.getElementById('dist').innerText = (g.get_distance()/1000).toFixed(1) + " км";
-                document.getElementById('gain').innerText = g.get_elevation_gain().toFixed(0) + " м";
-                document.getElementById('max-alt').innerText = g.get_elevation_max().toFixed(0) + " м";
-                var speed = g.get_moving_speed();
-                if (folder.includes('2018') || speed > 60) { document.querySelectorAll('.analytics-hide').forEach(el => el.style.display = 'none'); } 
-                else {
-                    var ms = g.get_moving_time();
-                    document.getElementById('time').innerText = Math.floor(ms/3600000)+"ч "+Math.floor((ms%3600000)/60000)+"м";
-                    document.getElementById('avg-speed').innerText = speed.toFixed(1) + " км/ч";
-                }
+                document.getElementById('dist').innerText = (g.get_distance()/1000).toFixed(1) + " км"; document.getElementById('gain').innerText = g.get_elevation_gain().toFixed(0) + " м"; document.getElementById('max-alt').innerText = g.get_elevation_max().toFixed(0) + " м";
+                var speed = g.get_moving_speed(); if (folder.includes('2018') || speed > 60) { document.querySelectorAll('.analytics-hide').forEach(el => el.style.display = 'none'); } else { var ms = g.get_moving_time(); document.getElementById('time').innerText = Math.floor(ms/3600000)+"ч "+Math.floor((ms%3600000)/60000)+"м"; document.getElementById('avg-speed').innerText = speed.toFixed(1) + " км/ч"; }
                 trackPoints = g.getLayers()[0].getLatLngs(); if (Array.isArray(trackPoints[0])) trackPoints = trackPoints[0];
                 L.marker(trackPoints[0], {icon: L.divIcon({className: 'marker-ab', html: 'A', iconSize: [24, 24], iconAnchor: [12, 12]})}).addTo(map);
                 L.marker(trackPoints[trackPoints.length - 1], {icon: L.divIcon({className: 'marker-ab', html: 'B', iconSize: [24, 24], iconAnchor: [12, 12]})}).addTo(map);
                 buildChart(g.get_elevation_data()); loadPhotos(folder);
             }).addTo(map);
         }
-
         function buildChart(elevationData) {
             var ctx = document.getElementById('elevationChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: elevationData.map(d => d[0].toFixed(1)),
-                    datasets: [{ data: elevationData.map(d => d[1].toFixed(0)), fill: true, backgroundColor: 'rgba(35, 138, 255, 0.1)', borderColor: '#238aff', borderWidth: 2, pointRadius: 0, tension: 0.1 }]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    interaction: { intersect: false, mode: 'index' },
-                    plugins: { legend: { display: false }, tooltip: { enabled: false } },
-                    scales: {
-                        x: { display: true, ticks: { font: { size: 8 } }, title: { display: true, text: 'км', font: { size: 8, weight: 'bold' } } },
-                        y: { display: true, ticks: { font: { size: 8 } }, title: { display: true, text: 'м', font: { size: 8, weight: 'bold' } } }
-                    },
-                    onHover: (event, el) => {
-                        if (el.length > 0) {
-                            var idx = Math.floor((el[0].index / elevationData.length) * trackPoints.length);
-                            hoverMarker.setLatLng(trackPoints[idx]).addTo(map);
-                        } else map.removeLayer(hoverMarker);
-                    }
-                }
-            });
+            new Chart(ctx, { type: 'line', data: { labels: elevationData.map(d => d[0].toFixed(1)), datasets: [{ data: elevationData.map(d => d[1].toFixed(0)), fill: true, backgroundColor: 'rgba(35, 138, 255, 0.1)', borderColor: '#238aff', borderWidth: 2, pointRadius: 0, tension: 0.1 }] }, options: { responsive: true, maintainAspectRatio: false, interaction: { intersect: false, mode: 'index' }, plugins: { legend: { display: false }, tooltip: { enabled: false } }, scales: { x: { display: true, ticks: { font: { size: 8 } }, title: { display: true, text: 'км', font: { size: 8, weight: 'bold' } } }, y: { display: true, ticks: { font: { size: 8 } }, title: { display: true, text: 'м', font: { size: 8, weight: 'bold' } } } }, onHover: (event, el) => { if (el.length > 0) { var idx = Math.floor((el[0].index / elevationData.length) * trackPoints.length); hoverMarker.setLatLng(trackPoints[idx]).addTo(map); } else map.removeLayer(hoverMarker); } } });
         }
-
         var img = document.getElementById('view-img'), scale = 1, lastScale = 1, startDist = 0, posX = 0, posY = 0, startX = 0, startY = 0, isDragging = false;
         img.addEventListener('touchstart', e => { if (e.touches.length === 1) { isDragging = true; startX = e.touches[0].pageX - posX; startY = e.touches[0].pageY - posY; } else if (e.touches.length === 2) { isDragging = false; startDist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY); lastScale = scale; } });
         img.addEventListener('touchmove', e => { if (scale > 1) e.preventDefault(); if (e.touches.length === 1 && isDragging && scale > 1) { posX = e.touches[0].pageX - startX; posY = e.touches[0].pageY - startY; updateTransform(); } else if (e.touches.length === 2) { var dist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY); scale = Math.min(Math.max(1, lastScale * (dist / startDist)), 5); updateTransform(); } });
         img.addEventListener('touchend', () => { isDragging = false; lastScale = scale; });
         function updateTransform() { if (scale <= 1) { posX = 0; posY = 0; } img.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`; }
-        
-        function handlePhotoClick(e) { 
-            e.stopPropagation(); 
-            if (window.innerWidth > 768) window.open(e.target.src, '_blank'); 
-            else { if (scale > 1.1) { scale = 1; posX = 0; posY = 0; updateTransform(); } else closePhoto(); } 
-        }
+        function handlePhotoClick(e) { e.stopPropagation(); if (window.innerWidth > 768) window.open(e.target.src, '_blank'); else { if (scale > 1.1) { scale = 1; posX = 0; posY = 0; updateTransform(); } else closePhoto(); } }
         function handleBackgroundClick() { if (window.innerWidth <= 768) closePhoto(); }
         function closePhoto() { scale = 1; lastScale = 1; posX = 0; posY = 0; updateTransform(); document.getElementById('photo-viewer').style.display = 'none'; }
-
         function loadPhotos(folderPath) {
             var repo = folderPath.includes("2018") ? "archive-2018-photos" : folderPath.includes("2019") ? "archive-2019-photos" : folderPath.includes("2021") ? "archive-2021-photos" : folderPath.includes("2024") ? "archive-2024-photos" : "archive-2026-photos";
             var hex = folderPath.includes("2018") ? "#ff0000" : folderPath.includes("2019") ? "#007bff" : folderPath.includes("2021") ? "#9b59b6" : folderPath.includes("2024") ? "#ff8c00" : "#28a745";
