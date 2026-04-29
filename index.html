@@ -54,7 +54,7 @@
         .text-icon-btn { font-weight: 900; font-size: 14px; border: 2px solid #555; padding: 3px 8px; border-radius: 8px; color: #555; text-transform: uppercase; }
         .payment-btn { display: block; width: 100%; text-decoration: none; padding: 12px; border-radius: 12px; margin-top: 10px; font-weight: bold; transition: 0.2s; color: white; }
 
-        /* ФОТО VIEWER */
+        /* ФОТО ПРОСМОТРЩИК */
         #photo-viewer { position: absolute; bottom: 100px; left: 15px; z-index: 1000; width: 220px; background: white; padding: 5px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none; cursor: pointer; }
         #photo-viewer img { width: 100%; border-radius: 5px; display: block; }
         #photo-viewer .close-btn { position: absolute; top: -10px; right: -10px; background: red; color: white; border-radius: 50%; width: 22px; height: 22px; text-align: center; line-height: 20px; font-weight: bold; border: 2px solid white; }
@@ -72,7 +72,7 @@
         .trans-center-marker { background: #fff; border-radius: 50%; border: 2.5px solid; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.5); font-size: 18px; cursor: pointer; }
 
         /* АВАТАРКА */
-        .map-avatar { position: absolute; bottom: 24px; right: 10px; z-index: 1000; width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; opacity: 0.8; pointer-events: none; object-fit: cover; }
+        .map-avatar { position: absolute; bottom: 24px; right: 10px; z-index: 1000; width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; opacity: 0.8; pointer-events: none; object-fit: cover; transition: 0.3s; }
 
         /* ПОПАПЫ */
         .popup-box { text-align: center; font-family: sans-serif; min-width: 180px; }
@@ -87,6 +87,7 @@
             #menu-box { left: 5%; width: 90%; top: 15px; box-sizing: border-box; min-width: auto; }
             #hint-box { top: auto; bottom: 30px; }
             .map-avatar { bottom: 18px; right: 5px; width: 45px; height: 45px; }
+            /* Мобильный просмотрщик: на весь экран */
             #photo-viewer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; padding: 0; border-radius: 0; display: none; justify-content: center; align-items: center; bottom: auto; z-index: 9999; }
             #photo-viewer img { max-width: 100%; max-height: 100%; border-radius: 0; }
             #photo-viewer .close-btn { display: none; }
@@ -96,7 +97,7 @@
 <body>
     <div id="photo-viewer" onclick="closePhoto()">
         <div class="close-btn" onclick="closePhoto()">×</div>
-        <img id="view-img" src="" onclick="event.stopPropagation(); closePhoto();">
+        <img id="view-img" src="" onclick="onPhotoClick(event)">
     </div>
 
     <div id="about-modal" onclick="closeAbout()">
@@ -107,7 +108,7 @@
             <div style="background: #f8f9fa; padding: 20px; border-radius: 15px;">
                 <h3 id="support-title"></h3><p id="support-text"></p>
                 <div id="payment-buttons"></div>
-                <button onclick="toggleQR()" id="qr-btn" style="margin-top:15px; border:1px solid #ccc; padding:8px 15px; border-radius:10px; cursor:pointer;">QR-коды</button>
+                <button onclick="toggleQR()" id="qr-btn" style="margin-top:15px; border:1px solid #ccc; padding:8px 15px; border-radius:10px; cursor:pointer; background:none;">QR-коды</button>
                 <div id="qr-section" style="display:none;"><div id="qr-container"></div></div>
             </div>
         </div>
@@ -152,6 +153,12 @@
         function toggleFullscreen() { if (!document.fullscreenElement) { document.documentElement.requestFullscreen(); } else { document.exitFullscreen(); } }
         function closeAbout() { document.getElementById('about-modal').style.display = 'none'; }
         function toggleQR() { var s = document.getElementById('qr-section'); s.style.display = s.style.display === 'block' ? 'none' : 'block'; }
+
+        function onPhotoClick(event) {
+            event.stopPropagation();
+            if (window.innerWidth > 768) { window.open(event.target.src, '_blank'); } 
+            else { closePhoto(); }
+        }
 
         function openAbout() {
             if (typeof aboutData === 'undefined') return;
