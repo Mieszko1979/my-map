@@ -43,10 +43,8 @@
         .social-icons i { font-size: 32px; }
         .fa-vk { color: #0077FF; } .fa-odnoklassniki { color: #ee8208; } .fa-instagram { color: #E1306C; } .fa-youtube { color: #FF0000; } .fa-telegram { color: #0088cc; } .fa-strava { color: #FC6100; }
         .text-icon-btn { font-weight: 900; font-size: 13px; border: 2px solid #555; padding: 4px 10px; border-radius: 8px; color: #333; text-transform: uppercase; background: #fff; }
-        
         .payment-btn { display: block; width: 100%; text-decoration: none; padding: 12px; border-radius: 12px; margin-top: 10px; font-weight: bold; color: white; }
         
-        /* ПРОСМОТР ФОТО (Desktop) */
         #photo-viewer { position: absolute; bottom: 100px; left: 15px; z-index: 1000; width: 220px; background: white; padding: 5px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none; cursor: pointer; }
         #photo-viewer img { width: 100%; border-radius: 5px; display: block; }
         #photo-viewer .close-btn { position: absolute; top: -10px; right: -10px; background: red; color: white; border-radius: 50%; width: 24px; height: 24px; text-align: center; line-height: 22px; font-weight: bold; border: 2px solid white; z-index: 1100; }
@@ -56,8 +54,8 @@
         .suffix { position: absolute; left: 100%; top: 0; }
         .c2018 { border-color: #ff0000 !important; color: #ff0000; } .c2019 { border-color: #007bff !important; color: #007bff; } .c2021 { border-color: #9b59b6 !important; color: #9b59b6; } .c2024 { border-color: #ff8c00 !important; color: #ff8c00; } .cCurrent { border-color: #28a745 !important; color: #28a745; }
         
-        /* Иконка транспорта - ЗНАЧОК КРУПНЕЕ */
-        .trans-center-marker { background: #fff; border-radius: 50%; border: 2.5px solid; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.5); font-size: 24px; cursor: pointer; }
+        /* Кружок транспорта - 24px и цвет маршрута */
+        .trans-center-marker { background: #fff; border-radius: 50%; border: 2.5px solid; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.5); font-size: 16px; cursor: pointer; }
         
         .photo-marker { background: none !important; border: none !important; display: flex; align-items: center; justify-content: center; overflow: visible !important; }
         .map-avatar { position: absolute; bottom: 25px; right: 10px; z-index: 1000; width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; opacity: 0.8; pointer-events: none; object-fit: cover; }
@@ -182,7 +180,7 @@
                     L.circleMarker(p.from, { radius: 5, color: hex, fillColor: 'white', fillOpacity: 1, weight: 2 }).addTo(target);
                     L.circleMarker(p.to, { radius: 5, color: hex, fillColor: 'white', fillOpacity: 1, weight: 2 }).addTo(target);
                     var tIcons = { 'plane':'✈️','train':'🚂','bus':'🚌','car':'🚗','truck':'🚚' };
-                    L.marker([(p.from[0]+p.to[0])/2, (p.from[1]+p.to[1])/2], {icon: L.divIcon({ className: 'trans-center-marker', style: `border-color: ${hex}`, html: tIcons[p.transport] || '🚀', iconSize:[32,32], iconAnchor:[16,16] })}).addTo(target).bindPopup(createPopup(p, folder));
+                    L.marker([(p.from[0]+p.to[0])/2, (p.from[1]+p.to[1])/2], {icon: L.divIcon({ className: 'trans-center-marker ' + colorClass, html: tIcons[p.transport] || '🚀', iconSize:[24, 24], iconAnchor:[12, 12] })}).addTo(target).bindPopup(createPopup(p, folder));
                     L.polylineDecorator(line, { patterns: [{ offset: '20%', repeat: '40%', symbol: L.Symbol.arrowHead({pixelSize: 12, pathOptions: {color: hex, fillOpacity: 1, weight: 0}}) }] }).addTo(target);
                 }
             });
