@@ -3,7 +3,7 @@
 <head>
     <title>Мой Велоархив</title>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
@@ -40,43 +40,24 @@
         .trip-item input { margin-right: 12px; }
         #photo-toggle-wrap { margin-top: 12px; padding-top: 12px; border-top: 1px dashed #ccc; color: #28a745; font-weight: bold; display: flex; align-items: center; font-size: 15px; cursor: pointer; }
         #photo-toggle-wrap input { margin-right: 12px; transform: scale(1.2); }
-        
-        /* КНОПКА ПОЛНОЭКРАННОГО РЕЖИМА */
-        .fs-btn { background: none; border: none; cursor: pointer; font-size: 20px; color: #666; padding: 5px; margin-left: 10px; transition: 0.2s; }
-        .fs-btn:hover { color: #000; transform: scale(1.2); }
+        .fs-btn { background: none; border: none; cursor: pointer; font-size: 18px; color: #666; padding: 5px; margin-left: 10px; }
 
         /* ВИЗИТКА */
-        #hint-box { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); z-index: 1000; background: rgba(255, 255, 255, 0.95); padding: 10px 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); font-family: sans-serif; cursor: pointer; transition: 0.2s; }
+        #hint-box { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); z-index: 1000; background: rgba(255, 255, 255, 0.95); padding: 10px 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); font-family: sans-serif; cursor: pointer; }
         .hint-text { color: #ff0000; font-weight: 900; font-size: 17px; text-transform: uppercase; letter-spacing: 1px; }
 
         #about-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 2000; justify-content: center; align-items: center; }
         .modal-content { background: white; width: 95%; max-width: 440px; max-height: 85vh; border-radius: 20px; padding: 25px; overflow-y: auto; position: relative; font-family: sans-serif; text-align: center; box-sizing: border-box; }
-        .modal-content b { font-size: 22px; display: block; margin-bottom: 10px; }
         .close-modal { position: absolute; top: 15px; right: 15px; font-size: 24px; cursor: pointer; color: #aaa; }
         .social-icons { display: flex; justify-content: center; gap: 12px; margin: 20px 0; align-items: center; flex-wrap: wrap; }
-        .social-icons a { color: #555; text-decoration: none; transition: 0.2s; display: flex; align-items: center; }
         .social-icons i { font-size: 28px; }
         .text-icon-btn { font-weight: 900; font-size: 14px; border: 2px solid #555; padding: 3px 8px; border-radius: 8px; color: #555; text-transform: uppercase; }
-        .payment-btn { display: block; width: 100%; text-decoration: none; padding: 12px; border-radius: 12px; margin-top: 10px; font-weight: bold; transition: 0.2s; box-sizing: border-box; }
-        #qr-section { margin-top: 20px; display: none; border-top: 1px solid #eee; padding-top: 15px; }
-        .qr-img { width: 220px; height: auto; margin: 10px auto; display: block; border-radius: 10px; }
+        .payment-btn { display: block; width: 100%; text-decoration: none; padding: 12px; border-radius: 12px; margin-top: 10px; font-weight: bold; transition: 0.2s; color: white; }
 
-        /* УМНЫЙ ПРОСМОТР ФОТО (Lightbox) */
-        #photo-viewer { 
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
-            background: rgba(0,0,0,0.95); z-index: 9999; 
-            display: none; justify-content: center; align-items: center; 
-            cursor: pointer; overflow: hidden;
-        }
-        #photo-viewer img { 
-            max-width: 95%; max-height: 95%; 
-            border-radius: 4px; box-shadow: 0 0 40px rgba(0,0,0,0.8); 
-            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            cursor: zoom-in; 
-        }
-        /* Класс для увеличения фото */
-        #photo-viewer img.zoomed { transform: scale(1.8); cursor: zoom-out; }
-        #photo-viewer .close-tip { position: absolute; bottom: 20px; color: rgba(255,255,255,0.5); font-size: 12px; font-family: sans-serif; pointer-events: none; }
+        /* ФОТО VIEWER */
+        #photo-viewer { position: absolute; bottom: 100px; left: 15px; z-index: 1000; width: 220px; background: white; padding: 5px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none; cursor: pointer; }
+        #photo-viewer img { width: 100%; border-radius: 5px; display: block; }
+        #photo-viewer .close-btn { position: absolute; top: -10px; right: -10px; background: red; color: white; border-radius: 50%; width: 22px; height: 22px; text-align: center; line-height: 20px; font-weight: bold; border: 2px solid white; }
 
         /* МАРКЕРЫ */
         .day-marker { background: #fff; border-radius: 50%; border: 2.5px solid; color: #000; font-weight: bold; font-family: Arial; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.5); font-size: 11px; overflow: hidden; white-space: nowrap; }
@@ -91,12 +72,11 @@
         .trans-center-marker { background: #fff; border-radius: 50%; border: 2.5px solid; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.5); font-size: 18px; cursor: pointer; }
 
         /* АВАТАРКА */
-        .map-avatar { position: absolute; bottom: 24px; right: 10px; z-index: 1000; width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; opacity: 0.8; pointer-events: none; object-fit: cover; transition: 0.3s; }
+        .map-avatar { position: absolute; bottom: 24px; right: 10px; z-index: 1000; width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; opacity: 0.8; pointer-events: none; object-fit: cover; }
 
         /* ПОПАПЫ */
         .popup-box { text-align: center; font-family: sans-serif; min-width: 180px; }
-        .popup-box b { font-size: 18px; display: block; margin-bottom: 5px; color: #000; }
-        .popup-box p { font-size: 14px; margin: 8px 0; }
+        .popup-box b { font-size: 18px; display: block; margin-bottom: 5px; }
         .btn-row { display: flex; justify-content: center; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
         .btn { text-decoration: none; font-weight: bold; font-size: 13px; padding: 6px 12px; border-radius: 15px; display: inline-block; }
         .btn-track { background: #28a745; color: white !important; }
@@ -106,32 +86,29 @@
         @media (max-width: 768px) {
             #menu-box { left: 5%; width: 90%; top: 15px; box-sizing: border-box; min-width: auto; }
             #hint-box { top: auto; bottom: 30px; }
-            .map-avatar { bottom: 20px; right: 10px; width: 45px; height: 45px; }
-            .leaflet-popup-content { max-width: 80vw !important; }
-            #photo-viewer img.zoomed { transform: scale(2.5); } /* Сильнее зум на мобилках */
+            .map-avatar { bottom: 18px; right: 5px; width: 45px; height: 45px; }
+            #photo-viewer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; padding: 0; border-radius: 0; display: none; justify-content: center; align-items: center; bottom: auto; z-index: 9999; }
+            #photo-viewer img { max-width: 100%; max-height: 100%; border-radius: 0; }
+            #photo-viewer .close-btn { display: none; }
         }
     </style>
 </head>
 <body>
-    <!-- ЛАЙТБОКС ДЛЯ ФОТО -->
-    <div id="photo-viewer" onclick="handlePhotoClick(event)">
-        <img id="view-img" src="" onclick="toggleZoom(event)">
-        <div class="close-tip">Нажмите на фон, чтобы вернуться к карте</div>
+    <div id="photo-viewer" onclick="closePhoto()">
+        <div class="close-btn" onclick="closePhoto()">×</div>
+        <img id="view-img" src="" onclick="event.stopPropagation(); closePhoto();">
     </div>
 
-    <!-- ОКНО ОБО МНЕ -->
     <div id="about-modal" onclick="closeAbout()">
         <div class="modal-content" onclick="event.stopPropagation()">
             <span class="close-modal" onclick="closeAbout()">&times;</span>
-            <b id="about-name"></b>
-            <p id="about-bio"></p>
+            <b id="about-name"></b><p id="about-bio"></p>
             <div class="social-icons" id="about-socials"></div>
             <div style="background: #f8f9fa; padding: 20px; border-radius: 15px;">
-                <h3 id="support-title" style="margin:0 0 10px 0; font-size:18px;"></h3>
-                <p id="support-text" style="font-size:14px;"></p>
+                <h3 id="support-title"></h3><p id="support-text"></p>
                 <div id="payment-buttons"></div>
-                <button onclick="toggleQR()" id="qr-btn" style="margin-top:15px; border:1px solid #ccc; padding:8px 15px; border-radius:10px; cursor:pointer; background:none;">Показать QR-коды</button>
-                <div id="qr-section"><div id="qr-container"></div></div>
+                <button onclick="toggleQR()" id="qr-btn" style="margin-top:15px; border:1px solid #ccc; padding:8px 15px; border-radius:10px; cursor:pointer;">QR-коды</button>
+                <div id="qr-section" style="display:none;"><div id="qr-container"></div></div>
             </div>
         </div>
     </div>
@@ -143,11 +120,10 @@
         <div class="menu-collapse-btn">
             <span onclick="toggleMenu()"><i class="fa-solid fa-map-location-dot" style="margin-right:8px; color:#28a745;"></i>Управление картой</span>
             <div>
-                <button class="fs-btn" onclick="toggleFullscreen()" title="На весь экран"><i class="fa-solid fa-expand"></i></button>
+                <button class="fs-btn" onclick="toggleFullscreen()"><i class="fa-solid fa-expand"></i></button>
                 <i class="fa-solid fa-chevron-up" id="menu-chevron" onclick="toggleMenu()"></i>
             </div>
         </div>
-        
         <div id="menu-content">
             <div class="menu-header"><input type="checkbox" id="main-toggle" onchange="toggleList()"> Мои велопутешествия</div>
             <div id="trip-list">
@@ -164,6 +140,7 @@
 
     <script>
         var map = L.map('map', {zoomControl: false, attributionControl: true}).setView([50, 80], 4);
+        map.attributionControl.setPrefix('Мое велопутешествие');
         L.tileLayer('http://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3'] }).addTo(map);
 
         var currentTripLayer = L.layerGroup().addTo(map);
@@ -171,45 +148,11 @@
         var photoClusterGroup = L.markerClusterGroup({ showCoverageOnHover: false, maxClusterRadius: 40 }).addTo(map);
         var hexColors = { 'c2018': '#ff0000', 'c2019': '#007bff', 'c2021': '#9b59b6', 'c2024': '#ff8c00', 'cCurrent': '#28a745' };
 
-        // Сворачивание меню
         function toggleMenu() { document.getElementById('menu-box').classList.toggle('collapsed'); }
-        
-        // ПОЛНОЭКРАННЫЙ РЕЖИМ
-        function toggleFullscreen() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(err => {
-                    alert(`Ошибка при входе в полноэкранный режим: ${err.message}`);
-                });
-            } else {
-                if (document.exitFullscreen) document.exitFullscreen();
-            }
-        }
+        function toggleFullscreen() { if (!document.fullscreenElement) { document.documentElement.requestFullscreen(); } else { document.exitFullscreen(); } }
+        function closeAbout() { document.getElementById('about-modal').style.display = 'none'; }
+        function toggleQR() { var s = document.getElementById('qr-section'); s.style.display = s.style.display === 'block' ? 'none' : 'block'; }
 
-        // ЛОГИКА ПРОСМОТРА ФОТО
-        function openPhoto(url) {
-            const viewer = document.getElementById('photo-viewer');
-            const img = document.getElementById('view-img');
-            img.src = url;
-            img.classList.remove('zoomed'); // Сбрасываем зум при открытии нового фото
-            viewer.style.display = 'flex';
-        }
-
-        function toggleZoom(event) {
-            event.stopPropagation(); // Чтобы клик по фото не закрывал его сразу
-            const img = document.getElementById('view-img');
-            img.classList.toggle('zoomed');
-        }
-
-        function handlePhotoClick(event) {
-            // Если кликнули не по самому фото, а по черному фону - закрываем
-            closePhoto();
-        }
-
-        function closePhoto() {
-            document.getElementById('photo-viewer').style.display = 'none';
-        }
-
-        // ОБО МНЕ
         function openAbout() {
             if (typeof aboutData === 'undefined') return;
             document.getElementById('about-name').innerText = aboutData.name;
@@ -226,25 +169,22 @@
             });
             document.getElementById('about-socials').innerHTML = sHtml;
             var pHtml = "";
-            aboutData.paymentButtons.forEach(p => { pHtml += `<a href="${p.url}" target="_blank" class="payment-btn" style="background:${p.color}; color:${p.textColor || 'white'}">${p.name}</a>`; });
+            aboutData.paymentButtons.forEach(p => { pHtml += `<a href="${p.url}" target="_blank" class="payment-btn" style="background:${p.color};">${p.name}</a>`; });
             document.getElementById('payment-buttons').innerHTML = pHtml;
             var qHtml = "";
             aboutData.qrCodes.forEach(q => { qHtml += `<div style="margin-top:15px;"><b>${q.name}</b><img src="${q.img}" class="qr-img"></div>`; });
             document.getElementById('qr-container').innerHTML = qHtml;
             document.getElementById('about-modal').style.display = 'flex';
         }
-        function toggleQR() { var s = document.getElementById('qr-section'); s.style.display = s.style.display === 'block' ? 'none' : 'block'; }
-        function closeAbout() { document.getElementById('about-modal').style.display = 'none'; }
 
-        // МАРКЕРЫ И ТРЕКИ
         function toggleList() { 
             var show = document.getElementById('main-toggle').checked;
             document.getElementById('trip-list').style.display = show ? 'block' : 'none';
             if(!show) { 
                 currentTripLayer.addTo(map); 
-                archiveLayerGroup.clearLayers(); 
-                photoClusterGroup.clearLayers(); 
+                archiveLayerGroup.clearLayers(); photoClusterGroup.clearLayers(); 
                 document.querySelectorAll('.trip-check').forEach(c => c.checked = false);
+                focusOnCurrent();
             } else { map.removeLayer(currentTripLayer); }
             updateMarkers(true);
         }
@@ -258,6 +198,7 @@
                 if (document.getElementById('chk2019').checked) { drawTrip(points2019, archiveLayerGroup, 'c2019', 'archive/2019/'); if(showPhotos) loadPhotos('archive-2019-photos', hexColors['c2019']); }
                 if (document.getElementById('chk2021').checked) { drawTrip(points2021, archiveLayerGroup, 'c2021', 'archive/2021/'); if(showPhotos) loadPhotos('archive-2021-photos', hexColors['c2021']); }
                 if (document.getElementById('chk2024').checked) { drawTrip(points2024, archiveLayerGroup, 'c2024', 'archive/2024/'); if(showPhotos) loadPhotos('archive-2024-photos', hexColors['c2024']); }
+                if (!onlyPhotos) { var layers = archiveLayerGroup.getLayers(); if (layers.length > 0) map.fitBounds(new L.featureGroup(layers).getBounds(), {padding: [50, 50]}); }
             } else {
                 if (typeof myPoints !== 'undefined') drawTrip(myPoints, currentTripLayer, 'cCurrent', 'tracks/');
                 if(showPhotos) loadPhotos('archive-2026-photos', hexColors['cCurrent']);
@@ -283,8 +224,7 @@
         }
 
         function createPopup(p, folder) {
-            var html = '<div class="popup-box"><b>' + p.title + '</b><p>' + p.desc + '</p>';
-            html += '<div class="btn-row">';
+            var html = '<div class="popup-box"><b>' + p.title + '</b><p>' + p.desc + '</p><div class="btn-row">';
             if (p.link) html += '<a href="view.html?folder='+folder+'&file='+p.link+'" class="btn btn-track" target="_blank">Трек</a>';
             if (p.vk) html += '<a href="'+p.vk+'" class="btn btn-vk" target="_blank">VK</a>';
             if (p.relive) html += '<a href="'+p.relive+'" class="btn btn-3d" target="_blank">3D</a>';
@@ -296,12 +236,16 @@
                 data.forEach(photo => {
                     var svg = `<svg width="22" height="22" viewBox="0 0 24 24" fill="${hex}"><path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><circle cx="12" cy="13" r="3" fill="${hex}"/><circle cx="18" cy="7" r="1.5" fill="white"/></svg>`;
                     L.marker([photo.lat, photo.lng], {icon: L.divIcon({ className: 'photo-marker', html: svg, iconSize: [22, 22], iconAnchor: [11, 11] })})
-                    .addTo(photoClusterGroup).on('click', function(e) {
-                        openPhoto(`https://mieszko1979.github.io/${repo}/${photo.url}`);
+                    .addTo(photoClusterGroup).on('click', () => {
+                        document.getElementById('view-img').src = `https://mieszko1979.github.io/${repo}/${photo.url}`;
+                        document.getElementById('photo-viewer').style.display = 'flex';
                     });
                 });
             });
         }
+        function closePhoto() { document.getElementById('photo-viewer').style.display = 'none'; }
+        function focusOnCurrent() { if (typeof myPoints !== 'undefined' && myPoints.length > 0) { var last = myPoints[myPoints.length-1]; var lat = last.lat || (last.from ? last.from[0] : 50); var lng = last.lng || (last.from ? last.from[1] : 80); map.setView([lat, lng], 8); } }
+        if (typeof myPoints !== 'undefined') { focusOnCurrent(); updateMarkers(true); }
     </script>
 </body>
 </html>
