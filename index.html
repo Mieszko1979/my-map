@@ -53,9 +53,9 @@
         .social-icons i { font-size: 28px; }
         .payment-btn { display: block; width: 100%; text-decoration: none; padding: 12px; border-radius: 12px; margin-top: 10px; font-weight: bold; transition: 0.2s; color: white; }
 
-        /* ФОТО VIEWER */
-        #photo-viewer { position: absolute; bottom: 100px; left: 15px; z-index: 1000; width: 220px; background: white; padding: 5px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none; cursor: pointer; touch-action: none; }
-        #photo-viewer img { width: 100%; border-radius: 5px; display: block; transition: transform 0.1s ease-out; transform-origin: center; }
+        /* ФОТО ПРОСМОТРЩИК */
+        #photo-viewer { position: absolute; bottom: 100px; left: 15px; z-index: 1000; width: 220px; background: white; padding: 5px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none; cursor: pointer; touch-action: none; overflow: hidden; }
+        #photo-viewer img { width: 100%; border-radius: 5px; display: block; transition: transform 0.1s ease-out; will-change: transform; }
         #photo-viewer .close-btn { position: absolute; top: -10px; right: -10px; background: red; color: white; border-radius: 50%; width: 22px; height: 22px; text-align: center; line-height: 20px; font-weight: bold; border: 2px solid white; }
 
         /* МАРКЕРЫ */
@@ -93,9 +93,9 @@
     </style>
 </head>
 <body>
-    <div id="photo-viewer" onclick="closePhoto()">
+    <div id="photo-viewer" onclick="handleBackgroundClick()">
         <div class="close-btn" onclick="closePhoto()">×</div>
-        <img id="view-img" src="" onclick="onPhotoClick(event)">
+        <img id="view-img" src="" onclick="handlePhotoClick(event)">
     </div>
 
     <div id="about-modal" onclick="closeAbout()">
@@ -152,24 +152,59 @@
         function closeAbout() { document.getElementById('about-modal').style.display = 'none'; }
         function toggleQR() { var s = document.getElementById('qr-section'); s.style.display = s.style.display === 'block' ? 'none' : 'block'; }
 
-        var photoImg = document.getElementById('view-img');
-        var scale = 1, startDist = 0;
-        photoImg.addEventListener('touchstart', e => { if (e.touches.length === 2) startDist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY); });
-        photoImg.addEventListener('touchmove', e => {
-            if (e.touches.length === 2) {
-                e.preventDefault();
-                var dist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY);
-                scale = Math.min(Math.max(1, scale * (dist / startDist)), 4);
-                photoImg.style.transform = `scale(${scale})`;
-                startDist = dist;
+        // --- НОВАЯ ЛОГИКА ЗУМА И ПАНОРАМИРОВАНИЯ ---
+        var img = document.getElementById('view-img');
+        var scale = 1, lastScale = 1, startDist = 0;
+        var posX = 0, posY = 0, lastPosX = 0, lastPosY = 0, startX = 0, startY = 0;
+        var isDragging = false;
+
+        img.addEventListener('touchstart', function(e) {
+            if (e.touches.length === 1) {
+                isDragging = true;
+                startX = e.touches[0].pageX - posX;
+                startY = e.touches[0].pageY - posY;
+            } else if (e.touches.length === 2) {
+                isDragging = false;
+                startDist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY);
+                lastScale = scale;
             }
         });
 
-        function onPhotoClick(event) {
-            event.stopPropagation();
-            if (window.innerWidth > 768) { window.open(event.target.src, '_blank'); } 
-            else if (scale > 1.1) { scale = 1; photoImg.style.transform = 'scale(1)'; } 
-            else { closePhoto(); }
+        img.addEventListener('touchmove', function(e) {
+            e.preventDefault();
+            if (e.touches.length === 1 && isDragging && scale > 1) {
+                posX = e.touches[0].pageX - startX;
+                posY = e.touches[0].pageY - startY;
+                updateTransform();
+            } else if (e.touches.length === 2) {
+                var dist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY);
+                scale = Math.min(Math.max(1, lastScale * (dist / startDist)), 5);
+                updateTransform();
+            }
+        });
+
+        img.addEventListener('touchend', function() { isDragging = false; lastScale = scale; });
+
+        function updateTransform() {
+            // Ограничиваем улет картинки за края при масштабе 1
+            if (scale <= 1) { posX = 0; posY = 0; }
+            img.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
+        }
+
+        function handlePhotoClick(e) {
+            e.stopPropagation();
+            if (window.innerWidth > 768) { window.open(e.target.src, '_blank'); } 
+            else {
+                if (scale > 1.1) { scale = 1; posX = 0; posY = 0; updateTransform(); } 
+                else { closePhoto(); }
+            }
+        }
+
+        function handleBackgroundClick() { if (window.innerWidth <= 768) closePhoto(); }
+
+        function closePhoto() { 
+            scale = 1; lastScale = 1; posX = 0; posY = 0; updateTransform();
+            document.getElementById('photo-viewer').style.display = 'none'; 
         }
 
         function openAbout() {
@@ -210,7 +245,7 @@
         function updateMarkers(onlyPhotos) {
             archiveLayerGroup.clearLayers(); photoClusterGroup.clearLayers();
             var showPhotos = document.getElementById('photo-toggle').checked;
-            if (!showPhotos) closePhoto(); // ФИКС: Закрываем окно при снятии галочки
+            if (!showPhotos) closePhoto();
             var isArchive = document.getElementById('main-toggle').checked;
             if (isArchive) {
                 if (document.getElementById('chk2018').checked) { drawTrip(points2018, archiveLayerGroup, 'c2018', 'archive/2018/'); if(showPhotos) loadPhotos('archive-2018-photos', hexColors['c2018']); }
@@ -262,7 +297,6 @@
                 });
             });
         }
-        function closePhoto() { scale = 1; photoImg.style.transform = 'scale(1)'; document.getElementById('photo-viewer').style.display = 'none'; }
         function focusOnCurrent() { if (typeof myPoints !== 'undefined' && myPoints.length > 0) { var last = myPoints[myPoints.length-1]; var lat = last.lat || (last.from ? last.from[0] : 50); var lng = last.lng || (last.from ? last.from[1] : 80); map.setView([lat, lng], 8); } }
         if (typeof myPoints !== 'undefined') { focusOnCurrent(); updateMarkers(true); }
     </script>
