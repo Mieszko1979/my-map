@@ -37,24 +37,20 @@
         .trip-item { margin-bottom: 12px; display: flex; align-items: center; font-size: 14px; font-weight: bold; line-height: 1.3; }
         .trip-item input { margin-right: 10px; flex-shrink: 0; }
         
-        /* ФОТО ТУГГЛ (PC) */
         #photo-toggle-wrap { margin-top: 12px; padding-top: 12px; border-top: 1px dashed #ccc; color: #28a745; font-weight: bold; display: flex; align-items: center; cursor: pointer; font-size: 15px; }
         #photo-toggle-wrap input { margin-right: 12px; transform: scale(1.2); }
         
-        /* КНОПКА ФОТО (MOBILE) */
         #mobile-photo-btn { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); z-index: 1001; background: white; border: none; width: 45px; height: 45px; border-radius: 50%; box-shadow: 0 2px 10px rgba(0,0,0,0.3); display: none; align-items: center; justify-content: center; cursor: pointer; color: #28a745; font-size: 20px; }
-
         .fs-btn { background: none; border: none; cursor: pointer; font-size: 18px; color: #666; margin-left: 10px; }
 
         /* ВИЗИТКА */
         #hint-box { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); z-index: 1000; background: rgba(255, 255, 255, 0.95); padding: 10px 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); cursor: pointer; text-align: center; }
-        .hint-text { color: #ff0000; font-weight: 900; font-size: 17px; text-transform: uppercase; }
+        .hint-text { color: #ff0000; font-weight: 900; font-size: 17px; text-transform: uppercase; letter-spacing: 1px; }
 
         #about-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 6000; justify-content: center; align-items: center; }
         .modal-content { background: white; width: 95%; max-width: 440px; border-radius: 20px; padding: 25px; text-align: center; position: relative; box-sizing: border-box; }
         .close-modal { position: absolute; top: 15px; right: 15px; font-size: 24px; cursor: pointer; color: #aaa; }
         
-        /* Соцсети */
         .social-icons { display: flex; justify-content: center; gap: 15px; margin: 20px 0; flex-wrap: wrap; align-items: center; }
         .social-icons a { text-decoration: none; display: flex; align-items: center; }
         .social-icons i { font-size: 32px; }
@@ -62,26 +58,37 @@
         .text-icon-btn { font-weight: 900; font-size: 13px; border: 2px solid #555; padding: 4px 10px; border-radius: 8px; color: #333; text-transform: uppercase; background: #fff; }
         .payment-btn { display: block; width: 100%; text-decoration: none; padding: 12px; border-radius: 12px; margin-top: 10px; font-weight: bold; color: white; }
 
-        /* ФОТО ПРОСМОТРЩИК (Desktop) */
         #photo-viewer { position: absolute; bottom: 100px; left: 15px; z-index: 1000; width: 220px; background: white; padding: 5px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none; cursor: pointer; }
         #photo-viewer img { width: 100%; border-radius: 5px; display: block; }
         #photo-viewer .close-btn { position: absolute; top: -12px; right: -12px; background: red; color: white; border-radius: 50%; width: 26px; height: 26px; text-align: center; line-height: 24px; font-weight: bold; border: 2px solid white; z-index: 1100; }
 
-        /* МАРКЕРЫ И ФИКС ЦИФР */
-        .day-marker { background: #fff; border-radius: 50%; border: 2.5px solid; color: #000; font-weight: bold; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.5); font-size: 11px; z-index: 500 !important; overflow: hidden; }
-        .num-wrapper { position: relative; width: 100%; text-align: center; line-height: 1; display: block; }
-        .suffix { position: absolute; left: 100%; top: 0; opacity: 0; pointer-events: none; } /* Скрываем хвосты */
-        
+        /* МАРКЕРЫ: ФИКС ЦИФР И ОБВОДКИ */
+        .day-marker, .trans-center-marker { 
+            background: #fff; 
+            border-radius: 50%; 
+            border: 2.5px solid; 
+            color: #000; 
+            font-weight: bold; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.5); 
+            font-size: 11px; 
+            width: 24px !important; 
+            height: 24px !important; 
+            overflow: hidden; /* Скрывает всё, что не влезает в кружок */
+            white-space: nowrap;
+            z-index: 500 !important; 
+        }
+        .trans-center-marker { font-size: 16px; } /* Размер иконки транспорта */
+
         .c2018 { border-color: #ff0000 !important; color: #ff0000; } 
         .c2019 { border-color: #007bff !important; color: #007bff; } 
         .c2021 { border-color: #9b59b6 !important; color: #9b59b6; } 
         .c2024 { border-color: #ff8c00 !important; color: #ff8c00; } 
         .cCurrent { border-color: #28a745 !important; color: #28a745; }
 
-        /* Транспорт - кружок 24px и крупная иконка */
-        .trans-center-marker { background: #fff; border-radius: 50%; border: 2.5px solid; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.5); font-size: 17px; cursor: pointer; }
         .photo-marker { background: none !important; border: none !important; display: flex; align-items: center; justify-content: center; overflow: visible !important; }
-        
         .map-avatar { position: absolute; bottom: 25px; right: 10px; z-index: 1000; width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; opacity: 0.8; pointer-events: none; object-fit: cover; }
 
         .popup-box { text-align: center; min-width: 180px; padding: 5px; }
@@ -95,8 +102,8 @@
 
         @media (max-width: 768px) {
             #menu-box { left: 5%; width: 90%; top: 15px; box-sizing: border-box; min-width: auto; }
-            #photo-toggle-wrap { display: none !important; } /* Скрываем из меню на мобилках */
-            #mobile-photo-btn { display: flex; } /* Показываем кнопку вверху */
+            #photo-toggle-wrap { display: none !important; }
+            #mobile-photo-btn { display: flex; }
             #hint-box { top: auto; bottom: 30px; left: 50%; transform: translateX(-50%); }
             .map-avatar { bottom: 18px; right: 5px; width: 45px; height: 45px; }
             #photo-viewer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: black; display: none; justify-content: center; align-items: center; bottom: auto; z-index: 9999; }
@@ -106,7 +113,6 @@
     </style>
 </head>
 <body>
-    <!-- Мобильная кнопка фото -->
     <button id="mobile-photo-btn" onclick="togglePhotos()"><i class="fa-solid fa-camera"></i></button>
 
     <iframe id="detail-overlay" src=""></iframe>
@@ -238,14 +244,13 @@
             data.forEach((p, i) => {
                 if (!p.type || p.type === 'day') {
                     var fullDay = String(p.day ? p.day : (i + 1));
-                    var markerHtml = '<span class="num-wrapper">' + fullDay.split('-')[0] + '<span class="suffix">' + (fullDay.split('-')[1] ? '-' + fullDay.split('-')[1] : '') + '</span></span>';
-                    L.marker([p.lat, p.lng], {icon: L.divIcon({ className: 'day-marker ' + colorClass, html: markerHtml, iconSize: [24, 24], iconAnchor: [12, 12] })}).addTo(target).bindPopup(createPopup(p, folder));
+                    L.marker([p.lat, p.lng], {icon: L.divIcon({ className: 'day-marker ' + colorClass, html: fullDay, iconSize: [24, 24], iconAnchor: [12, 12] })}).addTo(target).bindPopup(createPopup(p, folder));
                 } else if (p.type === 'transfer') {
                     var line = L.polyline([p.from, p.to], { color: hex, weight: 3, dashArray: '8, 12', opacity: 0.8 }).addTo(target);
                     L.circleMarker(p.from, { radius: 5, color: hex, fillColor: 'white', fillOpacity: 1, weight: 2 }).addTo(target);
                     L.circleMarker(p.to, { radius: 5, color: hex, fillColor: 'white', fillOpacity: 1, weight: 2 }).addTo(target);
                     var tIcons = { 'plane':'✈️','train':'🚂','bus':'🚌','car':'🚗','truck':'🚚' };
-                    L.marker([(p.from[0]+p.to[0])/2, (p.from[1]+p.to[1])/2], {icon: L.divIcon({ className: 'trans-center-marker', style: `border-color: ${hex}`, html: tIcons[p.transport] || '🚀', iconSize:[24, 24], iconAnchor:[12, 12] })}).addTo(target).bindPopup(createPopup(p, folder));
+                    L.marker([(p.from[0]+p.to[0])/2, (p.from[1]+p.to[1])/2], {icon: L.divIcon({ className: 'trans-center-marker ' + colorClass, html: tIcons[p.transport] || '🚀', iconSize:[24, 24], iconAnchor:[12, 12] })}).addTo(target).bindPopup(createPopup(p, folder));
                     L.polylineDecorator(line, { patterns: [{ offset: '20%', repeat: '40%', symbol: L.Symbol.arrowHead({pixelSize: 12, pathOptions: {color: hex, fillOpacity: 1, weight: 0}}) }] }).addTo(target);
                 }
             });
