@@ -36,11 +36,8 @@
         .trip-item { margin-bottom: 12px; display: flex; align-items: center; font-size: 14px; font-weight: bold; line-height: 1.3; }
         .fs-btn { background: none; border: none; cursor: pointer; font-size: 18px; color: #666; margin-right: 15px; }
         
-        /* ФОТО ТУМБЛЕР (ПК) */
         #photo-toggle-wrap { margin-top: 12px; padding-top: 12px; border-top: 1px dashed #ccc; color: #28a745; font-weight: bold; display: flex; align-items: center; cursor: pointer; font-size: 15px; }
         #photo-toggle-wrap input { margin-right: 12px; transform: scale(1.2); }
-        
-        /* КНОПКА КАМЕРЫ (МОБАЙЛ) */
         #mobile-photo-btn { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); z-index: 1001; background: white; border: none; width: 45px; height: 45px; border-radius: 50%; box-shadow: 0 2px 10px rgba(0,0,0,0.3); display: none; align-items: center; justify-content: center; color: #28a745; font-size: 20px; }
 
         /* ЖМИ СЮДА */
@@ -48,39 +45,37 @@
         #hint-box:hover { transform: translateX(-50%) scale(1.08); background: #fff; }
         .hint-text { color: #ff0000; font-weight: 900; font-size: 17px; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* МОДАЛЬНОЕ ОКНО (ТРЕХСТОЛБЦОВОЕ ПК) */
+        /* МОДАЛЬНОЕ ОКНО (ПК) */
         #about-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 6000; justify-content: center; align-items: center; }
         .modal-layout { display: flex; align-items: flex-start; justify-content: center; gap: 40px; width: 100%; max-width: 1300px; padding: 20px; box-sizing: border-box; }
-        
-        /* Центральный блок - шире и солиднее */
         .modal-main { background: white; width: 550px; border-radius: 25px; padding: 35px; text-align: center; position: relative; box-shadow: 0 15px 50px rgba(0,0,0,0.6); z-index: 2; box-sizing: border-box; }
-        
-        /* Боковые панели - больше "воздуха" */
         .side-panel { width: 250px; display: none; flex-direction: column; gap: 20px; animation: slideIn 0.4s ease-out; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         .qr-card { background: white; padding: 15px; border-radius: 20px; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.2); }
         .qr-card img { width: 100%; border-radius: 10px; }
         .qr-card b { font-size: 14px; display: block; margin-top: 8px; color: #333; }
-
-        .pay-link-btn { display: block; width: 100%; text-decoration: none; padding: 14px; border-radius: 15px; font-weight: bold; font-size: 15px; text-align: center; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: 0.2s; }
-        .pay-link-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.2); }
-
+        .pay-link-btn { display: block; width: 100%; text-decoration: none; padding: 14px; border-radius: 15px; font-weight: bold; font-size: 15px; text-align: center; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         .close-modal { position: absolute; top: 20px; right: 20px; font-size: 26px; cursor: pointer; color: #aaa; }
         
-        /* СОЦСЕТИ - Крупные и с отступом */
-        .social-icons { display: flex; justify-content: center; gap: 20px; margin: 25px 0 35px 0; flex-wrap: wrap; }
+        /* СОЦСЕТИ */
+        .social-icons { display: flex; justify-content: center; gap: 20px; margin: 25px 0 35px 0; flex-wrap: wrap; align-items: center; }
         .social-icons a { text-decoration: none; display: flex; align-items: center; }
         .social-icons i { font-size: 34px; } 
         .fa-vk { color: #0077FF; } .fa-telegram { color: #0088cc; } .fa-youtube { color: #FF0000; } 
         .fa-instagram { color: #E1306C; } .fa-odnoklassniki { color: #ee8208; } .fa-strava { color: #FC6100; }
+        
+        /* Кастомный значок Дзена */
+        .dzen-icon { width: 34px; height: 34px; display: inline-block; background: black; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+        .dzen-icon svg { width: 22px; height: 22px; fill: white; }
+
         .text-icon-btn { font-weight: 900; font-size: 13px; border: 2px solid #555; padding: 6px 12px; border-radius: 10px; color: #333; text-transform: uppercase; }
 
-        /* ПУЛЬСИРУЮЩАЯ КНОПКА ПОДДЕРЖКИ */
+        /* КНОПКА ПОДДЕРЖКИ */
         @keyframes supportPulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.5); } 50% { transform: scale(1.03); box-shadow: 0 0 0 12px rgba(40, 167, 69, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); } }
         .btn-expand-support { width: 100%; padding: 18px; background: #28a745; color: white; border: none; border-radius: 15px; font-weight: bold; font-size: 19px; cursor: pointer; animation: supportPulse 2.5s infinite ease-in-out; }
 
-        /* ПОПАПЫ (ШРИФТЫ ПО МАНИФЕСТУ) */
+        /* ПОПАПЫ */
         .popup-box { text-align: center; min-width: 180px; padding: 5px; }
         .popup-box b { font-size: 21px; display: block; margin-bottom: 8px; color: #333; }
         .popup-box p { font-size: 18px; margin: 5px 0; color: #555; line-height: 1.4; }
@@ -89,7 +84,7 @@
         .btn { text-decoration: none !important; font-weight: bold; font-size: 13px; padding: 8px 18px; border-radius: 20px; cursor: pointer; display: inline-block; color: white !important; }
         .btn-track { background: #28a745; } .btn-vk { background: #0077FF; } .btn-dzen { background: #111111; } .btn-3d { background: #ffdb00; color: #000 !important; }
 
-        /* МАРКЕРЫ И УМНАЯ ЦЕНТРОВКА */
+        /* МАРКЕРЫ */
         .day-marker, .trans-center-marker { 
             background: #fff; border-radius: 50%; border: 2.5px solid; color: #000; font-weight: bold; 
             display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.5); 
@@ -104,9 +99,8 @@
         @keyframes scarletPulse { 0% { box-shadow: 0 0 0 0px rgba(255, 36, 0, 0.8); } 70% { box-shadow: 0 0 0 18px rgba(255, 36, 0, 0); } 100% { box-shadow: 0 0 0 0px rgba(255, 36, 0, 0); } }
         .last-point-pulse { animation: scarletPulse 3s infinite ease-in-out; border-color: #28a745 !important; z-index: 1000 !important; }
 
-        /* ОСТАЛЬНЫЕ СТИЛИ */
-        @keyframes flagWaver { 0% { transform: rotate(0deg); } 50% { transform: rotate(6deg); } 100% { transform: rotate(0deg); } }
         .flag-stuck { animation: flagWaver 2.5s infinite ease-in-out; transform-origin: bottom center; display: flex; align-items: center; justify-content: center; }
+        @keyframes flagWaver { 0% { transform: rotate(0deg); } 50% { transform: rotate(6deg); } 100% { transform: rotate(0deg); } }
         .photo-marker { background: none !important; border: none !important; display: flex; align-items: center; justify-content: center; }
         .map-avatar { position: absolute; bottom: 25px; right: 10px; z-index: 1000; width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; opacity: 0.8; object-fit: cover; pointer-events: none; }
         
@@ -116,7 +110,7 @@
         #detail-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 7000; background: #000; display: none; border: none; }
 
         @media (max-width: 768px) {
-            #menu-box { left: 5%; width: 90%; top: 15px; min-width: auto; box-sizing: border-box; }
+            #menu-box { left: 5%; width: 90%; top: 15px; box-sizing: border-box; }
             #photo-toggle-wrap { display: none !important; }
             #mobile-photo-btn { display: flex; }
             #hint-box { top: auto; bottom: 30px; left: 50%; transform: translateX(-50%); }
@@ -205,9 +199,16 @@
             document.getElementById('about-name').innerText = aboutData.name;
             document.getElementById('about-bio').innerText = aboutData.bio;
             var sHtml = ""; 
-            aboutData.socials.forEach(s => { if(!s.url) return;
-                if(s.id === 'dzen' || s.id === 'komoot') { sHtml += `<a href="${s.url}" target="_blank"><span class="text-icon-btn">${s.id.charAt(0).toUpperCase() + s.id.slice(1)}</span></a>`; } 
-                else { sHtml += `<a href="${s.url}" target="_blank"><i class="fa-brands fa-${s.id}"></i></a>`; }
+            aboutData.socials.forEach(s => { 
+                if(!s.url) return;
+                var lowId = s.id.toLowerCase();
+                if(lowId === 'dzen') {
+                    sHtml += `<a href="${s.url}" target="_blank"><div class="dzen-icon"><svg viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.132 17.514l-5.132-3.324-5.132 3.324 1.134-5.834-4.228-4.12 5.864-.852L12 1.5l2.362 5.208 5.864.852-4.228 4.12 1.134 5.834z"/></svg></div></a>`;
+                } else if (lowId === 'komoot') {
+                    sHtml += `<a href="${s.url}" target="_blank"><span class="text-icon-btn">Komoot</span></a>`;
+                } else {
+                    sHtml += `<a href="${s.url}" target="_blank"><i class="fa-brands fa-${lowId}"></i></a>`;
+                }
             });
             document.getElementById('about-socials').innerHTML = sHtml;
             if (isPC) {
@@ -226,11 +227,9 @@
 
         function expandSupportPC() { document.getElementById('side-qr').style.display = 'flex'; document.getElementById('side-links').style.display = 'flex'; document.getElementById('btn-support-pc').style.display = 'none'; }
 
-        // СВАЙП ЗАКРЫТИЯ ОКНА
         var touchStartYModal = 0; document.getElementById('modal-main-box').addEventListener('touchstart', e => { touchStartYModal = e.touches[0].clientY; }, {passive: true});
         document.getElementById('modal-main-box').addEventListener('touchend', e => { if (window.innerWidth > 768) return; if (e.changedTouches[0].clientY - touchStartYModal > 100) closeAbout(); });
 
-        // ФОТО-ВЬЮЕР С ЗУМОМ
         var img = document.getElementById('view-img'), scale = 1, lastScale = 1, startDist = 0, posX = 0, posY = 0, startX = 0, startY = 0, isDragging = false;
         img.addEventListener('touchstart', e => { if (e.touches.length === 1) { isDragging = true; startX = e.touches[0].pageX - posX; startY = e.touches[0].pageY - posY; } else if (e.touches.length === 2) { isDragging = false; startDist = Math.hypot(e.touches[0].pageX-e.touches[1].pageX, e.touches[0].pageY-e.touches[1].pageY); lastScale = scale; } });
         img.addEventListener('touchmove', e => { if (scale > 1) e.preventDefault(); if (e.touches.length === 1 && isDragging && scale > 1) { posX = e.touches[0].pageX - startX; posY = e.touches[0].pageY - startY; updateTransform(); } else if (e.touches.length === 2) { var d = Math.hypot(e.touches[0].pageX-e.touches[1].pageX, e.touches[0].pageY-e.touches[1].pageY); scale = Math.min(Math.max(1, lastScale * (d / startDist)), 5); updateTransform(); } });
