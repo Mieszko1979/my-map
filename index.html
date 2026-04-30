@@ -96,7 +96,12 @@
         
         .btn-row { display: flex; justify-content: center; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
         .btn { text-decoration: none; font-weight: bold; font-size: 13px; padding: 7px 15px; border-radius: 20px; cursor: pointer; transition: 0.2s; display: inline-block; }
-        .btn-track { background: #28a745; color: white !important; } .btn-vk { background: #0077FF; color: white !important; } .btn-3d { background: #ffdb00; color: #000 !important; }
+        
+        /* Цвета кнопок, включая новую кнопку Дзен */
+        .btn-track { background: #28a745; color: white !important; } 
+        .btn-vk { background: #0077FF; color: white !important; } 
+        .btn-dzen { background: #111111; color: white !important; } 
+        .btn-3d { background: #ffdb00; color: #000 !important; }
         
         #detail-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 7000; background: #000; display: none; border: none; }
 
@@ -238,7 +243,8 @@
             var hex = hexColors[colorClass];
             data.forEach((p, i) => {
                 if (p.type === 'border') {
-                    var flagHtml = `<div class="flag-stuck"><div style="width:4px; height:50px; background:#444; position:relative;"><img src="https://flagcdn.com/w80/${p.country.toLowerCase()}.png" style="position:absolute; top:0; left:4px; width:45px; border:1.5px solid #fff; box-shadow: 3px 3px 7px rgba(0,0,0,0.5);"></div></div>`;
+                    // ЗДЕСЬ ИСПРАВЛЕНА ОШИБКА С ПРОБЕЛАМИ (добавлено .trim())
+                    var flagHtml = `<div class="flag-stuck"><div style="width:4px; height:50px; background:#444; position:relative;"><img src="https://flagcdn.com/w80/${p.country.toLowerCase().trim()}.png" style="position:absolute; top:0; left:4px; width:45px; border:1.5px solid #fff; box-shadow: 3px 3px 7px rgba(0,0,0,0.5);"></div></div>`;
                     L.marker([p.lat, p.lng], {icon: L.divIcon({ className: '', html: flagHtml, iconSize: [50, 50], iconAnchor: [2, 50] })}).addTo(borderClusterGroup).bindPopup(createPopup(p, folder));
                 } else if (!p.type || p.type === 'day') {
                     var fullDay = String(p.day ? p.day : (i + 1)), firstPart = fullDay.split('-')[0], restPart = fullDay.includes('-') ? '-' + fullDay.split('-')[1] : '';
@@ -251,24 +257,27 @@
                     L.circleMarker(p.to, { radius: 5, color: hex, fillColor: 'white', fillOpacity: 1, weight: 2 }).addTo(target);
                     var tIcons = { 'plane':'✈️','train':'🚂','bus':'🚌','car':'🚗','truck':'🚚' };
                     L.marker([(p.from[0]+p.to[0])/2, (p.from[1]+p.to[1])/2], {icon: L.divIcon({ className: 'trans-center-marker ' + colorClass, html: tIcons[p.transport] || '🚀', iconSize:[24, 24], iconAnchor:[12, 12] })}).addTo(target).bindPopup(createPopup(p, folder));
-                    L.polylineDecorator(line, { patterns: [{ offset: '20%', repeat: '40%', symbol: L.Symbol.arrowHead({pixelSize: 12, pathOptions: {color: hex, fillOpacity: 1, weight: 0}}) }] }).addTo(target);
+                    L.polylineDecorator(line, { patterns:[{ offset: '20%', repeat: '40%', symbol: L.Symbol.arrowHead({pixelSize: 12, pathOptions: {color: hex, fillOpacity: 1, weight: 0}}) }] }).addTo(target);
                 }
             });
         }
+        
         function createPopup(p, folder) { 
             var html = `<div class="popup-box"><b>${p.title}</b><p>${p.desc}</p>`;
             if (p.lat && p.lng) html += `<div class="coords">${p.lat.toFixed(5)}, ${p.lng.toFixed(5)}</div>`;
             html += `<div class="btn-row">`;
             if (p.link) html += `<a onclick="openTrackView('view.html?folder=${folder}&file=${p.link}')" class="btn btn-track">Трек</a> `;
             if (p.vk) html += `<a href="${p.vk}" class="btn btn-vk" target="_blank">VK</a>`;
+            if (p.dzen) html += `<a href="${p.dzen}" class="btn btn-dzen" target="_blank">Дзен</a>`; // ЗДЕСЬ ДОБАВЛЕНА КНОПКА ДЗЕН
             if (p.relive) html += `<a href="${p.relive}" class="btn btn-3d" target="_blank">3D</a>`;
             return html + '</div></div>';
         }
+        
         function loadPhotos(repo, hex) {
             fetch(`https://mieszko1979.github.io/${repo}/photos.json?t=${Date.now()}`).then(r => r.json()).then(data => {
                 data.forEach(photo => {
                     var svg = `<svg width="34" height="42" viewBox="0 0 34 42"><path d="M17 0C7.6 0 0 7.6 0 17c0 12.8 17 25 17 25s17-12.2 17-25c0-9.4-7.6-17-17-17z" fill="${hex}"/><circle cx="17" cy="17" r="10" fill="white"/><g transform="translate(10, 12) scale(0.6)"><path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" fill="${hex}"/><circle cx="12" cy="13" r="3.5" fill="white" /><circle cx="12" cy="13" r="2" fill="${hex}" /></g></svg>`;
-                    L.marker([photo.lat, photo.lng], {icon: L.divIcon({ className: 'photo-marker', html: svg, iconSize: [34, 42], iconAnchor: [0, 42] })}).addTo(photoClusterGroup).on('click', () => { document.getElementById('view-img').src = `https://mieszko1979.github.io/${repo}/${photo.url}`; document.getElementById('photo-viewer').style.display = 'flex'; });
+                    L.marker([photo.lat, photo.lng], {icon: L.divIcon({ className: 'photo-marker', html: svg, iconSize: [34, 42], iconAnchor:[0, 42] })}).addTo(photoClusterGroup).on('click', () => { document.getElementById('view-img').src = `https://mieszko1979.github.io/${repo}/${photo.url}`; document.getElementById('photo-viewer').style.display = 'flex'; });
                 });
             });
         }
