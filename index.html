@@ -24,12 +24,16 @@
     <style>
         html, body, #map { height: 100%; margin: 0; padding: 0; overflow: hidden; background: #000; font-family: Arial, sans-serif; }
         
-        /* МЕНЮ УПРАВЛЕНИЯ */
+        /* МЕНЮ */
         #menu-box { position: absolute; top: 15px; left: 15px; z-index: 1000; background: rgba(255, 255, 255, 0.95); padding: 15px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); min-width: 300px; transition: all 0.3s ease; }
         .menu-collapse-btn { display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 16px; cursor: pointer; color: #333; }
         #menu-content { max-height: 1000px; overflow: hidden; opacity: 1; transition: all 0.3s ease; margin-top: 15px; padding-top: 12px; border-top: 1px solid #ccc; }
         #menu-box.collapsed #menu-content { max-height: 0; opacity: 0; margin-top: 0; padding-top: 0; border-top: none; }
         #menu-box.collapsed #menu-chevron { transform: rotate(180deg); }
+
+        /* СПИДОМЕТР И ПОИСК */
+        #total-km-box { font-size: 12px; color: #666; margin-bottom: 10px; font-weight: bold; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        #search-input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 12px; box-sizing: border-box; font-size: 13px; }
 
         .menu-header { font-weight: bold; font-size: 15px; display: flex; align-items: center; margin-bottom: 5px; cursor: pointer; }
         .menu-header input { margin-right: 12px; transform: scale(1.3); }
@@ -37,13 +41,10 @@
         .trip-item { margin-bottom: 12px; display: flex; align-items: center; font-size: 14px; font-weight: bold; line-height: 1.3; }
         .trip-item input { margin-right: 10px; flex-shrink: 0; }
         
-        /* ФОТО ТУГГЛ (PC) */
         #photo-toggle-wrap { margin-top: 12px; padding-top: 12px; border-top: 1px dashed #ccc; color: #28a745; font-weight: bold; display: flex; align-items: center; cursor: pointer; font-size: 15px; }
         #photo-toggle-wrap input { margin-right: 12px; transform: scale(1.2); }
         
-        /* КНОПКА ФОТО (MOBILE) */
         #mobile-photo-btn { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); z-index: 1001; background: white; border: none; width: 45px; height: 45px; border-radius: 50%; box-shadow: 0 2px 10px rgba(0,0,0,0.3); display: none; align-items: center; justify-content: center; cursor: pointer; color: #28a745; font-size: 20px; }
-
         .fs-btn { background: none; border: none; cursor: pointer; font-size: 18px; color: #666; margin-left: 10px; }
 
         /* ВИЗИТКА */
@@ -54,7 +55,6 @@
         .modal-content { background: white; width: 95%; max-width: 440px; border-radius: 20px; padding: 25px; text-align: center; position: relative; box-sizing: border-box; }
         .close-modal { position: absolute; top: 15px; right: 15px; font-size: 24px; cursor: pointer; color: #aaa; }
         
-        /* Соцсети в цвете */
         .social-icons { display: flex; justify-content: center; gap: 15px; margin: 20px 0; flex-wrap: wrap; align-items: center; }
         .social-icons a { text-decoration: none; display: flex; align-items: center; }
         .social-icons i { font-size: 32px; }
@@ -62,37 +62,27 @@
         .text-icon-btn { font-weight: 900; font-size: 13px; border: 2px solid #555; padding: 4px 10px; border-radius: 8px; color: #333; text-transform: uppercase; background: #fff; }
         .payment-btn { display: block; width: 100%; text-decoration: none; padding: 12px; border-radius: 12px; margin-top: 10px; font-weight: bold; color: white; }
 
-        /* ПРОСМОТР ФОТО (Desktop) */
-        #photo-viewer { position: absolute; bottom: 100px; left: 15px; z-index: 1000; width: 220px; background: white; padding: 5px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none; cursor: pointer; }
-        #photo-viewer img { width: 100%; border-radius: 5px; display: block; transition: transform 0.1s ease-out; }
-        #photo-viewer .close-btn { position: absolute; top: -12px; right: -12px; background: red; color: white; border-radius: 50%; width: 26px; height: 26px; text-align: center; line-height: 24px; font-weight: bold; border: 2px solid white; z-index: 1100; }
-
-        /* МАРКЕРЫ И МАГИЯ ЦИФР */
+        /* МАРКЕРЫ И ПУЛЬСАЦИЯ */
         .day-marker, .trans-center-marker { 
             background: #fff; border-radius: 50%; border: 2.5px solid; color: #000; font-weight: bold; 
             display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.5); 
             font-size: 11px; width: 24px !important; height: 24px !important; 
             overflow: hidden; white-space: nowrap; z-index: 500 !important; 
         }
-        /* Главная фишка: центруем первую часть, а остальное прилепляем сбоку */
+        .trans-center-marker { font-size: 19px; } /* Увеличенные иконки транспорта */
         .num-wrapper { position: relative; display: inline-block; line-height: 1; }
         .suffix { position: absolute; left: 100%; top: 0; } 
 
-        .c2018 { border-color: #ff0000 !important; color: #ff0000; } 
-        .c2019 { border-color: #007bff !important; color: #007bff; } 
-        .c2021 { border-color: #9b59b6 !important; color: #9b59b6; } 
-        .c2024 { border-color: #ff8c00 !important; color: #ff8c00; } 
-        .cCurrent { border-color: #28a745 !important; color: #28a745; }
+        @keyframes pulse-ring { 0% { transform: scale(.5); opacity: 1; } 100% { transform: scale(2.5); opacity: 0; } }
+        .last-point-pulse::before { content: ''; position: absolute; width: 100%; height: 100%; border: 4px solid inherit; border-radius: 50%; animation: pulse-ring 1.5s cubic-bezier(0.24, 0, 0.38, 1) infinite; border-color: inherit; }
 
-        .photo-marker { background: none !important; border: none !important; display: flex; align-items: center; justify-content: center; overflow: visible !important; }
-        .map-avatar { position: absolute; bottom: 25px; right: 10px; z-index: 1000; width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; opacity: 0.8; pointer-events: none; object-fit: cover; }
+        .c2018 { border-color: #ff0000 !important; color: #ff0000; } .c2019 { border-color: #007bff !important; color: #007bff; } .c2021 { border-color: #9b59b6 !important; color: #9b59b6; } .c2024 { border-color: #ff8c00 !important; color: #ff8c00; } .cCurrent { border-color: #28a745 !important; color: #28a745; }
 
-        .popup-box { text-align: center; min-width: 180px; padding: 5px; }
-        .btn-row { display: flex; justify-content: center; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
-        .btn { text-decoration: none; font-weight: bold; font-size: 13px; padding: 7px 15px; border-radius: 20px; cursor: pointer; transition: 0.2s; display: inline-block; }
-        .btn-track { background: #28a745; color: white !important; } .btn-vk { background: #0077FF; color: white !important; } .btn-3d { background: #ffdb00; color: #000 !important; }
-
+        #photo-viewer { position: absolute; bottom: 100px; left: 15px; z-index: 1000; width: 220px; background: white; padding: 5px; border-radius: 8px; display: none; cursor: pointer; }
+        #photo-viewer img { width: 100%; border-radius: 5px; display: block; }
+        
         #detail-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 5000; background: #000; display: none; border: none; }
+        .map-avatar { position: absolute; bottom: 25px; right: 10px; z-index: 1000; width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; opacity: 0.8; pointer-events: none; object-fit: cover; }
 
         @media (max-width: 768px) {
             #menu-box { left: 5%; width: 90%; top: 15px; box-sizing: border-box; min-width: auto; }
@@ -101,16 +91,14 @@
             #hint-box { top: auto; bottom: 30px; left: 50%; transform: translateX(-50%); }
             .map-avatar { bottom: 18px; right: 5px; width: 45px; height: 45px; }
             #photo-viewer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: black; display: none; justify-content: center; align-items: center; bottom: auto; z-index: 9999; }
-            #photo-viewer img { width: 100%; height: 100%; object-fit: contain; border-radius: 0; }
-            #photo-viewer .close-btn { display: none !important; }
+            #photo-viewer img { width: 100%; height: 100%; object-fit: contain; }
         }
     </style>
 </head>
 <body>
     <button id="mobile-photo-btn" onclick="togglePhotos()"><i class="fa-solid fa-camera"></i></button>
-
     <iframe id="detail-overlay" src=""></iframe>
-    <div id="photo-viewer" onclick="handleBackgroundClick()"><div class="close-btn" onclick="closePhoto()">×</div><img id="view-img" src="" onclick="handlePhotoClick(event)"></div>
+    <div id="photo-viewer" onclick="handleBackgroundClick()"><img id="view-img" src="" onclick="handlePhotoClick(event)"></div>
     
     <div id="about-modal" onclick="closeAbout()">
         <div class="modal-content" onclick="event.stopPropagation()">
@@ -135,12 +123,15 @@
             <div><button class="fs-btn" onclick="event.stopPropagation(); toggleFullscreen()"><i class="fa-solid fa-expand"></i></button><i class="fa-solid fa-chevron-up" id="menu-chevron" style="margin-left:10px;"></i></div>
         </div>
         <div id="menu-content">
+            <div id="total-km-box">Общий прогресс: <span id="km-counter">0</span> км</div>
+            <input type="text" id="search-input" placeholder="Поиск (день или место)..." oninput="handleSearch()">
+            
             <div class="menu-header"><input type="checkbox" id="main-toggle" onchange="toggleList()"> Мои велопутешествия</div>
             <div id="trip-list">
-                <div class="trip-item c2018"><input type="checkbox" class="trip-check" id="chk2018" onchange="updateMarkers(false)"> 1. Яранск - Паттайя (2018) - 9 476 км.</div>
-                <div class="trip-item c2019"><input type="checkbox" class="trip-check" id="chk2019" onchange="updateMarkers(false)"> 2. Яранск - Иссык-Куль - Иран (2019) - 6 283 км.</div>
-                <div class="trip-item c2021"><input type="checkbox" class="trip-check" id="chk2021" onchange="updateMarkers(false)"> 3. Яранск - Байкал (2021) - 4 793 км.</div>
-                <div class="trip-item c2024"><input type="checkbox" class="trip-check" id="chk2024" onchange="updateMarkers(false)"> 4. Яранск - Армения (2024) - 7 137 км.</div>
+                <div class="trip-item c2018"><input type="checkbox" class="trip-check" id="chk2018" data-km="9476" onchange="updateMarkers(false)"> 1. Яранск - Паттайя (2018) - 9 476 км.</div>
+                <div class="trip-item c2019"><input type="checkbox" class="trip-check" id="chk2019" data-km="6283" onchange="updateMarkers(false)"> 2. Яранск - Иссык-Куль - Иран (2019) - 6 283 км.</div>
+                <div class="trip-item c2021"><input type="checkbox" class="trip-check" id="chk2021" data-km="4793" onchange="updateMarkers(false)"> 3. Яранск - Байкал (2021) - 4 793 км.</div>
+                <div class="trip-item c2024"><input type="checkbox" class="trip-check" id="chk2024" data-km="7137" onchange="updateMarkers(false)"> 4. Яранск - Армения (2024) - 7 137 км.</div>
             </div>
             <div id="photo-toggle-wrap"><input type="checkbox" id="photo-toggle" onchange="updateMarkers(true)"> 📷 Показать фото</div>
         </div>
@@ -156,13 +147,40 @@
         var currentTripLayer = L.layerGroup().addTo(map), archiveLayerGroup = L.layerGroup().addTo(map), photoClusterGroup = L.markerClusterGroup({ showCoverageOnHover: false, maxClusterRadius: 40 }).addTo(map);
         var hexColors = { 'c2018': '#ff0000', 'c2019': '#007bff', 'c2021': '#9b59b6', 'c2024': '#ff8c00', 'cCurrent': '#28a745' };
 
-        function togglePhotos() {
-            var checkbox = document.getElementById('photo-toggle');
-            checkbox.checked = !checkbox.checked;
-            updateMarkers(true);
-            var mobileBtn = document.getElementById('mobile-photo-btn');
-            if(checkbox.checked) { mobileBtn.style.background = '#28a745'; mobileBtn.style.color = '#fff'; }
-            else { mobileBtn.style.background = '#fff'; mobileBtn.style.color = '#28a745'; }
+        // Спидометр
+        function updateSpeedometer() {
+            var total = 0;
+            document.querySelectorAll('.trip-check').forEach(c => { total += parseInt(c.dataset.km); });
+            document.getElementById('km-counter').innerText = total.toLocaleString();
+        }
+        updateSpeedometer();
+
+        // Поиск
+        function handleSearch() {
+            var q = document.getElementById('search-input').value.toLowerCase();
+            document.querySelectorAll('.trip-item').forEach(item => {
+                item.style.display = item.innerText.toLowerCase().includes(q) ? 'flex' : 'none';
+            });
+        }
+
+        // Deep Linking
+        function updateURL(year, day) {
+            var params = new URLSearchParams();
+            if(year) params.set('y', year);
+            if(day) params.set('d', day);
+            var newUrl = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+            window.history.replaceState({}, '', newUrl);
+        }
+
+        function checkDeepLink() {
+            var params = new URLSearchParams(window.location.search);
+            var y = params.get('y'), d = params.get('d');
+            if(y) {
+                document.getElementById('main-toggle').checked = true;
+                toggleList();
+                var chk = document.getElementById('chk' + y);
+                if(chk) { chk.checked = true; updateMarkers(false); }
+            }
         }
 
         function openTrackView(url) {
@@ -171,10 +189,10 @@
                 overlay.src = url; overlay.style.display = 'block';
             } else { window.open(url, '_blank'); }
         }
-        window.closeTrackView = function() { var overlay = document.getElementById('detail-overlay'); overlay.style.display = 'none'; overlay.src = ""; };
+        window.closeTrackView = function() { document.getElementById('detail-overlay').style.display = 'none'; };
 
         function toggleMenu() { document.getElementById('menu-box').classList.toggle('collapsed'); }
-        function toggleFullscreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else if (document.exitFullscreen) document.exitFullscreen(); }
+        function toggleFullscreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
         function closeAbout() { document.getElementById('about-modal').style.display = 'none'; }
         function toggleQR() { var s = document.getElementById('qr-section'); s.style.display = s.style.display === 'block' ? 'none' : 'block'; }
 
@@ -209,44 +227,62 @@
             document.getElementById('about-modal').style.display = 'flex';
         }
 
-        function toggleList() { var show = document.getElementById('main-toggle').checked; document.getElementById('trip-list').style.display = show ? 'block' : 'none'; if(!show) { currentTripLayer.addTo(map); archiveLayerGroup.clearLayers(); photoClusterGroup.clearLayers(); document.querySelectorAll('.trip-check').forEach(c => c.checked = false); focusOnCurrent(); } else { map.removeLayer(currentTripLayer); } updateMarkers(true); }
+        function toggleList() { 
+            var show = document.getElementById('main-toggle').checked;
+            document.getElementById('trip-list').style.display = show ? 'block' : 'none';
+            if(!show) { 
+                currentTripLayer.addTo(map); archiveLayerGroup.clearLayers(); photoClusterGroup.clearLayers(); 
+                document.querySelectorAll('.trip-check').forEach(c => c.checked = false);
+                focusOnCurrent();
+                updateURL('', '');
+            } else { map.removeLayer(currentTripLayer); }
+            updateMarkers(true);
+        }
+
         function updateMarkers(onlyPhotos) {
             archiveLayerGroup.clearLayers(); photoClusterGroup.clearLayers();
             var showPhotos = document.getElementById('photo-toggle').checked;
             if (!showPhotos) closePhoto();
             var isArchive = document.getElementById('main-toggle').checked;
             if (isArchive) {
-                if (document.getElementById('chk2018').checked) { drawTrip(points2018, archiveLayerGroup, 'c2018', 'archive/2018/'); if(showPhotos) loadPhotos('archive-2018-photos', hexColors['c2018']); }
-                if (document.getElementById('chk2019').checked) { drawTrip(points2019, archiveLayerGroup, 'c2019', 'archive/2019/'); if(showPhotos) loadPhotos('archive-2019-photos', hexColors['c2019']); }
-                if (document.getElementById('chk2021').checked) { drawTrip(points2021, archiveLayerGroup, 'c2021', 'archive/2021/'); if(showPhotos) loadPhotos('archive-2021-photos', hexColors['c2021']); }
-                if (document.getElementById('chk2024').checked) { drawTrip(points2024, archiveLayerGroup, 'c2024', 'archive/2024/'); if(showPhotos) loadPhotos('archive-2024-photos', hexColors['c2024']); }
+                if (document.getElementById('chk2018').checked) { drawTrip(points2018, archiveLayerGroup, 'c2018', 'archive/2018/', '2018'); if(showPhotos) loadPhotos('archive-2018-photos', hexColors['c2018']); }
+                if (document.getElementById('chk2019').checked) { drawTrip(points2019, archiveLayerGroup, 'c2019', 'archive/2019/', '2019'); if(showPhotos) loadPhotos('archive-2019-photos', hexColors['c2019']); }
+                if (document.getElementById('chk2021').checked) { drawTrip(points2021, archiveLayerGroup, 'c2021', 'archive/2021/', '2021'); if(showPhotos) loadPhotos('archive-2021-photos', hexColors['c2021']); }
+                if (document.getElementById('chk2024').checked) { drawTrip(points2024, archiveLayerGroup, 'c2024', 'archive/2024/', '2024'); if(showPhotos) loadPhotos('archive-2024-photos', hexColors['c2024']); }
                 if (!onlyPhotos) { var layers = archiveLayerGroup.getLayers(); if (layers.length > 0) map.fitBounds(new L.featureGroup(layers).getBounds(), {padding: [50, 50]}); }
             } else {
-                if (typeof myPoints !== 'undefined') drawTrip(myPoints, currentTripLayer, 'cCurrent', 'tracks/');
+                if (typeof myPoints !== 'undefined') drawTrip(myPoints, currentTripLayer, 'cCurrent', 'tracks/', '');
                 if(showPhotos) loadPhotos('archive-2026-photos', hexColors['cCurrent']);
             }
         }
-        function drawTrip(data, target, colorClass, folder) {
+
+        function drawTrip(data, target, colorClass, folder, yearId) {
             var hex = hexColors[colorClass];
             data.forEach((p, i) => {
                 var fullDay = String(p.day ? p.day : (i + 1));
-                var firstPart = fullDay.split('-')[0];
-                var restPart = fullDay.includes('-') ? '-' + fullDay.split('-')[1] : '';
-                var html = `<span class="num-wrapper">${firstPart}<span class="suffix">${restPart}</span></span>`;
+                var firstDigit = fullDay.split('-')[0];
+                var rest = fullDay.includes('-') ? '-' + fullDay.split('-')[1] : '';
+                var html = `<span class="num-wrapper">${firstDigit}<span class="suffix">${rest}</span></span>`;
+                
+                var isLast = (i === data.length - 1 && colorClass === 'cCurrent');
+                var className = 'day-marker ' + colorClass + (isLast ? ' last-point-pulse' : '');
 
                 if (!p.type || p.type === 'day') {
-                    L.marker([p.lat, p.lng], {icon: L.divIcon({ className: 'day-marker ' + colorClass, html: html, iconSize: [24, 24], iconAnchor: [12, 12] })}).addTo(target).bindPopup(createPopup(p, folder));
+                    L.marker([p.lat, p.lng], {icon: L.divIcon({ className: className, html: html, iconSize: [24, 24], iconAnchor: [12, 12] })})
+                    .addTo(target).bindPopup(createPopup(p, folder)).on('click', () => updateURL(yearId, firstDigit));
                 } else if (p.type === 'transfer') {
                     var line = L.polyline([p.from, p.to], { color: hex, weight: 3, dashArray: '8, 12', opacity: 0.8 }).addTo(target);
                     L.circleMarker(p.from, { radius: 5, color: hex, fillColor: 'white', fillOpacity: 1, weight: 2 }).addTo(target);
                     L.circleMarker(p.to, { radius: 5, color: hex, fillColor: 'white', fillOpacity: 1, weight: 2 }).addTo(target);
                     var tIcons = { 'plane':'✈️','train':'🚂','bus':'🚌','car':'🚗','truck':'🚚' };
-                    L.marker([(p.from[0]+p.to[0])/2, (p.from[1]+p.to[1])/2], {icon: L.divIcon({ className: 'trans-center-marker ' + colorClass, html: tIcons[p.transport] || '🚀', iconSize:[24, 24], iconAnchor:[12, 12] })}).addTo(target).bindPopup(createPopup(p, folder));
+                    L.marker([(p.from[0]+p.to[0])/2, (p.from[1]+p.to[1])/2], {icon: L.divIcon({ className: 'trans-center-marker', style: `border-color: ${hex}`, html: tIcons[p.transport] || '🚀', iconSize:[24, 24], iconAnchor:[12, 12] })}).addTo(target).bindPopup(createPopup(p, folder));
                     L.polylineDecorator(line, { patterns: [{ offset: '20%', repeat: '40%', symbol: L.Symbol.arrowHead({pixelSize: 12, pathOptions: {color: hex, fillOpacity: 1, weight: 0}}) }] }).addTo(target);
                 }
             });
         }
+
         function createPopup(p, folder) { var html = '<div class="popup-box"><b>' + p.title + '</b><p>' + p.desc + '</p><div class="btn-row">'; if (p.link) html += `<a onclick="openTrackView('view.html?folder=${folder}&file=${p.link}')" class="btn btn-track">Трек</a> `; if (p.vk) html += `<a href="${p.vk}" class="btn btn-vk" target="_blank">VK</a>`; if (p.relive) html += `<a href="${p.relive}" class="btn btn-3d" target="_blank">3D</a>`; return html + '</div></div>'; }
+        
         function loadPhotos(repo, hex) {
             fetch(`https://mieszko1979.github.io/${repo}/photos.json?t=${Date.now()}`).then(r => r.json()).then(data => {
                 data.forEach(photo => {
@@ -256,7 +292,8 @@
             });
         }
         function focusOnCurrent() { if (typeof myPoints !== 'undefined' && myPoints.length > 0) { var last = myPoints[myPoints.length-1]; map.setView([last.lat || (last.from ? last.from[0] : 50), last.lng || (last.from ? last.from[1] : 80)], 8); } }
-        if (typeof myPoints !== 'undefined') { focusOnCurrent(); updateMarkers(true); }
+        
+        window.onload = function() { updateSpeedometer(); checkDeepLink(); if (typeof myPoints !== 'undefined') { focusOnCurrent(); updateMarkers(true); } };
     </script>
 </body>
 </html>
