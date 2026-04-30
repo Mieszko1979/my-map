@@ -5,7 +5,7 @@ const aboutData = {
     // ДОБАВЛЯЙ ЛЮБЫЕ СОЦСЕТИ ТУТ
     socials: [
         { id: 'vk', url: "https://vk.com/..." },
-        { id: 'dzen', url: "https://dzen.ru/..." },
+        { id: 'Дзен', url: "https://dzen.ru/..." },
         { id: 'youtube', url: "https://youtube.com/..." },
         { id: 'telegram', url: "https://t.me/..." },
         { id: 'instagram', url: "" }, // Если пусто, иконка не появится
