@@ -62,7 +62,7 @@
         .text-icon-btn { font-weight: 900; font-size: 12px; border: 2px solid #555; padding: 4px 8px; border-radius: 8px; color: #333; text-transform: uppercase; }
         .btn-expand-support { width: 100%; padding: 14px; background: #28a745; color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 17px; cursor: pointer; margin-top: 15px; }
 
-        /* МАРКЕРЫ (УМНАЯ НУМЕРАЦИЯ И ЦЕНТРОВКА) */
+        /* МАРКЕРЫ */
         .day-marker, .trans-center-marker { 
             background: #fff; border-radius: 50%; border: 2.5px solid; color: #000; font-weight: bold; 
             display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.5); 
@@ -234,6 +234,7 @@
         function updateMarkers(onlyPhotos) {
             archiveLayerGroup.clearLayers(); photoClusterGroup.clearLayers(); borderClusterGroup.clearLayers();
             var showPhotos = document.getElementById('photo-toggle').checked, isArchive = document.getElementById('main-toggle').checked;
+            if (!showPhotos) closePhoto(); // ИСПРАВЛЕНО: Закрываем вьюер, если галочка снята
             if (isArchive) {
                 if (document.getElementById('chk2018').checked) { drawTrip(points2018, archiveLayerGroup, 'c2018', 'archive/2018/', false); if(showPhotos) loadPhotos('archive-2018-photos', hexColors['c2018']); }
                 if (document.getElementById('chk2019').checked) { drawTrip(points2019, archiveLayerGroup, 'c2019', 'archive/2019/', false); if(showPhotos) loadPhotos('archive-2019-photos', hexColors['c2019']); }
@@ -258,7 +259,6 @@
                     L.marker([p.lat, p.lng], {icon: L.divIcon({ className: 'day-marker ' + colorClass + (isLast ? ' last-point-pulse' : ''), html: html, iconSize: [24, 24], iconAnchor: [12, 12] })}).addTo(target).bindPopup(createPopup(p, folder));
                 } else if (p.type === 'transfer') {
                     var line = L.polyline([p.from, p.to], { color: hex, weight: 3, dashArray: '8, 12', opacity: 0.8 }).addTo(target);
-                    // БЕЛЫЕ ТОЧКИ НА КОНЦАХ ТРАНСПОРТА
                     L.circleMarker(p.from, {radius: 5, color: hex, fillColor: 'white', fillOpacity: 1, weight: 2}).addTo(target);
                     L.circleMarker(p.to, {radius: 5, color: hex, fillColor: 'white', fillOpacity: 1, weight: 2}).addTo(target);
                     var tIcons = { 'plane':'✈️','train':'🚂','bus':'🚌','car':'🚗','truck':'🚚' };
