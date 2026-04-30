@@ -30,18 +30,22 @@
         #res-stats { top: 15px; right: 15px; } #res-chart { bottom: 20px; left: 50%; transform: translateX(-50%); }
         #photo-viewer { position: absolute; bottom: 100px; left: 15px; z-index: 2000; width: 220px; background: white; padding: 5px; border-radius: 8px; display: none; cursor: pointer; touch-action: none; overflow: hidden; }
         #photo-viewer img { width: 100%; border-radius: 5px; display: block; transition: transform 0.1s ease-out; object-fit: contain; }
-        #photo-viewer .close-btn { position: absolute; top: -12px; right: -12px; background: red; color: white; border-radius: 50%; width: 26px; height: 26px; text-align: center; line-height: 24px; font-weight: bold; border: 2px solid white; z-index: 2100; }
         .marker-ab { background: #ff0000; border: 2px solid white; border-radius: 50%; color: white; font-weight: bold; text-align: center; line-height: 24px; font-size: 14px; }
         .hover-dot { background: #fff; border: 3px solid #ff0000; border-radius: 50%; box-shadow: 0 0 10px rgba(255,255,255,0.8); }
         .photo-marker { background: none !important; border: none !important; display: flex; align-items: center; justify-content: center; overflow: visible !important; }
         .map-avatar { position: absolute; bottom: 25px; right: 10px; z-index: 500; width: 50px; height: 50px; border-radius: 50%; border: 2px solid white; opacity: 0.8; object-fit: cover; }
+
+        /* ПОПАПЫ */
+        .popup-box { text-align: center; min-width: 180px; padding: 5px; }
+        .popup-box b { font-size: 21px; display: block; margin-bottom: 8px; color: #333; }
+        .popup-box p { font-size: 18px; margin: 10px 0; color: #555; line-height: 1.4; }
+
         @media (max-width: 768px) {
             .ctrl-btn { display: flex; } #pc-photo-menu { display: none; } #info-panel, #chart-box { display: none; }
             #info-panel { width: 150px; right: 10px; top: 75px; background: rgba(255,255,255,0.95); }
             #chart-box { bottom: 85px; height: 160px; width: 95%; } 
             #photo-viewer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: black; padding: 0; display: none; justify-content: center; align-items: center; bottom: auto; z-index: 9999; }
             #photo-viewer img { width: 100%; height: 100%; object-fit: contain; }
-            #photo-viewer .close-btn { display: none !important; }
         }
     </style>
 </head>
@@ -56,7 +60,7 @@
     <div id="map"></div><img src="avatar.jpg" class="map-avatar">
     <div id="info-panel"><div class="panel-close" onclick="toggleStats()">&times;</div><div class="divider">ИТОГИ ДНЯ</div><div class="stat-item"><span class="stat-label">Дистанция</span><span id="dist" class="stat-val">--</span></div><div class="stat-item"><span class="stat-label">Набор высоты</span><span id="gain" class="stat-val">--</span></div><div class="stat-item"><span class="stat-label">Макс. высота</span><span id="max-alt" class="stat-val">--</span></div><div class="stat-item analytics-hide"><span class="stat-label">В движении</span><span id="time" class="stat-val">--</span></div><div class="stat-item analytics-hide"><span class="stat-label">Ср. скорость</span><span id="avg-speed" class="stat-val">--</span></div></div>
     <div id="chart-box"><div class="panel-close" onclick="toggleChart()">&times;</div><canvas id="elevationChart"></canvas></div>
-    <div id="photo-viewer" onclick="handleBackgroundClick()"><div class="close-btn" onclick="closePhoto()">×</div><img id="view-img" src="" onclick="handlePhotoClick(event)"></div>
+    <div id="photo-viewer" onclick="handleBackgroundClick()"><img id="view-img" src="" onclick="handlePhotoClick(event)"></div>
     <script>
         var params = new URLSearchParams(window.location.search), file = params.get('file'), folder = params.get('folder') || 'tracks/';
         var map = L.map('map', {attributionControl: true, zoomControl: false}).setView([50, 80], 4);
