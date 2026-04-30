@@ -46,79 +46,66 @@
 
         /* МОДАЛЬНОЕ ОКНО */
         #about-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 6000; justify-content: center; align-items: center; }
-        
-        /* Layout для ПК: три колонки */
-        .modal-layout { display: flex; align-items: center; justify-content: center; gap: 20px; max-width: 95vw; }
-        
-        .modal-main { background: white; width: 400px; border-radius: 20px; padding: 25px; text-align: center; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.5); z-index: 2; }
-        
+        .modal-layout { display: flex; align-items: center; justify-content: center; gap: 20px; max-width: 95vw; box-sizing: border-box; }
+        .modal-main { background: white; width: 400px; border-radius: 20px; padding: 25px; text-align: center; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.5); z-index: 2; box-sizing: border-box; }
         .side-panel { width: 220px; display: none; flex-direction: column; gap: 15px; animation: slideIn 0.4s ease-out; }
         @keyframes slideIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
 
+        /* ЭЛЕМЕНТЫ ПОДДЕРЖКИ */
         .qr-card { background: white; padding: 12px; border-radius: 15px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
         .qr-card img { width: 100%; border-radius: 8px; }
         .qr-card b { font-size: 13px; display: block; margin-top: 5px; }
-
         .pay-link-btn { display: block; width: 100%; text-decoration: none; padding: 12px; border-radius: 12px; font-weight: bold; font-size: 14px; text-align: center; box-sizing: border-box; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         
-        /* Кнопка КРИПТО */
-        .crypto-btn { background: #f1f1f1; color: #333; display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; border-radius: 12px; cursor: pointer; border: 1px solid #ccc; font-size: 12px; transition: 0.2s; position: relative; }
-        .crypto-btn:hover { background: #e5e5e5; }
-        .crypto-btn i { font-size: 16px; color: #28a745; }
-        .copy-hint-bubble { position: absolute; top: -30px; left: 50%; transform: translateX(-50%); background: #28a745; color: white; padding: 4px 8px; border-radius: 5px; font-size: 10px; opacity: 0; transition: 0.3s; pointer-events: none; }
-
         .close-modal { position: absolute; top: 15px; right: 15px; font-size: 24px; cursor: pointer; color: #aaa; }
+        
+        /* СОЦСЕТИ И ИХ ЦВЕТА */
         .social-icons { display: flex; justify-content: center; gap: 12px; margin: 15px 0; flex-wrap: wrap; }
-        .social-icons i { font-size: 28px; }
-        .text-icon-btn { font-weight: 900; font-size: 12px; border: 2px solid #555; padding: 4px 8px; border-radius: 8px; color: #333; text-transform: uppercase; }
+        .social-icons a { text-decoration: none; }
+        .social-icons i { font-size: 30px; transition: 0.2s; }
+        .social-icons i:hover { transform: scale(1.1); }
+        
+        .fa-vk { color: #0077FF; }
+        .fa-telegram { color: #0088cc; }
+        .fa-youtube { color: #FF0000; }
+        .fa-instagram { color: #E1306C; }
+        .fa-odnoklassniki { color: #ee8208; }
+        .fa-strava { color: #FC6100; }
+        .text-icon-btn { font-weight: 900; font-size: 12px; border: 2px solid #555; padding: 4px 8px; border-radius: 8px; color: #333; text-transform: uppercase; display: inline-block; }
 
-        /* Пульсирующая кнопка ПК */
         @keyframes pulseSupport { 0% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.6); } 70% { box-shadow: 0 0 0 15px rgba(40, 167, 69, 0); } 100% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); } }
         .btn-expand-support { width: 100%; padding: 14px; background: #28a745; color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 17px; cursor: pointer; margin-top: 15px; animation: pulseSupport 2s infinite; }
 
         /* ФОТО-ВЬЮЕР */
-        #photo-viewer { position: absolute; bottom: 100px; left: 15px; z-index: 1000; width: 220px; background: white; padding: 5px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none; cursor: pointer; transition: transform 0.2s ease; }
-        #photo-viewer:hover { transform: scale(1.05); }
+        #photo-viewer { position: absolute; bottom: 100px; left: 15px; z-index: 1000; width: 220px; background: white; padding: 5px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none; cursor: pointer; }
         #photo-viewer img { width: 100%; border-radius: 5px; display: block; }
-        #photo-viewer .close-btn { position: absolute; top: -12px; right: -12px; background: red; color: white; border-radius: 50%; width: 26px; height: 26px; text-align: center; line-height: 24px; font-weight: bold; border: 2px solid white; z-index: 1100; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
+        #photo-viewer .close-btn { position: absolute; top: -12px; right: -12px; background: red; color: white; border-radius: 50%; width: 26px; height: 26px; text-align: center; line-height: 24px; font-weight: bold; border: 2px solid white; z-index: 1100; }
 
         /* МАРКЕРЫ */
         .day-marker, .trans-center-marker { background: #fff; border-radius: 50%; border: 2.5px solid; color: #000; font-weight: bold; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.5); font-size: 11px; width: 24px !important; height: 24px !important; overflow: hidden; white-space: nowrap; z-index: 500 !important; }
         .num-wrapper { position: relative; display: inline-block; line-height: 1; }
         .suffix { position: absolute; left: 100%; top: 0; } 
-        .trans-center-marker { font-size: 16px !important; }
         .c2018 { border-color: #ff0000 !important; color: #ff0000; } .c2019 { border-color: #007bff !important; color: #007bff; } .c2021 { border-color: #9b59b6 !important; color: #9b59b6; } .c2024 { border-color: #ff8c00 !important; color: #ff8c00; } .cCurrent { border-color: #28a745 !important; color: #28a745; }
-        @keyframes softPulse { 0% { box-shadow: 0 0 0 0px rgba(40, 167, 69, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(40, 167, 69, 0); } 100% { box-shadow: 0 0 0 0px rgba(40, 167, 69, 0); } }
-        .last-point-pulse { animation: softPulse 3s infinite ease-in-out; z-index: 1000 !important; }
-        @keyframes flagWaver { 0% { transform: rotate(0deg); } 50% { transform: rotate(6deg); } 100% { transform: rotate(0deg); } }
-        .flag-stuck { animation: flagWaver 2.5s infinite ease-in-out; transform-origin: bottom center; display: flex; align-items: center; justify-content: center; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.5)); }
-        .photo-marker { background: none !important; border: none !important; display: flex; align-items: center; justify-content: center; overflow: visible !important; }
         .map-avatar { position: absolute; bottom: 25px; right: 10px; z-index: 1000; width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; opacity: 0.8; pointer-events: none; object-fit: cover; }
         .popup-box { text-align: center; min-width: 180px; padding: 5px; }
-        .popup-box b { font-size: 21px; display: block; margin-bottom: 8px; color: #333; }
-        .popup-box p { font-size: 18px; margin: 5px 0; color: #555; line-height: 1.4; }
-        .coords { font-size: 13px; color: #777; font-family: monospace; margin: 8px 0; }
-        .btn-row { display: flex; justify-content: center; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
-        .btn { text-decoration: none; font-weight: bold; font-size: 13px; padding: 7px 15px; border-radius: 20px; cursor: pointer; transition: 0.2s; display: inline-block; }
+        .popup-box b { font-size: 21px; display: block; color: #333; }
         .btn-track { background: #28a745; color: white !important; } .btn-vk { background: #0077FF; color: white !important; } .btn-dzen { background: #111111; color: white !important; } .btn-3d { background: #ffdb00; color: #000 !important; }
         
         #detail-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 7000; background: #000; display: none; border: none; }
 
-        /* МОБИЛЬНАЯ ВЕРСИЯ */
         @media (max-width: 768px) {
             #menu-box { left: 5%; width: 90%; top: 15px; }
-            #photo-toggle-wrap { display: none !important; }
             #mobile-photo-btn { display: flex; }
             #hint-box { top: auto; bottom: 30px; left: 50%; transform: translateX(-50%); }
             .map-avatar { bottom: 18px; right: 5px; width: 45px; height: 45px; }
             
             #about-modal { align-items: flex-end; }
-            .modal-layout { width: 100%; flex-direction: column; gap: 0; }
-            .modal-main { width: 100%; border-radius: 25px 25px 0 0; padding-bottom: 50px; box-shadow: none; }
-            .side-panel { display: none !important; } /* На мобилках бока не нужны */
-            .btn-expand-support { display: none; } /* Кнопка расширения не нужна */
-            #mobile-support-list { display: block; margin-top: 20px; }
-            .mobile-pay-btn { display: block; width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 12px; font-weight: bold; text-decoration: none; text-align: center; }
+            .modal-layout { width: 100%; flex-direction: column; gap: 0; max-width: 100vw; }
+            .modal-main { width: 100%; border-radius: 25px 25px 0 0; padding-bottom: 50px; box-shadow: none; max-width: 100%; }
+            .side-panel { display: none !important; } 
+            .btn-expand-support { display: none; } 
+            #mobile-support-list { display: block; margin-top: 20px; width: 100%; }
+            .mobile-pay-btn { display: block; width: 100%; padding: 14px; margin-bottom: 10px; border-radius: 12px; font-weight: bold; text-decoration: none; text-align: center; box-sizing: border-box; }
         }
     </style>
 </head>
@@ -127,29 +114,18 @@
     <iframe id="detail-overlay" src=""></iframe>
     <div id="photo-viewer" onclick="handleBackgroundClick()"><div class="close-btn" onclick="closePhoto()">×</div><img id="view-img" src="" onclick="handlePhotoClick(event)"></div>
     
-    <!-- МОДАЛЬНОЕ ОКНО "О СЕБЕ" -->
     <div id="about-modal" onclick="closeAbout()">
         <div class="modal-layout" onclick="event.stopPropagation()">
-            
-            <!-- ЛЕВАЯ ПАНЕЛЬ (QR) -->
             <div class="side-panel" id="side-qr"></div>
-
-            <!-- ЦЕНТРАЛЬНАЯ ПАНЕЛЬ -->
             <div class="modal-main" id="modal-main-box">
                 <span class="close-modal" onclick="closeAbout()">&times;</span>
                 <b id="about-name" style="font-size:22px;"></b>
                 <p id="about-bio" style="margin: 15px 0; line-height:1.4; color:#444;"></p>
                 <div class="social-icons" id="about-socials"></div>
-                
                 <button class="btn-expand-support" id="btn-support-pc" onclick="expandSupportPC()">Поддержать проект</button>
-                
-                <!-- Список донатов для МОБИЛОК (сразу под текстом) -->
                 <div id="mobile-support-list" style="display:none;"></div>
             </div>
-
-            <!-- ПРАВАЯ ПАНЕЛЬ (Ссылки + Крипта) -->
             <div class="side-panel" id="side-links"></div>
-
         </div>
     </div>
 
@@ -184,52 +160,46 @@
         var borderClusterGroup = L.markerClusterGroup({ showCoverageOnHover: false, spiderfyOnMaxZoom: true, maxClusterRadius: 30, iconCreateFunction: function(cluster) { var svg = `<svg width="34" height="42" viewBox="0 0 34 42"><path d="M17 0C7.6 0 0 7.6 0 17c0 12.8 17 25 17 25s17-12.2 17-25c0-9.4-7.6-17-17-17z" fill="#333"/><circle cx="17" cy="17" r="10" fill="white"/><g transform="translate(10, 11) scale(0.65)"><path d="M19 13H5v-2h14v2zM7 5h2v6H7V5zm8 0h2v6h-2V5z" fill="#333"/></g></svg>`; return L.divIcon({ html: svg, className: 'photo-marker', iconSize: [34, 42], iconAnchor: [17, 42] }); } }).addTo(map);
         var hexColors = { 'c2018': '#ff0000', 'c2019': '#007bff', 'c2021': '#9b59b6', 'c2024': '#ff8c00', 'cCurrent': '#28a745' };
 
-        // МЕНЮ
         function toggleMenu() { document.getElementById('menu-box').classList.toggle('collapsed'); }
         function toggleFullscreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else if (document.exitFullscreen) document.exitFullscreen(); }
         function closeAbout() { document.getElementById('about-modal').style.display = 'none'; }
 
-        // ЛОГИКА ОКНА "О СЕБЕ"
         function openAbout() {
             if (typeof aboutData === 'undefined') return;
             var isPC = window.innerWidth > 768;
             document.getElementById('about-name').innerText = aboutData.name;
             document.getElementById('about-bio').innerText = aboutData.bio;
             
-            // Соцсети
+            // Рендер соцсетей
             var sHtml = ""; 
-            aboutData.socials.forEach(s => { if(s.url) { 
-                if (s.id === 'dzen' || s.id === 'komoot') sHtml += `<a href="${s.url}" target="_blank"><span class="text-icon-btn">${s.id==='dzen'?'Дзен':'Komoot'}</span></a>`; 
-                else sHtml += `<a href="${s.url}" target="_blank"><i class="fa-brands fa-${s.id} ${s.id==='vk'?'fa-vk':''}"></i></a>`; 
-            } });
+            aboutData.socials.forEach(s => { 
+                if(!s.url) return;
+                var iconClass = "fa-brands fa-" + s.id;
+                if(s.id === 'vk') iconClass = "fa-brands fa-vk";
+                if(s.id === 'dzen' || s.id === 'komoot') {
+                    sHtml += `<a href="${s.url}" target="_blank"><span class="text-icon-btn">${s.id.charAt(0).toUpperCase() + s.id.slice(1)}</span></a>`;
+                } else {
+                    sHtml += `<a href="${s.url}" target="_blank"><i class="${iconClass}"></i></a>`;
+                }
+            });
             document.getElementById('about-socials').innerHTML = sHtml;
 
             if (isPC) {
-                // Сброс ПК версии
                 document.getElementById('side-qr').style.display = 'none';
                 document.getElementById('side-links').style.display = 'none';
                 document.getElementById('btn-support-pc').style.display = 'block';
                 
-                // Рендер QR
                 var qHtml = ""; aboutData.support.qrCodes.forEach(q => { qHtml += `<div class="qr-card"><b>${q.name}</b><img src="${q.img}"></div>`; });
                 document.getElementById('side-qr').innerHTML = qHtml;
 
-                // Рендер кнопок
                 var bHtml = ""; aboutData.support.buttons.forEach(b => { if(b.url) bHtml += `<a href="${b.url}" target="_blank" class="pay-link-btn" style="background:${b.color}; color:${b.textColor};">${b.name}</a>`; });
-                // Крипта отдельной кнопкой
-                if(aboutData.support.crypto.address) {
-                    bHtml += `<div class="crypto-btn" onclick="copyCrypto()"><div class="copy-hint-bubble" id="copy-bubble">Скопировано!</div><span><b>Крипто:</b> ${aboutData.support.crypto.name}</span><i class="fa-regular fa-copy"></i></div>`;
-                }
                 document.getElementById('side-links').innerHTML = bHtml;
             } else {
-                // Моб версия - донаты сразу
                 var mHtml = "";
                 aboutData.support.buttons.forEach(b => { if(b.url) mHtml += `<a href="${b.url}" target="_blank" class="mobile-pay-btn" style="background:${b.color}; color:${b.textColor};">${b.name}</a>`; });
-                if(aboutData.support.crypto.address) mHtml += `<div class="mobile-pay-btn" style="background:#eee; color:#333;" onclick="copyCrypto()">Скопировать крипто-адрес</div>`;
                 document.getElementById('mobile-support-list').innerHTML = mHtml;
                 document.getElementById('mobile-support-list').style.display = 'block';
             }
-
             document.getElementById('about-modal').style.display = 'flex';
         }
 
@@ -239,23 +209,12 @@
             document.getElementById('btn-support-pc').style.display = 'none';
         }
 
-        function copyCrypto() {
-            var addr = aboutData.support.crypto.address;
-            navigator.clipboard.writeText(addr).then(() => {
-                var bubble = document.getElementById('copy-bubble');
-                if(bubble) { bubble.style.opacity = "1"; setTimeout(() => bubble.style.opacity = "0", 2000); }
-                else alert("Адрес скопирован!");
-            });
-        }
-
-        // СВАЙП ДЛЯ МОБИЛОК (Закрытие окна "О себе")
+        // Свайп закрытия (мобайл)
         var touchStartYModal = 0;
-        var modalContent = document.querySelector('.modal-main');
-        modalContent.addEventListener('touchstart', e => { touchStartYModal = e.touches[0].clientY; }, {passive: true});
-        modalContent.addEventListener('touchend', e => {
+        document.getElementById('modal-main-box').addEventListener('touchstart', e => { touchStartYModal = e.touches[0].clientY; }, {passive: true});
+        document.getElementById('modal-main-box').addEventListener('touchend', e => {
             if (window.innerWidth > 768) return;
-            var diff = e.changedTouches[0].clientY - touchStartYModal;
-            if (diff > 100) closeAbout(); // Взмах вниз на 100px закрывает окно
+            if (e.changedTouches[0].clientY - touchStartYModal > 100) closeAbout();
         });
 
         // ФОТО-ВЬЮЕР
@@ -268,7 +227,7 @@
         function handleBackgroundClick() { if (window.innerWidth <= 768) closePhoto(); }
         function closePhoto() { scale = 1; lastScale = 1; posX = 0; posY = 0; updateTransform(); document.getElementById('photo-viewer').style.display = 'none'; }
 
-        // КАРТА
+        // КАРТА И МАРКЕРЫ
         function toggleList() { var show = document.getElementById('main-toggle').checked; document.getElementById('trip-list').style.display = show ? 'block' : 'none'; if(!show) { currentTripLayer.addTo(map); archiveLayerGroup.clearLayers(); photoClusterGroup.clearLayers(); borderClusterGroup.clearLayers(); document.querySelectorAll('.trip-check').forEach(c => c.checked = false); focusOnCurrent(); } else { map.removeLayer(currentTripLayer); } updateMarkers(true); }
         function updateMarkers(onlyPhotos) {
             archiveLayerGroup.clearLayers(); photoClusterGroup.clearLayers(); borderClusterGroup.clearLayers();
