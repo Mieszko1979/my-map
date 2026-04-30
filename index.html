@@ -51,7 +51,7 @@
         .modal-content { background: white; width: 95%; max-width: 440px; border-radius: 20px; padding: 25px; text-align: center; position: relative; box-sizing: border-box; }
         .close-modal { position: absolute; top: 15px; right: 15px; font-size: 24px; cursor: pointer; color: #aaa; }
         
-        /* Соцсети */
+        /* Соцсети в цвете */
         .social-icons { display: flex; justify-content: center; gap: 15px; margin: 20px 0; flex-wrap: wrap; align-items: center; }
         .social-icons a { text-decoration: none; display: flex; align-items: center; }
         .social-icons i { font-size: 32px; }
@@ -59,7 +59,6 @@
         .text-icon-btn { font-weight: 900; font-size: 13px; border: 2px solid #555; padding: 4px 10px; border-radius: 8px; color: #333; text-transform: uppercase; background: #fff; }
         .payment-btn { display: block; width: 100%; text-decoration: none; padding: 12px; border-radius: 12px; margin-top: 10px; font-weight: bold; color: white; }
 
-        /* ФОТО ПРОСМОТРЩИК (Desktop) */
         #photo-viewer { position: absolute; bottom: 100px; left: 15px; z-index: 1000; width: 220px; background: white; padding: 5px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none; cursor: pointer; }
         #photo-viewer img { width: 100%; border-radius: 5px; display: block; }
         #photo-viewer .close-btn { position: absolute; top: -12px; right: -12px; background: red; color: white; border-radius: 50%; width: 26px; height: 26px; text-align: center; line-height: 24px; font-weight: bold; border: 2px solid white; z-index: 1100; }
@@ -73,8 +72,7 @@
         }
         .num-wrapper { position: relative; display: inline-block; line-height: 1; }
         .suffix { position: absolute; left: 100%; top: 0; } 
-
-        .trans-center-marker { font-size: 20px !important; } /* Крупные иконки транспорта */
+        .trans-center-marker { font-size: 20px !important; }
 
         .c2018 { border-color: #ff0000 !important; color: #ff0000; } 
         .c2019 { border-color: #007bff !important; color: #007bff; } 
@@ -82,7 +80,7 @@
         .c2024 { border-color: #ff8c00 !important; color: #ff8c00; } 
         .cCurrent { border-color: #28a745 !important; color: #28a745; }
 
-        /* ПУЛЬСАЦИЯ ТЕКУЩЕЙ ТОЧКИ (Идея №7) */
+        /* ПУЛЬСАЦИЯ ТЕКУЩЕЙ ТОЧКИ */
         @keyframes softPulse {
             0% { box-shadow: 0 0 0 0px rgba(40, 167, 69, 0.7); }
             70% { box-shadow: 0 0 0 15px rgba(40, 167, 69, 0); }
@@ -93,10 +91,15 @@
         .photo-marker { background: none !important; border: none !important; display: flex; align-items: center; justify-content: center; overflow: visible !important; }
         .map-avatar { position: absolute; bottom: 25px; right: 10px; z-index: 1000; width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; opacity: 0.8; pointer-events: none; object-fit: cover; }
 
+        /* ПОПАПЫ - УВЕЛИЧЕННЫЕ ШРИФТЫ */
         .popup-box { text-align: center; min-width: 180px; padding: 5px; }
+        .popup-box b { font-size: 21px; display: block; margin-bottom: 8px; color: #333; }
+        .popup-box p { font-size: 18px; margin: 10px 0; color: #555; line-height: 1.4; }
+        
         .btn-row { display: flex; justify-content: center; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
         .btn { text-decoration: none; font-weight: bold; font-size: 13px; padding: 7px 15px; border-radius: 20px; cursor: pointer; transition: 0.2s; display: inline-block; }
         .btn-track { background: #28a745; color: white !important; } .btn-vk { background: #0077FF; color: white !important; } .btn-3d { background: #ffdb00; color: #000 !important; }
+
         #detail-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 5000; background: #000; display: none; border: none; }
 
         @media (max-width: 768px) {
@@ -122,9 +125,9 @@
             <b id="about-name"></b><p id="about-bio"></p>
             <div class="social-icons" id="about-socials"></div>
             <div style="background: #f8f9fa; padding: 20px; border-radius: 15px;">
-                <h3 id="support-title" style="margin:0"></h3><p id="support-text" style="font-size:14px;"></p>
+                <h3 id="support-title" style="margin:0 0 10px 0;"></h3><p id="support-text" style="font-size:14px;"></p>
                 <div id="payment-buttons"></div>
-                <button onclick="toggleQR()" style="margin-top:15px; border:1px solid #ccc; padding:8px 15px; border-radius:10px; cursor:pointer; background:#fff; font-weight:bold;">Показать QR-коды</button>
+                <button onclick="toggleQR()" style="margin-top:15px; border:1px solid #ccc; padding:8px 15px; border-radius:10px; cursor:pointer; background:#fff; font-weight:bold; color:#666;">Показать QR-коды</button>
                 <div id="qr-section" style="display:none;"><div id="qr-container"></div></div>
             </div>
         </div>
