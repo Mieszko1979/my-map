@@ -44,18 +44,37 @@
         #hint-box:hover { transform: translateX(-50%) scale(1.08); background: #fff; }
         .hint-text { color: #ff0000; font-weight: 900; font-size: 17px; text-transform: uppercase; letter-spacing: 1px; }
 
+        /* МОДАЛЬНОЕ ОКНО */
         #about-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 6000; justify-content: center; align-items: center; }
-        .modal-content { background: white; width: 95%; max-width: 440px; border-radius: 20px; padding: 25px; text-align: center; position: relative; box-sizing: border-box; }
-        .close-modal { position: absolute; top: 15px; right: 15px; font-size: 24px; cursor: pointer; color: #aaa; }
+        .modal-content { background: white; width: 95%; max-width: 500px; border-radius: 20px; padding: 25px; text-align: center; position: relative; box-sizing: border-box; max-height: 90vh; overflow-y: auto; transition: all 0.3s ease; }
+        .close-modal { position: absolute; top: 15px; right: 15px; font-size: 24px; cursor: pointer; color: #aaa; z-index: 10; }
         
-        .social-icons { display: flex; justify-content: center; gap: 15px; margin: 20px 0; flex-wrap: wrap; align-items: center; }
+        /* СОЦСЕТИ */
+        .social-icons { display: flex; justify-content: center; gap: 15px; margin: 15px 0; flex-wrap: wrap; align-items: center; }
         .social-icons a { text-decoration: none; display: flex; align-items: center; }
         .social-icons i { font-size: 32px; }
         .fa-vk { color: #0077FF; } .fa-odnoklassniki { color: #ee8208; } .fa-instagram { color: #E1306C; } .fa-youtube { color: #FF0000; } .fa-telegram { color: #0088cc; } .fa-strava { color: #FC6100; }
         .text-icon-btn { font-weight: 900; font-size: 13px; border: 2px solid #555; padding: 4px 10px; border-radius: 8px; color: #333; text-transform: uppercase; background: #fff; }
-        .payment-btn { display: block; width: 100%; text-decoration: none; padding: 12px; border-radius: 12px; margin-top: 10px; font-weight: bold; color: white; }
 
-        /* ПРОСМОТР ФОТО (Desktop) */
+        /* КНОПКА ПОДДЕРЖКИ (ПК) */
+        @keyframes pulseBtn { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.4); } 70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(40, 167, 69, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); } }
+        .pulse-support-btn { display: block; width: 100%; padding: 15px; margin-top: 20px; background: #28a745; color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 18px; cursor: pointer; animation: pulseBtn 2s infinite; }
+
+        /* СЕТКА ДОНАТОВ */
+        #support-expanded { display: none; margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px; }
+        .support-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+        .qr-item { margin-bottom: 15px; text-align: center; }
+        .qr-img { width: 130px; height: 130px; border: 1px solid #eee; border-radius: 8px; margin-top: 5px; }
+        .pay-link-btn { display: block; width: 100%; text-decoration: none; padding: 12px; border-radius: 10px; margin-bottom: 8px; font-weight: bold; box-sizing: border-box; font-size: 14px; }
+        
+        /* КРИПТА */
+        .crypto-box { grid-column: 1 / span 2; background: #f8f9fa; padding: 12px; border-radius: 10px; margin-top: 10px; border: 1px dashed #ccc; cursor: pointer; position: relative; }
+        .crypto-box:active { background: #e9ecef; }
+        .crypto-title { font-size: 12px; color: #777; display: block; margin-bottom: 4px; }
+        .crypto-addr { font-family: monospace; font-size: 13px; color: #333; word-break: break-all; }
+        .copy-hint { position: absolute; top: 5px; right: 10px; font-size: 10px; color: #28a745; font-weight: bold; opacity: 0; transition: 0.3s; }
+
+        /* ПРОСМОТР ФОТО */
         #photo-viewer { position: absolute; bottom: 100px; left: 15px; z-index: 1000; width: 220px; background: white; padding: 5px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none; cursor: pointer; transition: transform 0.2s ease; }
         #photo-viewer:hover { transform: scale(1.05); }
         #photo-viewer img { width: 100%; border-radius: 5px; display: block; }
@@ -69,8 +88,6 @@
         }
         .num-wrapper { position: relative; display: inline-block; line-height: 1; }
         .suffix { position: absolute; left: 100%; top: 0; } 
-        
-        /* Размер иконок транспорта - ЧУТЬ МЕНЬШЕ, чтобы не касались края */
         .trans-center-marker { font-size: 16px !important; }
 
         .c2018 { border-color: #ff0000 !important; color: #ff0000; } 
@@ -92,12 +109,9 @@
         .popup-box { text-align: center; min-width: 180px; padding: 5px; }
         .popup-box b { font-size: 21px; display: block; margin-bottom: 8px; color: #333; }
         .popup-box p { font-size: 18px; margin: 5px 0; color: #555; line-height: 1.4; }
-        .coords { font-size: 13px; color: #777; font-family: monospace; margin: 8px 0; } /* СТИЛЬ КООРДИНАТ */
-        
+        .coords { font-size: 13px; color: #777; font-family: monospace; margin: 8px 0; }
         .btn-row { display: flex; justify-content: center; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
         .btn { text-decoration: none; font-weight: bold; font-size: 13px; padding: 7px 15px; border-radius: 20px; cursor: pointer; transition: 0.2s; display: inline-block; }
-        
-        /* Цвета кнопок, включая новую кнопку Дзен */
         .btn-track { background: #28a745; color: white !important; } 
         .btn-vk { background: #0077FF; color: white !important; } 
         .btn-dzen { background: #111111; color: white !important; } 
@@ -105,16 +119,22 @@
         
         #detail-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 7000; background: #000; display: none; border: none; }
 
+        /* МОБИЛЬНАЯ ВЕРСИЯ */
         @media (max-width: 768px) {
             #menu-box { left: 5%; width: 90%; top: 15px; box-sizing: border-box; min-width: auto; }
             #photo-toggle-wrap { display: none !important; }
             #mobile-photo-btn { display: flex; }
             #hint-box { top: auto; bottom: 30px; left: 50%; transform: translateX(-50%); }
             .map-avatar { bottom: 18px; right: 5px; width: 45px; height: 45px; }
-            .fs-btn { margin-left: 25px; } #menu-chevron { margin-left: 20px; }
-            #photo-viewer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: black; display: none; justify-content: center; align-items: center; bottom: auto; z-index: 9999; }
-            #photo-viewer img { width: 100%; height: 100%; object-fit: contain; border-radius: 0; }
-            #photo-viewer .close-btn { display: none !important; opacity: 0 !important; }
+            
+            /* Шторка снизу */
+            #about-modal { align-items: flex-end; }
+            .modal-content { width: 100%; border-radius: 25px 25px 0 0; max-width: none; padding-bottom: 40px; }
+            .support-grid { grid-template-columns: 1fr; gap: 10px; }
+            .qr-column { display: none !important; } /* Скрываем QR на мобилках */
+            .pulse-support-btn { display: none !important; } /* Скрываем кнопку пульсации */
+            #support-expanded { display: block !important; border-top: none; padding-top: 10px; } /* Сразу показываем донаты */
+            .crypto-box { grid-column: auto; }
         }
     </style>
 </head>
@@ -123,16 +143,30 @@
     <iframe id="detail-overlay" src=""></iframe>
     <div id="photo-viewer" onclick="handleBackgroundClick()"><div class="close-btn" onclick="closePhoto()">×</div><img id="view-img" src="" onclick="handlePhotoClick(event)"></div>
     
+    <!-- МОДАЛЬНОЕ ОКНО -->
     <div id="about-modal" onclick="closeAbout()">
         <div class="modal-content" onclick="event.stopPropagation()">
             <span class="close-modal" onclick="closeAbout()">&times;</span>
-            <b id="about-name"></b><p id="about-bio"></p>
+            <b id="about-name" style="font-size: 24px; display: block; margin-bottom: 10px;"></b>
+            <p id="about-bio" style="font-size: 16px; line-height: 1.5; color: #444; margin-bottom: 20px;"></p>
+            
             <div class="social-icons" id="about-socials"></div>
-            <div style="background: #f8f9fa; padding: 20px; border-radius: 15px;">
-                <h3 id="support-title" style="margin:0"></h3><p id="support-text" style="font-size:14px;"></p>
-                <div id="payment-buttons"></div>
-                <button onclick="toggleQR()" style="margin-top:15px; border:1px solid #ccc; padding:8px 15px; border-radius:10px; cursor:pointer; background:#fff; font-weight:bold;">Показать QR-коды</button>
-                <div id="qr-section" style="display:none;"><div id="qr-container"></div></div>
+
+            <button id="main-support-btn" class="pulse-support-btn" onclick="expandSupport()">Поддержать проект</button>
+
+            <div id="support-expanded">
+                <div class="support-grid">
+                    <!-- Колонка QR (только ПК) -->
+                    <div class="qr-column" id="qr-list"></div>
+                    <!-- Колонка Ссылок -->
+                    <div class="pay-column" id="pay-list"></div>
+                    <!-- Крипта -->
+                    <div id="crypto-section" class="crypto-box" onclick="copyCrypto()">
+                        <span class="copy-hint" id="copy-ok">Скопировано!</span>
+                        <span class="crypto-title" id="crypto-name"></span>
+                        <span class="crypto-addr" id="crypto-addr"></span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -165,41 +199,82 @@
         L.tileLayer('http://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3'] }).addTo(map);
 
         var currentTripLayer = L.layerGroup().addTo(map), archiveLayerGroup = L.layerGroup().addTo(map), photoClusterGroup = L.markerClusterGroup({ showCoverageOnHover: false, maxClusterRadius: 40 }).addTo(map);
-        
-        var borderClusterGroup = L.markerClusterGroup({
-            showCoverageOnHover: false,
-            spiderfyOnMaxZoom: true,
-            maxClusterRadius: 30,
-            iconCreateFunction: function(cluster) {
-                var svg = `<svg width="34" height="42" viewBox="0 0 34 42"><path d="M17 0C7.6 0 0 7.6 0 17c0 12.8 17 25 17 25s17-12.2 17-25c0-9.4-7.6-17-17-17z" fill="#333"/><circle cx="17" cy="17" r="10" fill="white"/><g transform="translate(10, 11) scale(0.65)"><path d="M19 13H5v-2h14v2zM7 5h2v6H7V5zm8 0h2v6h-2V5z" fill="#333"/></g></svg>`;
-                return L.divIcon({ html: svg, className: 'photo-marker', iconSize: [34, 42], iconAnchor: [17, 42] });
-            }
-        }).addTo(map);
-
+        var borderClusterGroup = L.markerClusterGroup({ showCoverageOnHover: false, spiderfyOnMaxZoom: true, maxClusterRadius: 30, iconCreateFunction: function(cluster) { var svg = `<svg width="34" height="42" viewBox="0 0 34 42"><path d="M17 0C7.6 0 0 7.6 0 17c0 12.8 17 25 17 25s17-12.2 17-25c0-9.4-7.6-17-17-17z" fill="#333"/><circle cx="17" cy="17" r="10" fill="white"/><g transform="translate(10, 11) scale(0.65)"><path d="M19 13H5v-2h14v2zM7 5h2v6H7V5zm8 0h2v6h-2V5z" fill="#333"/></g></svg>`; return L.divIcon({ html: svg, className: 'photo-marker', iconSize: [34, 42], iconAnchor: [17, 42] }); } }).addTo(map);
         var hexColors = { 'c2018': '#ff0000', 'c2019': '#007bff', 'c2021': '#9b59b6', 'c2024': '#ff8c00', 'cCurrent': '#28a745' };
 
+        // ЖЕСТЫ МЕНЮ
         var touchStartYMenu = 0; var menuBox = document.getElementById('menu-box');
         menuBox.addEventListener('touchstart', e => { touchStartYMenu = e.touches[0].clientY; }, {passive: true});
-        menuBox.addEventListener('touchend', e => {
-            if (window.innerWidth > 768) return;
-            var diff = e.changedTouches[0].clientY - touchStartYMenu;
-            if (diff > 50 && menuBox.classList.contains('collapsed')) toggleMenu();
-            if (diff < -50 && !menuBox.classList.contains('collapsed')) toggleMenu();
-        });
+        menuBox.addEventListener('touchend', e => { if (window.innerWidth > 768) return; var diff = e.changedTouches[0].clientY - touchStartYMenu; if (diff > 50 && menuBox.classList.contains('collapsed')) toggleMenu(); if (diff < -50 && !menuBox.classList.contains('collapsed')) toggleMenu(); });
 
-        function togglePhotos() {
-            var checkbox = document.getElementById('photo-toggle'); checkbox.checked = !checkbox.checked; updateMarkers(true);
-            var mobileBtn = document.getElementById('mobile-photo-btn');
-            if(checkbox.checked) { mobileBtn.style.background = '#28a745'; mobileBtn.style.color = '#fff'; }
-            else { mobileBtn.style.background = '#fff'; mobileBtn.style.color = '#28a745'; }
-        }
+        function togglePhotos() { var checkbox = document.getElementById('photo-toggle'); checkbox.checked = !checkbox.checked; updateMarkers(true); var mobileBtn = document.getElementById('mobile-photo-btn'); if(checkbox.checked) { mobileBtn.style.background = '#28a745'; mobileBtn.style.color = '#fff'; } else { mobileBtn.style.background = '#fff'; mobileBtn.style.color = '#28a745'; } }
         function openTrackView(url) { if (/Android|iPhone|iPad/i.test(navigator.userAgent)) { var overlay = document.getElementById('detail-overlay'); overlay.src = url; overlay.style.display = 'block'; } else { window.open(url, '_blank'); } }
         window.closeTrackView = function() { var overlay = document.getElementById('detail-overlay'); overlay.style.display = 'none'; overlay.src = ""; };
         function toggleMenu() { document.getElementById('menu-box').classList.toggle('collapsed'); }
         function toggleFullscreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else if (document.exitFullscreen) document.exitFullscreen(); }
         function closeAbout() { document.getElementById('about-modal').style.display = 'none'; }
-        function toggleQR() { var s = document.getElementById('qr-section'); s.style.display = s.style.display === 'block' ? 'none' : 'block'; }
 
+        // ЛОГИКА ОКНА "О СЕБЕ"
+        function openAbout() {
+            if (typeof aboutData === 'undefined') return;
+            document.getElementById('about-name').innerText = aboutData.name;
+            document.getElementById('about-bio').innerText = aboutData.bio;
+            
+            // Соцсети
+            var sHtml = ""; 
+            aboutData.socials.forEach(s => { 
+                if(s.url) { 
+                    if (s.id === 'dzen' || s.id === 'komoot') sHtml += `<a href="${s.url}" target="_blank"><span class="text-icon-btn">${s.id==='dzen'?'Дзен':'Komoot'}</span></a>`; 
+                    else sHtml += `<a href="${s.url}" target="_blank"><i class="fa-brands fa-${s.id} ${s.id==='vk'?'fa-vk':''}"></i></a>`; 
+                } 
+            });
+            document.getElementById('about-socials').innerHTML = sHtml;
+
+            // Куар коды
+            var qHtml = ""; 
+            aboutData.support.qrCodes.forEach(q => { qHtml += `<div class="qr-item"><b>${q.name}</b><br><img src="${q.img}" class="qr-img"></div>`; });
+            document.getElementById('qr-list').innerHTML = qHtml;
+
+            // Кнопки оплаты
+            var bHtml = "";
+            aboutData.support.buttons.forEach(b => {
+                if(b.url) bHtml += `<a href="${b.url}" target="_blank" class="pay-link-btn" style="background:${b.color}; color:${b.textColor};">${b.name}</a>`;
+            });
+            document.getElementById('pay-list').innerHTML = bHtml;
+
+            // Крипта
+            if(aboutData.support.crypto && aboutData.support.crypto.address) {
+                document.getElementById('crypto-section').style.display = 'block';
+                document.getElementById('crypto-name').innerText = aboutData.support.crypto.name;
+                document.getElementById('crypto-addr').innerText = aboutData.support.crypto.address;
+            } else {
+                document.getElementById('crypto-section').style.display = 'none';
+            }
+
+            // Сброс состояния (скрываем донаты на ПК при открытии)
+            if(window.innerWidth > 768) {
+                document.getElementById('support-expanded').style.display = 'none';
+                document.getElementById('main-support-btn').style.display = 'block';
+            }
+
+            document.getElementById('about-modal').style.display = 'flex';
+        }
+
+        function expandSupport() {
+            document.getElementById('support-expanded').style.display = 'block';
+            document.getElementById('main-support-btn').style.display = 'none';
+        }
+
+        function copyCrypto() {
+            var addr = aboutData.support.crypto.address;
+            navigator.clipboard.writeText(addr).then(() => {
+                var hint = document.getElementById('copy-ok');
+                hint.style.opacity = "1";
+                setTimeout(() => { hint.style.opacity = "0"; }, 2000);
+            });
+        }
+
+        // РАБОТА С ФОТО
         var img = document.getElementById('view-img'), scale = 1, lastScale = 1, startDist = 0, posX = 0, posY = 0, startX = 0, startY = 0, isDragging = false;
         img.addEventListener('touchstart', e => { if (e.touches.length === 1) { isDragging = true; startX = e.touches[0].pageX - posX; startY = e.touches[0].pageY - posY; } else if (e.touches.length === 2) { isDragging = false; startDist = Math.hypot(e.touches[0].pageX-e.touches[1].pageX, e.touches[0].pageY-e.touches[1].pageY); lastScale = scale; } });
         img.addEventListener('touchmove', e => { if (scale > 1) e.preventDefault(); if (e.touches.length === 1 && isDragging && scale > 1) { posX = e.touches[0].pageX - startX; posY = e.touches[0].pageY - startY; updateTransform(); } else if (e.touches.length === 2) { var d = Math.hypot(e.touches[0].pageX-e.touches[1].pageX, e.touches[0].pageY-e.touches[1].pageY); scale = Math.min(Math.max(1, lastScale * (d / startDist)), 5); updateTransform(); } });
@@ -209,19 +284,7 @@
         function handleBackgroundClick() { if (window.innerWidth <= 768) closePhoto(); }
         function closePhoto() { scale = 1; lastScale = 1; posX = 0; posY = 0; updateTransform(); document.getElementById('photo-viewer').style.display = 'none'; }
 
-        function openAbout() {
-            if (typeof aboutData === 'undefined') return;
-            document.getElementById('about-name').innerText = aboutData.name; document.getElementById('about-bio').innerText = aboutData.bio;
-            document.getElementById('support-title').innerText = aboutData.supportTitle; document.getElementById('support-text').innerText = aboutData.supportText;
-            var iconMap = { 'vk': 'fa-vk', 'odnoklassniki': 'fa-odnoklassniki', 'instagram': 'fa-instagram', 'youtube': 'fa-youtube', 'telegram': 'fa-telegram', 'strava': 'fa-strava' };
-            var sHtml = ""; aboutData.socials.forEach(s => { if(s.url) { if (s.id === 'dzen' || s.id === 'komoot') sHtml += `<a href="${s.url}" target="_blank"><span class="text-icon-btn">${s.id==='dzen'?'Дзен':'Komoot'}</span></a>`; else sHtml += `<a href="${s.url}" target="_blank"><i class="fa-brands fa-${s.id} ${s.id==='vk'?'fa-vk':''}"></i></a>`; } });
-            document.getElementById('about-socials').innerHTML = sHtml;
-            var pHtml = ""; aboutData.paymentButtons.forEach(p => { pHtml += `<a href="${p.url}" target="_blank" class="payment-btn" style="background:${p.color};">${p.name}</a>`; });
-            document.getElementById('payment-buttons').innerHTML = pHtml;
-            var qHtml = ""; aboutData.qrCodes.forEach(q => { qHtml += `<div style="margin-top:15px;"><b>${q.name}</b><img src="${q.img}" class="qr-img"></div>`; });
-            document.getElementById('qr-container').innerHTML = qHtml; document.getElementById('about-modal').style.display = 'flex';
-        }
-
+        // ЛОГИКА КАРТЫ И МАРКЕРОВ
         function toggleList() { var show = document.getElementById('main-toggle').checked; document.getElementById('trip-list').style.display = show ? 'block' : 'none'; if(!show) { currentTripLayer.addTo(map); archiveLayerGroup.clearLayers(); photoClusterGroup.clearLayers(); borderClusterGroup.clearLayers(); document.querySelectorAll('.trip-check').forEach(c => c.checked = false); focusOnCurrent(); } else { map.removeLayer(currentTripLayer); } updateMarkers(true); }
         function updateMarkers(onlyPhotos) {
             archiveLayerGroup.clearLayers(); photoClusterGroup.clearLayers(); borderClusterGroup.clearLayers();
@@ -243,7 +306,6 @@
             var hex = hexColors[colorClass];
             data.forEach((p, i) => {
                 if (p.type === 'border') {
-                    // ЗДЕСЬ ИСПРАВЛЕНА ОШИБКА С ПРОБЕЛАМИ (добавлено .trim())
                     var flagHtml = `<div class="flag-stuck"><div style="width:4px; height:50px; background:#444; position:relative;"><img src="https://flagcdn.com/w80/${p.country.toLowerCase().trim()}.png" style="position:absolute; top:0; left:4px; width:45px; border:1.5px solid #fff; box-shadow: 3px 3px 7px rgba(0,0,0,0.5);"></div></div>`;
                     L.marker([p.lat, p.lng], {icon: L.divIcon({ className: '', html: flagHtml, iconSize: [50, 50], iconAnchor: [2, 50] })}).addTo(borderClusterGroup).bindPopup(createPopup(p, folder));
                 } else if (!p.type || p.type === 'day') {
@@ -257,27 +319,25 @@
                     L.circleMarker(p.to, { radius: 5, color: hex, fillColor: 'white', fillOpacity: 1, weight: 2 }).addTo(target);
                     var tIcons = { 'plane':'✈️','train':'🚂','bus':'🚌','car':'🚗','truck':'🚚' };
                     L.marker([(p.from[0]+p.to[0])/2, (p.from[1]+p.to[1])/2], {icon: L.divIcon({ className: 'trans-center-marker ' + colorClass, html: tIcons[p.transport] || '🚀', iconSize:[24, 24], iconAnchor:[12, 12] })}).addTo(target).bindPopup(createPopup(p, folder));
-                    L.polylineDecorator(line, { patterns:[{ offset: '20%', repeat: '40%', symbol: L.Symbol.arrowHead({pixelSize: 12, pathOptions: {color: hex, fillOpacity: 1, weight: 0}}) }] }).addTo(target);
+                    L.polylineDecorator(line, { patterns: [{ offset: '20%', repeat: '40%', symbol: L.Symbol.arrowHead({pixelSize: 12, pathOptions: {color: hex, fillOpacity: 1, weight: 0}}) }] }).addTo(target);
                 }
             });
         }
-        
         function createPopup(p, folder) { 
             var html = `<div class="popup-box"><b>${p.title}</b><p>${p.desc}</p>`;
             if (p.lat && p.lng) html += `<div class="coords">${p.lat.toFixed(5)}, ${p.lng.toFixed(5)}</div>`;
             html += `<div class="btn-row">`;
             if (p.link) html += `<a onclick="openTrackView('view.html?folder=${folder}&file=${p.link}')" class="btn btn-track">Трек</a> `;
             if (p.vk) html += `<a href="${p.vk}" class="btn btn-vk" target="_blank">VK</a>`;
-            if (p.dzen) html += `<a href="${p.dzen}" class="btn btn-dzen" target="_blank">Дзен</a>`; // ЗДЕСЬ ДОБАВЛЕНА КНОПКА ДЗЕН
+            if (p.dzen) html += `<a href="${p.dzen}" class="btn btn-dzen" target="_blank">Дзен</a>`;
             if (p.relive) html += `<a href="${p.relive}" class="btn btn-3d" target="_blank">3D</a>`;
             return html + '</div></div>';
         }
-        
         function loadPhotos(repo, hex) {
             fetch(`https://mieszko1979.github.io/${repo}/photos.json?t=${Date.now()}`).then(r => r.json()).then(data => {
                 data.forEach(photo => {
                     var svg = `<svg width="34" height="42" viewBox="0 0 34 42"><path d="M17 0C7.6 0 0 7.6 0 17c0 12.8 17 25 17 25s17-12.2 17-25c0-9.4-7.6-17-17-17z" fill="${hex}"/><circle cx="17" cy="17" r="10" fill="white"/><g transform="translate(10, 12) scale(0.6)"><path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" fill="${hex}"/><circle cx="12" cy="13" r="3.5" fill="white" /><circle cx="12" cy="13" r="2" fill="${hex}" /></g></svg>`;
-                    L.marker([photo.lat, photo.lng], {icon: L.divIcon({ className: 'photo-marker', html: svg, iconSize: [34, 42], iconAnchor:[0, 42] })}).addTo(photoClusterGroup).on('click', () => { document.getElementById('view-img').src = `https://mieszko1979.github.io/${repo}/${photo.url}`; document.getElementById('photo-viewer').style.display = 'flex'; });
+                    L.marker([photo.lat, photo.lng], {icon: L.divIcon({ className: 'photo-marker', html: svg, iconSize: [34, 42], iconAnchor: [0, 42] })}).addTo(photoClusterGroup).on('click', () => { document.getElementById('view-img').src = `https://mieszko1979.github.io/${repo}/${photo.url}`; document.getElementById('photo-viewer').style.display = 'flex'; });
                 });
             });
         }
