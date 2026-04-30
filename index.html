@@ -34,66 +34,59 @@
         .menu-header input { margin-right: 12px; transform: scale(1.3); }
         #trip-list { margin-top: 10px; display: none; }
         .trip-item { margin-bottom: 12px; display: flex; align-items: center; font-size: 14px; font-weight: bold; line-height: 1.3; }
+        
+        /* КНОПКИ В МЕНЮ */
+        .fs-btn { background: none; border: none; cursor: pointer; font-size: 18px; color: #666; margin-right: 15px; }
+        #menu-chevron { margin-left: 10px; }
+
+        /* ФОТО ПК */
         #photo-toggle-wrap { margin-top: 12px; padding-top: 12px; border-top: 1px dashed #ccc; color: #28a745; font-weight: bold; display: flex; align-items: center; cursor: pointer; font-size: 15px; }
         #photo-toggle-wrap input { margin-right: 12px; transform: scale(1.2); }
+        
+        /* ФОТО МОБАЙЛ КНОПКА */
         #mobile-photo-btn { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); z-index: 1001; background: white; border: none; width: 45px; height: 45px; border-radius: 50%; box-shadow: 0 2px 10px rgba(0,0,0,0.3); display: none; align-items: center; justify-content: center; color: #28a745; font-size: 20px; }
-        .fs-btn { background: none; border: none; cursor: pointer; font-size: 18px; color: #666; margin-left: 20px; }
 
         /* ЖМИ СЮДА */
         #hint-box { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); z-index: 1000; background: rgba(255, 255, 255, 0.95); padding: 10px 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); cursor: pointer; text-align: center; transition: 0.2s ease; }
         #hint-box:hover { transform: translateX(-50%) scale(1.08); }
         .hint-text { color: #ff0000; font-weight: 900; font-size: 17px; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* МОДАЛЬНОЕ ОКНО "О СЕБЕ" */
+        /* МОДАЛЬНОЕ ОКНО */
         #about-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 6000; justify-content: center; align-items: center; }
         .modal-layout { display: flex; align-items: center; justify-content: center; gap: 20px; max-width: 95vw; box-sizing: border-box; }
-        .modal-main { background: white; width: 400px; border-radius: 20px; padding: 25px; text-align: center; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.5); z-index: 2; box-sizing: border-box; }
-        .side-panel { width: 220px; display: none; flex-direction: column; gap: 15px; animation: slideIn 0.4s ease-out; }
-        @keyframes slideIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
-
+        .modal-main { background: white; width: 400px; border-radius: 20px; padding: 25px; text-align: center; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.5); z-index: 2; }
+        .side-panel { width: 220px; display: none; flex-direction: column; gap: 15px; }
         .qr-card { background: white; padding: 12px; border-radius: 15px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
         .qr-card img { width: 100%; border-radius: 8px; }
-        .qr-card b { font-size: 13px; display: block; margin-top: 5px; }
-        .pay-link-btn { display: block; width: 100%; text-decoration: none; padding: 12px; border-radius: 12px; font-weight: bold; font-size: 14px; text-align: center; box-sizing: border-box; }
-        
+        .pay-link-btn { display: block; width: 100%; text-decoration: none; padding: 12px; border-radius: 12px; font-weight: bold; font-size: 14px; text-align: center; }
         .close-modal { position: absolute; top: 15px; right: 15px; font-size: 24px; cursor: pointer; color: #aaa; }
         
-        /* СОЦСЕТИ */
         .social-icons { display: flex; justify-content: center; gap: 12px; margin: 15px 0; flex-wrap: wrap; }
-        .social-icons a { text-decoration: none; }
         .fa-vk { color: #0077FF; } .fa-telegram { color: #0088cc; } .fa-youtube { color: #FF0000; } 
         .fa-instagram { color: #E1306C; } .fa-odnoklassniki { color: #ee8208; } .fa-strava { color: #FC6100; }
-        .text-icon-btn { font-weight: 900; font-size: 12px; border: 2px solid #555; padding: 4px 8px; border-radius: 8px; color: #333; text-transform: uppercase; display: inline-block; }
+        .text-icon-btn { font-weight: 900; font-size: 12px; border: 2px solid #555; padding: 4px 8px; border-radius: 8px; color: #333; text-transform: uppercase; }
+        .btn-expand-support { width: 100%; padding: 14px; background: #28a745; color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 17px; cursor: pointer; margin-top: 15px; }
 
-        @keyframes pulseSupport { 0% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.6); } 70% { box-shadow: 0 0 0 15px rgba(40, 167, 69, 0); } 100% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); } }
-        .btn-expand-support { width: 100%; padding: 14px; background: #28a745; color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 17px; cursor: pointer; margin-top: 15px; animation: pulseSupport 2s infinite; }
-
-        /* ПОПАПЫ (ВОССТАНОВЛЕНО ПО МАНИФЕСТУ) */
+        /* ПОПАПЫ */
         .popup-box { text-align: center; min-width: 180px; padding: 5px; }
         .popup-box b { font-size: 21px; display: block; margin-bottom: 8px; color: #333; }
         .popup-box p { font-size: 18px; margin: 5px 0; color: #555; line-height: 1.4; }
         .coords { font-size: 13px; color: #777; font-family: monospace; margin: 8px 0; }
         
         .btn-row { display: flex; justify-content: center; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
-        .btn { text-decoration: none; font-weight: bold; font-size: 13px; padding: 7px 15px; border-radius: 20px; cursor: pointer; transition: 0.2s; display: inline-block; }
-        .btn-track { background: #28a745; color: white !important; } 
-        .btn-vk { background: #0077FF; color: white !important; } 
-        .btn-dzen { background: #111111; color: white !important; } 
-        .btn-3d { background: #ffdb00; color: #000 !important; }
+        .btn { text-decoration: none !important; font-weight: bold; font-size: 13px; padding: 8px 18px; border-radius: 20px; cursor: pointer; transition: 0.2s; display: inline-block; color: white !important; }
+        .btn-track { background: #28a745; } .btn-vk { background: #0077FF; } .btn-dzen { background: #111111; } .btn-3d { background: #ffdb00; color: #000 !important; }
 
         /* МАРКЕРЫ */
-        .day-marker, .trans-center-marker { background: #fff; border-radius: 50%; border: 2.5px solid; color: #000; font-weight: bold; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.5); font-size: 11px; width: 24px !important; height: 24px !important; overflow: hidden; white-space: nowrap; z-index: 500 !important; }
-        .num-wrapper { position: relative; display: inline-block; line-height: 1; }
-        .suffix { position: absolute; left: 100%; top: 0; } 
-        .c2018 { border-color: #ff0000 !important; color: #ff0000; } .c2019 { border-color: #007bff !important; color: #007bff; } .c2021 { border-color: #9b59b6 !important; color: #9b59b6; } .c2024 { border-color: #ff8c00 !important; color: #ff8c00; } .cCurrent { border-color: #28a745 !important; color: #28a745; }
-        @keyframes softPulse { 0% { box-shadow: 0 0 0 0px rgba(40, 167, 69, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(40, 167, 69, 0); } 100% { box-shadow: 0 0 0 0px rgba(40, 167, 69, 0); } }
-        .last-point-pulse { animation: softPulse 3s infinite ease-in-out; z-index: 1000 !important; }
-        @keyframes flagWaver { 0% { transform: rotate(0deg); } 50% { transform: rotate(6deg); } 100% { transform: rotate(0deg); } }
-        .flag-stuck { animation: flagWaver 2.5s infinite ease-in-out; transform-origin: bottom center; display: flex; align-items: center; justify-content: center; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.5)); }
-        .photo-marker { background: none !important; border: none !important; display: flex; align-items: center; justify-content: center; overflow: visible !important; }
-        .map-avatar { position: absolute; bottom: 25px; right: 10px; z-index: 1000; width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; opacity: 0.8; pointer-events: none; object-fit: cover; }
+        .day-marker, .trans-center-marker { background: #fff; border-radius: 50%; border: 2.5px solid; color: #000; font-weight: bold; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.5); font-size: 11px; width: 24px !important; height: 24px !important; overflow: hidden; white-space: nowrap; }
+        .trans-center-marker { font-size: 18px !important; } /* КРУПНЫЙ ЭМОДЗИ */
         
-        /* ВЬЮЕР ФОТО */
+        .c2018 { border-color: #ff0000 !important; color: #ff0000; } .c2019 { border-color: #007bff !important; color: #007bff; } .c2021 { border-color: #9b59b6 !important; color: #9b59b6; } .c2024 { border-color: #ff8c00 !important; color: #ff8c00; } .cCurrent { border-color: #28a745 !important; color: #28a745; }
+        .flag-stuck { animation: flagWaver 2.5s infinite ease-in-out; transform-origin: bottom center; display: flex; align-items: center; justify-content: center; }
+        @keyframes flagWaver { 0% { transform: rotate(0deg); } 50% { transform: rotate(6deg); } 100% { transform: rotate(0deg); } }
+        .photo-marker { background: none !important; border: none !important; display: flex; align-items: center; justify-content: center; }
+        .map-avatar { position: absolute; bottom: 25px; right: 10px; z-index: 1000; width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; opacity: 0.8; object-fit: cover; pointer-events: none; }
+        
         #photo-viewer { position: absolute; bottom: 100px; left: 15px; z-index: 1000; width: 220px; background: white; padding: 5px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none; cursor: pointer; }
         #photo-viewer img { width: 100%; border-radius: 5px; display: block; }
         #photo-viewer .close-btn { position: absolute; top: -12px; right: -12px; background: red; color: white; border-radius: 50%; width: 26px; height: 26px; text-align: center; line-height: 24px; font-weight: bold; border: 2px solid white; z-index: 1100; }
@@ -101,15 +94,15 @@
         #detail-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 7000; background: #000; display: none; border: none; }
 
         @media (max-width: 768px) {
-            #menu-box { left: 5%; width: 90%; top: 15px; }
-            #mobile-photo-btn { display: flex; }
+            #menu-box { left: 5%; width: 90%; top: 15px; min-width: auto; }
+            #photo-toggle-wrap { display: none !important; } /* СКРЫТЬ ЧЕКБОКС ФОТО */
+            #mobile-photo-btn { display: flex; } /* ПОКАЗАТЬ КАМЕРУ */
             #hint-box { top: auto; bottom: 30px; left: 50%; transform: translateX(-50%); }
             .map-avatar { bottom: 18px; right: 5px; width: 45px; height: 45px; }
             #about-modal { align-items: flex-end; }
-            .modal-layout { width: 100%; flex-direction: column; gap: 0; max-width: 100vw; }
-            .modal-main { width: 100%; border-radius: 25px 25px 0 0; padding-bottom: 50px; box-shadow: none; max-width: 100%; }
-            .side-panel { display: none !important; } 
-            .btn-expand-support { display: none; } 
+            .modal-layout { width: 100%; flex-direction: column; gap: 0; }
+            .modal-main { width: 100%; border-radius: 25px 25px 0 0; padding-bottom: 50px; box-shadow: none; }
+            .side-panel { display: none !important; }
             #mobile-support-list { display: block; margin-top: 20px; width: 100%; }
             .mobile-pay-btn { display: block; width: 100%; padding: 14px; margin-bottom: 10px; border-radius: 12px; font-weight: bold; text-decoration: none; text-align: center; box-sizing: border-box; }
         }
@@ -166,16 +159,38 @@
         var borderClusterGroup = L.markerClusterGroup({ showCoverageOnHover: false, spiderfyOnMaxZoom: true, maxClusterRadius: 30, iconCreateFunction: function(cluster) { var svg = `<svg width="34" height="42" viewBox="0 0 34 42"><path d="M17 0C7.6 0 0 7.6 0 17c0 12.8 17 25 17 25s17-12.2 17-25c0-9.4-7.6-17-17-17z" fill="#333"/><circle cx="17" cy="17" r="10" fill="white"/><g transform="translate(10, 11) scale(0.65)"><path d="M19 13H5v-2h14v2zM7 5h2v6H7V5zm8 0h2v6h-2V5z" fill="#333"/></g></svg>`; return L.divIcon({ html: svg, className: 'photo-marker', iconSize: [34, 42], iconAnchor: [17, 42] }); } }).addTo(map);
         var hexColors = { 'c2018': '#ff0000', 'c2019': '#007bff', 'c2021': '#9b59b6', 'c2024': '#ff8c00', 'cCurrent': '#28a745' };
 
+        // СВАЙП ДЛЯ МЕНЮ МАРШРУТОВ
+        var touchStartYMenu = 0;
+        var menuBox = document.getElementById('menu-box');
+        menuBox.addEventListener('touchstart', e => { touchStartYMenu = e.touches[0].clientY; }, {passive: true});
+        menuBox.addEventListener('touchend', e => {
+            if (window.innerWidth > 768) return;
+            var diff = e.changedTouches[0].clientY - touchStartYMenu;
+            if (diff > 60 && menuBox.classList.contains('collapsed')) toggleMenu(); // Свайп вниз открывает
+            if (diff < -60 && !menuBox.classList.contains('collapsed')) toggleMenu(); // Свайп вверх закрывает
+        });
+
         function toggleMenu() { document.getElementById('menu-box').classList.toggle('collapsed'); }
         function toggleFullscreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else if (document.exitFullscreen) document.exitFullscreen(); }
         function closeAbout() { document.getElementById('about-modal').style.display = 'none'; }
+
+        // ОТКРЫТИЕ ТРЕКА (ИСПРАВЛЕНО)
+        function openTrackView(url) {
+            if (window.innerWidth <= 768) {
+                var overlay = document.getElementById('detail-overlay');
+                overlay.src = url;
+                overlay.style.display = 'block';
+            } else {
+                window.open(url, '_blank');
+            }
+        }
+        window.closeTrackView = function() { var overlay = document.getElementById('detail-overlay'); overlay.style.display = 'none'; overlay.src = ""; };
 
         function openAbout() {
             if (typeof aboutData === 'undefined') return;
             var isPC = window.innerWidth > 768;
             document.getElementById('about-name').innerText = aboutData.name;
             document.getElementById('about-bio').innerText = aboutData.bio;
-            
             var sHtml = ""; 
             aboutData.socials.forEach(s => { 
                 if(!s.url) return;
@@ -183,7 +198,6 @@
                 else { sHtml += `<a href="${s.url}" target="_blank"><i class="fa-brands fa-${s.id}"></i></a>`; }
             });
             document.getElementById('about-socials').innerHTML = sHtml;
-
             if (isPC) {
                 document.getElementById('side-qr').style.display = 'none';
                 document.getElementById('side-links').style.display = 'none';
@@ -201,12 +215,9 @@
             document.getElementById('about-modal').style.display = 'flex';
         }
 
-        function expandSupportPC() {
-            document.getElementById('side-qr').style.display = 'flex';
-            document.getElementById('side-links').style.display = 'flex';
-            document.getElementById('btn-support-pc').style.display = 'none';
-        }
+        function expandSupportPC() { document.getElementById('side-qr').style.display = 'flex'; document.getElementById('side-links').style.display = 'flex'; document.getElementById('btn-support-pc').style.display = 'none'; }
 
+        // СВАЙП ЗАКРЫТИЯ ОКНА О СЕБЕ
         var touchStartYModal = 0;
         document.getElementById('modal-main-box').addEventListener('touchstart', e => { touchStartYModal = e.touches[0].clientY; }, {passive: true});
         document.getElementById('modal-main-box').addEventListener('touchend', e => {
@@ -214,6 +225,7 @@
             if (e.changedTouches[0].clientY - touchStartYModal > 100) closeAbout();
         });
 
+        // ФОТО-ВЬЮЕР
         var img = document.getElementById('view-img'), scale = 1, lastScale = 1, startDist = 0, posX = 0, posY = 0, startX = 0, startY = 0, isDragging = false;
         img.addEventListener('touchstart', e => { if (e.touches.length === 1) { isDragging = true; startX = e.touches[0].pageX - posX; startY = e.touches[0].pageY - posY; } else if (e.touches.length === 2) { isDragging = false; startDist = Math.hypot(e.touches[0].pageX-e.touches[1].pageX, e.touches[0].pageY-e.touches[1].pageY); lastScale = scale; } });
         img.addEventListener('touchmove', e => { if (scale > 1) e.preventDefault(); if (e.touches.length === 1 && isDragging && scale > 1) { posX = e.touches[0].pageX - startX; posY = e.touches[0].pageY - startY; updateTransform(); } else if (e.touches.length === 2) { var d = Math.hypot(e.touches[0].pageX-e.touches[1].pageX, e.touches[0].pageY-e.touches[1].pageY); scale = Math.min(Math.max(1, lastScale * (d / startDist)), 5); updateTransform(); } });
@@ -276,7 +288,7 @@
             });
         }
         function focusOnCurrent() { if (typeof myPoints !== 'undefined' && myPoints.length > 0) { var last = myPoints[myPoints.length-1]; map.setView([last.lat || (last.from ? last.from[0] : 50), last.lng || (last.from ? last.from[1] : 80)], 8); } }
-        function togglePhotos() { var checkbox = document.getElementById('photo-toggle'); checkbox.checked = !checkbox.checked; updateMarkers(true); }
+        function togglePhotos() { var checkbox = document.getElementById('photo-toggle'); checkbox.checked = !checkbox.checked; updateMarkers(true); var mobileBtn = document.getElementById('mobile-photo-btn'); if(checkbox.checked) { mobileBtn.style.background = '#28a745'; mobileBtn.style.color = '#fff'; } else { mobileBtn.style.background = '#fff'; mobileBtn.style.color = '#28a745'; } }
         if (typeof myPoints !== 'undefined') { focusOnCurrent(); updateMarkers(true); }
     </script>
 </body>
