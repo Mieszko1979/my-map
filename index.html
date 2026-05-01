@@ -47,16 +47,24 @@
 
         /* МОДАЛЬНОЕ ОКНО ПК */
         #about-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 6000; justify-content: center; align-items: center; }
-        .modal-layout { display: flex; align-items: flex-start; justify-content: center; gap: 40px; width: 100%; max-width: 1400px; padding: 20px; box-sizing: border-box; }
         
+        /* Layout: центрируем все элементы по вертикали */
+        .modal-layout { display: flex; align-items: center; justify-content: center; gap: 40px; width: 100%; max-width: 1400px; padding: 20px; box-sizing: border-box; }
+        
+        /* Центральный блок */
         .modal-main { background: white; width: 550px; border-radius: 25px; padding: 35px; text-align: center; position: relative; box-shadow: 0 15px 50px rgba(0,0,0,0.6); z-index: 2; box-sizing: border-box; }
+        
+        /* Боковые панели теперь центрируются по вертикали через flex контейнера layout */
         .side-panel { width: 250px; display: none; flex-direction: column; gap: 20px; animation: slideIn 0.4s ease-out; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         .qr-card { background: white; padding: 15px; border-radius: 20px; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.2); }
         .qr-card img { width: 100%; border-radius: 10px; }
         .qr-card b { font-size: 14px; display: block; margin-top: 8px; color: #333; }
-        .pay-link-btn { display: block; width: 100%; text-decoration: none; padding: 14px; border-radius: 15px; font-weight: bold; font-size: 15px; text-align: center; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        
+        .pay-link-btn { display: block; width: 100%; text-decoration: none; padding: 14px; border-radius: 15px; font-weight: bold; font-size: 15px; text-align: center; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: 0.2s; }
+        .pay-link-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.2); }
+
         .close-modal { position: absolute; top: 20px; right: 20px; font-size: 26px; cursor: pointer; color: #aaa; }
         
         /* СОЦСЕТИ */
@@ -74,11 +82,11 @@
         .text-icon-btn { font-weight: 900; font-size: 13px; border: 2.5px solid #469C36; padding: 6px 12px; border-radius: 10px; color: #469C36; text-transform: uppercase; }
 
         /* КНОПКА ПОДДЕРЖКИ */
-        @keyframes actionPulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.5); } 50% { transform: scale(1.03); box-shadow: 0 0 0 12px rgba(40, 167, 69, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); } }
+        @keyframes actionPulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.5); } 50% { transform: scale(1.03); box-shadow: 0 0 0 15px rgba(40, 167, 69, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); } }
         .btn-expand-support { width: 100%; padding: 18px; background: #28a745; color: white; border: none; border-radius: 15px; font-weight: bold; font-size: 19px; cursor: pointer; animation: actionPulse 2.5s infinite ease-in-out; transition: 0.2s; }
         .btn-expand-support:hover { background: #218838; }
 
-        /* ПОПАПЫ */
+        /* ПОПАПЫ (МАРКЕРЫ) */
         .popup-box { text-align: center; min-width: 180px; padding: 5px; }
         .popup-box b { font-size: 21px; display: block; margin-bottom: 8px; color: #333; }
         .popup-box p { font-size: 18px; margin: 5px 0; color: #555; line-height: 1.4; }
@@ -87,7 +95,7 @@
         .btn { text-decoration: none !important; font-weight: bold; font-size: 13px; padding: 8px 18px; border-radius: 20px; cursor: pointer; display: inline-block; color: white !important; }
         .btn-track { background: #28a745; } .btn-vk { background: #0077FF; } .btn-dzen { background: #111111; } .btn-3d { background: #ffdb00; color: #000 !important; }
 
-        /* МАРКЕРЫ */
+        /* МАРКЕРЫ И ЦЕНТРОВКА */
         .day-marker, .trans-center-marker { 
             background: #fff; border-radius: 50%; border: 2.5px solid; color: #000; font-weight: bold; 
             display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.5); 
@@ -181,6 +189,7 @@
         var borderClusterGroup = L.markerClusterGroup({ showCoverageOnHover: false, spiderfyOnMaxZoom: true, maxClusterRadius: 30, iconCreateFunction: function(cluster) { var svg = `<svg width="34" height="42" viewBox="0 0 34 42"><path d="M17 0C7.6 0 0 7.6 0 17c0 12.8 17 25 17 25s17-12.2 17-25c0-9.4-7.6-17-17-17z" fill="#333"/><circle cx="17" cy="17" r="10" fill="white"/><g transform="translate(10, 11) scale(0.65)"><path d="M19 13H5v-2h14v2zM7 5h2v6H7V5zm8 0h2v6h-2V5z" fill="#333"/></g></svg>`; return L.divIcon({ html: svg, className: 'photo-marker', iconSize: [34, 42], iconAnchor: [17, 42] }); } }).addTo(map);
         var hexColors = { 'c2018': '#ff0000', 'c2019': '#007bff', 'c2021': '#9b59b6', 'c2024': '#ff8c00', 'cCurrent': '#28a745' };
 
+        // МЕНЮ СВАЙПЫ
         var touchStartYMenu = 0; var menuBox = document.getElementById('menu-box');
         menuBox.addEventListener('touchstart', e => { touchStartYMenu = e.touches[0].clientY; }, {passive: true});
         menuBox.addEventListener('touchend', e => { if (window.innerWidth > 768) return; var diff = e.changedTouches[0].clientY - touchStartYMenu; if (diff > 60 && menuBox.classList.contains('collapsed')) toggleMenu(); if (diff < -60 && !menuBox.classList.contains('collapsed')) toggleMenu(); });
