@@ -105,7 +105,7 @@
         .map-avatar { position: absolute; bottom: 25px; right: 10px; z-index: 1000; width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; opacity: 0.8; object-fit: cover; pointer-events: none; }
         
         /* ПРОСМОТР ФОТО (ЛАЙТБОКС) */
-        #photo-viewer { position: absolute; bottom: 100px; left: 15px; z-index: 2000; width: 220px; background: white; padding: 5px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none; cursor: pointer; touch-action: none; }
+        #photo-viewer { position: absolute; bottom: 100px; left: 15px; z-index: 2000; width: 220px; background: white; padding: 5px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none; cursor: pointer; }
         #photo-viewer img { width: 100%; border-radius: 5px; display: block; transition: transform 0.1s ease-out; }
         #photo-viewer .close-btn { position: absolute; top: -12px; right: -12px; background: red; color: white; border-radius: 50%; width: 26px; height: 26px; text-align: center; line-height: 24px; font-weight: bold; border: 2px solid white; z-index: 2100; }
         #detail-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 7000; background: #000; display: none; border: none; }
@@ -123,7 +123,7 @@
             #mobile-support-list { display: block; margin-top: 15px; width: 100%; }
             .mobile-pay-btn { display: block; width: 100%; padding: 15px; margin-bottom: 12px; border-radius: 12px; font-weight: bold; text-decoration: none; text-align: center; box-sizing: border-box; }
             
-            #photo-viewer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: black; display: none; justify-content: center; align-items: center; bottom: auto; z-index: 9999; }
+            #photo-viewer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: black; display: none; justify-content: center; align-items: center; bottom: auto; z-index: 9999; touch-action: none; }
             #photo-viewer img { width: 100%; height: 100%; object-fit: contain; border-radius: 0; }
             #photo-viewer .close-btn { display: none !important; }
         }
@@ -200,6 +200,7 @@
             var isPC = window.innerWidth > 768;
             document.getElementById('about-name').innerText = aboutData.name;
             document.getElementById('about-bio').innerText = aboutData.bio;
+            
             var sHtml = ""; 
             aboutData.socials.forEach(s => { 
                 if(!s.url) return;
@@ -213,6 +214,7 @@
                 }
             });
             document.getElementById('about-socials').innerHTML = sHtml;
+
             if (isPC) {
                 document.getElementById('side-qr').style.display = 'none'; document.getElementById('side-links').style.display = 'none';
                 document.getElementById('btn-support-pc').style.display = 'block';
@@ -233,22 +235,23 @@
         modalMain.addEventListener('touchstart', e => { touchStartYModal = e.touches[0].clientY; }, {passive: true});
         modalMain.addEventListener('touchend', e => { if (window.innerWidth > 768) return; var diff = e.changedTouches[0].clientY - touchStartYModal; if (diff > 100 && modalMain.scrollTop <= 0) closeAbout(); });
 
-        // ФОТО-ВЬЮЕР С ЗАЩИТОЙ КАРТЫ
+        // ФОТО-ВЬЮЕР
         var img = document.getElementById('view-img'), scale = 1, lastScale = 1, startDist = 0, posX = 0, posY = 0, startX = 0, startY = 0, isDragging = false;
         
         function openPhoto(url) {
-            // Замораживаем карту
-            map.dragging.disable();
-            map.touchZoom.disable();
-            map.doubleClickZoom.disable();
-            map.scrollWheelZoom.disable();
-            
+            // Блокируем карту ТОЛЬКО НА МОБИЛЬНЫХ
+            if (window.innerWidth <= 768) {
+                map.dragging.disable();
+                map.touchZoom.disable();
+                map.doubleClickZoom.disable();
+                map.scrollWheelZoom.disable();
+            }
             document.getElementById('view-img').src = url;
             document.getElementById('photo-viewer').style.display = 'flex';
         }
 
         function closePhoto() {
-            // Размораживаем карту
+            // Всегда пробуем разблокировать при закрытии
             map.dragging.enable();
             map.touchZoom.enable();
             map.doubleClickZoom.enable();
@@ -259,19 +262,19 @@
         }
 
         img.addEventListener('touchstart', e => { 
-            e.stopPropagation(); // Не даем событию уйти на карту
+            if (window.innerWidth <= 768) e.stopPropagation(); 
             if (e.touches.length === 1) { isDragging = true; startX = e.touches[0].pageX - posX; startY = e.touches[0].pageY - posY; } 
             else if (e.touches.length === 2) { isDragging = false; startDist = Math.hypot(e.touches[0].pageX-e.touches[1].pageX, e.touches[0].pageY-e.touches[1].pageY); lastScale = scale; } 
         });
         
         img.addEventListener('touchmove', e => { 
-            e.stopPropagation(); 
+            if (window.innerWidth <= 768) e.stopPropagation(); 
             if (scale > 1 || e.touches.length > 1) e.preventDefault(); 
             if (e.touches.length === 1 && isDragging && scale > 1) { posX = e.touches[0].pageX - startX; posY = e.touches[0].pageY - startY; updateTransform(); } 
             else if (e.touches.length === 2) { var d = Math.hypot(e.touches[0].pageX-e.touches[1].pageX, e.touches[0].pageY-e.touches[1].pageY); scale = Math.min(Math.max(1, lastScale * (d / startDist)), 5); updateTransform(); } 
         });
         
-        img.addEventListener('touchend', e => { e.stopPropagation(); isDragging = false; lastScale = scale; });
+        img.addEventListener('touchend', e => { if (window.innerWidth <= 768) e.stopPropagation(); isDragging = false; lastScale = scale; });
         
         function updateTransform() { if (scale <= 1) { posX = 0; posY = 0; } img.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`; }
         function handlePhotoClick(e) { e.stopPropagation(); if (window.innerWidth > 768) window.open(e.target.src, '_blank'); else { if (scale > 1.1) { scale = 1; posX = 0; posY = 0; updateTransform(); } else closePhoto(); } }
