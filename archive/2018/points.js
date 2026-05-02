@@ -117,7 +117,7 @@ var points2018 = [
   { type: "border",   country: "la", lat: 17.88731464321376, lng: 102.7097335343962, title: "Лаос - Thanaleng Border Crossing", desc: "", vk: "https://vk.com/wall-171082824_369" },
   { type: "border",   country: "th", lat: 17.867498618669092, lng: 102.72020528077574, title: "Таиланд - Nong Khai Border Checkpoint", desc: "", vk: "https://vk.com/wall-171082824_369" },
   { day: "114", lat: 17.462395, lng: 102.796748, title: "11.12.2018", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_369" },
-  { day: "115", lat: 16.65278, lng: 102.800655, title: "12.12.2018", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_388" }
+  { day: "115", lat: 16.65278, lng: 102.800655, title: "12.12.2018", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_388" },
   { day: "116", lat: 15.49076, lng: 102.522729, title: "13.12.2018", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_392" },
   { day: "117", lat: 14.466983, lng: 101.906079, title: "14.12.2018", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_394" },
   { day: "118", lat: 13.565506, lng: 101.268761, title: "15.12.2018", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_398" },
