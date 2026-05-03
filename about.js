@@ -1,9 +1,11 @@
 const aboutData = {
-    name: "Михаил (Mieszko)",
-    userPhoto: "my_photo.jpg", // Твое фото (левая панель)
-    bikePhoto: "bike_photo.jpg", // Фото велосипеда (правая панель)
+    name: "Михаил",
     bio: "Меня зовут Михаил. Это карта моего велопутешествия (если я в пути). Также здесь собраны все мои предыдущие велопутешествия. После нажатия на кружок откроется окошко, там будет небольшая информация от ночевке. Также будет ссылка на пост в ВК, и трек за текущий день (конечно если он будет записан).",
     
+    // ФОТО (имена файлов, которые ты сохранил)
+    authorPhoto: "my_photo.jpg",
+    bikePhoto: "bike_photo.jpg",
+
     // СОЦИАЛЬНЫЕ СЕТИ
     socials: [
         { id: 'vk', url: "https://vk.com/mieszko_travel" },
@@ -17,12 +19,12 @@ const aboutData = {
     ],
 
     support: {
-        // КУАР-КОДЫ (Для ПК версии слева)
+        // КУАР-КОДЫ (ПК версия, левая панель)
         qrCodes: [
             { name: "CloudTips (Т-Банк)", img: "CloudTips.png" },
             { name: "OZON Банк", img: "Qrozon.png" }
         ],
-        // СПОСОБЫ ОПЛАТЫ (Для ПК версии справа, для мобилок - списком)
+        // КНОПКИ ОПЛАТЫ (ПК версия - справа, Мобайл - списком)
         buttons: [
             { name: "CloudTips (Т-Банк)", url: "https://pay.cloudtips.ru/p/977f6357", color: "#FFDD00", textColor: "#000" },
             { name: "ЮMoney", url: "https://yoomoney.ru/to/410014509615752", color: "#803CFF", textColor: "#fff" },
@@ -30,14 +32,14 @@ const aboutData = {
             { name: "Дзен донаты", url: "https://dzen.ru/mieszko_travel?donate=true", color: "#000", textColor: "#fff" },
             { name: "VK Pay", url: "https://vk.com/mieszko_travel?w=app5727453_-171082824", color: "#0077FF", textColor: "#fff" },
             { name: "Donationalerts", url: "https://www.donationalerts.com/r/mieszko", color: "#FFAD23", textColor: "#fff" },
-            { name: "DonatPay", url: "", color: "#673AB7", textColor: "#fff" },
-            { name: "Boosty", url: "", color: "#F15F2C", textColor: "#fff" },
+            { name: "DonatPay", url: "", color: "#673AB7", textColor: "#fff" }, // Кнопка не появится, пока нет ссылки
+            { name: "Boosty", url: "", color: "#F15F2C", textColor: "#fff" },    // Кнопка не появится, пока нет ссылки
             { name: "Alipay", url: "https://www.", color: "#00A3EE", textColor: "#fff" }
         ],
-        // КРИПТОВАЛЮТА (Копирование адреса)
+        // КРИПТОВАЛЮТА (в конце списка оплаты)
         crypto: [
-            { name: "USDT (TRC-20)", address: "TYourAddressHere...", color: "#26A17B" },
-            { name: "USDC (BEP-20)", address: "0xYourAddressHere...", color: "#2775CA" }
+            { name: "USDT (TRC20)", address: "TED4rwny77MMax1G7LCYXgDNW2qBPAqCgh" },
+            { name: "USDC (BEP20)", address: "0x1234567890abcdef1234567890abcdef12345678" }
         ]
     }
 };
