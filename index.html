@@ -25,7 +25,7 @@
         html, body, #map { height: 100%; margin: 0; padding: 0; overflow: hidden; background: #000; font-family: Arial, sans-serif; }
         
         /* МЕНЮ УПРАВЛЕНИЯ */
-        #menu-box { position: absolute; top: 15px; left: 15px; z-index: 1000; background: rgba(255, 255, 255, 0.95); padding: 15px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); min-width: 320px; transition: all 0.3s ease; }
+        #menu-box { position: absolute; top: 10px; left: 15px; z-index: 1000; background: rgba(255, 255, 255, 0.95); padding: 15px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); min-width: 320px; transition: all 0.3s ease; box-sizing: border-box; }
         .menu-collapse-btn { display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 16px; cursor: pointer; color: #333; }
         #menu-content { max-height: 1000px; overflow: hidden; opacity: 1; transition: all 0.3s ease; margin-top: 15px; padding-top: 12px; border-top: 1px solid #ccc; }
         #menu-box.collapsed #menu-content { max-height: 0; opacity: 0; margin-top: 0; padding-top: 0; border-top: none; }
@@ -35,7 +35,6 @@
         #trip-list { margin-top: 10px; display: none; }
         .trip-item { margin-bottom: 12px; display: flex; align-items: center; font-size: 14px; font-weight: bold; line-height: 1.3; }
         .fs-btn { background: none; border: none; cursor: pointer; font-size: 18px; color: #666; margin-right: 15px; }
-        
         #photo-toggle-wrap { margin-top: 12px; padding-top: 12px; border-top: 1px dashed #ccc; color: #28a745; font-weight: bold; display: flex; align-items: center; cursor: pointer; font-size: 15px; }
         #photo-toggle-wrap input { margin-right: 12px; transform: scale(1.2); }
         #mobile-photo-btn { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); z-index: 1001; background: white; border: none; width: 45px; height: 45px; border-radius: 50%; box-shadow: 0 2px 10px rgba(0,0,0,0.3); display: none; align-items: center; justify-content: center; color: #28a745; font-size: 20px; }
@@ -45,7 +44,7 @@
         #hint-box:hover { transform: translateX(-50%) scale(1.08); background: #fff; }
         .hint-text { color: #ff0000; font-weight: 900; font-size: 17px; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* МОДАЛЬНОЕ ОКНО ПК */
+        /* МОДАЛЬНОЕ ОКНО */
         #about-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 6000; justify-content: center; align-items: center; }
         .modal-layout { display: flex; align-items: center; justify-content: center; gap: 40px; width: 100%; max-width: 1600px; padding: 20px; box-sizing: border-box; }
         
@@ -63,7 +62,8 @@
         .qr-card b { font-size: 14px; display: block; margin-top: 8px; color: #333; font-family: Arial, sans-serif; }
         
         .pay-link-btn { display: block; width: 100%; text-decoration: none; padding: 14px; border-radius: 15px; font-weight: bold; font-size: 15px; text-align: center; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 10px; transition: 0.2s; font-family: Arial, sans-serif; }
-        
+        .pay-link-btn:hover { transform: translateY(-2px); }
+
         /* КРИПТО ПК */
         #crypto-row-pc { position: fixed; bottom: 35px; left: 50%; transform: translateX(-50%); display: none; width: 550px; justify-content: center; gap: 25px; z-index: 7000; animation: slideIn 0.5s ease-out; }
         .crypto-card { background: white; padding: 14px 22px; border-radius: 18px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: space-between; width: 46%; cursor: pointer; position: relative; transition: 0.3s; border: 1px solid transparent; }
@@ -91,7 +91,7 @@
         @keyframes actionPulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.5); } 50% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(40, 167, 69, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); } }
         .btn-expand-support { width: 100%; padding: 22px; background: #28a745; color: white; border: none; border-radius: 18px; font-weight: bold; font-size: 19px; cursor: pointer; animation: actionPulse 2.5s infinite ease-in-out; margin-top: 15px; font-family: Arial, sans-serif; }
 
-        /* ПОПАПЫ КАРТЫ */
+        /* ПОПАПЫ */
         .popup-box { text-align: center; min-width: 180px; padding: 5px; font-family: Arial, sans-serif; }
         .popup-box b { font-size: 21px; display: block; margin-bottom: 8px; color: #333; }
         .popup-box p { font-size: 18px; margin: 5px 0; color: #555; line-height: 1.4; }
@@ -107,7 +107,7 @@
         .trans-center-marker { font-size: 18px !important; }
         .c2018 { border-color: #ff0000 !important; color: #ff0000; } .c2019 { border-color: #007bff !important; color: #007bff; } .c2021 { border-color: #9b59b6 !important; color: #9b59b6; } .c2024 { border-color: #ff8c00 !important; color: #ff8c00; } .cCurrent { border-color: #28a745 !important; color: #28a745; }
 
-        /* ПУЛЬСАЦИЯ ТЕКУЩЕЙ ТОЧКИ (АЛАЯ) */
+        /* ПУЛЬСАЦИЯ ТЕКУЩЕЙ ТОЧКИ */
         @keyframes scarletPulse { 0% { box-shadow: 0 0 0 0px rgba(255, 36, 0, 0.9); } 70% { box-shadow: 0 0 0 18px rgba(255, 36, 0, 0); } 100% { box-shadow: 0 0 0 0px rgba(255, 36, 0, 0); } }
         .last-point-pulse { animation: scarletPulse 3s infinite ease-in-out; border-color: #28a745 !important; z-index: 1000 !important; }
 
@@ -116,34 +116,34 @@
         .photo-marker { background: none !important; border: none !important; display: flex; align-items: center; justify-content: center; }
         .map-avatar { position: absolute; bottom: 25px; right: 10px; z-index: 1000; width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; opacity: 0.8; object-fit: cover; pointer-events: none; }
         
-        /* ПРОСМОТР ФОТО */
         #photo-viewer { position: absolute; bottom: 100px; left: 15px; z-index: 2000; width: 220px; background: white; padding: 5px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none; cursor: pointer; }
         #photo-viewer img { width: 100%; border-radius: 5px; display: block; transition: transform 0.1s ease-out; }
         #photo-viewer .close-btn { position: absolute; top: -12px; right: -12px; background: red; color: white; border-radius: 50%; width: 26px; height: 26px; text-align: center; line-height: 24px; font-weight: bold; border: 2px solid white; z-index: 2100; }
         #detail-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 7000; background: #000; display: none; border: none; }
 
-        /* МОБИЛЬНАЯ ВЕРСИЯ - МОНОЛИТНАЯ ШТОРКА */
+        /* МОБИЛЬНАЯ ВЕРСИЯ - ФИКСАЦИЯ ШИРИНЫ */
         @media (max-width: 768px) {
-            #menu-box { left: 5%; width: 90% !important; top: 15px; }
+            #menu-box { left: 5%; width: 90% !important; top: 10px; box-sizing: border-box; }
+            #photo-toggle-wrap { display: none !important; }
             #mobile-photo-btn { display: flex; }
             #hint-box { top: auto; bottom: 30px; left: 50%; transform: translateX(-50%); }
             .map-avatar { bottom: 18px; right: 5px; width: 45px; height: 45px; }
+            
             #about-modal { align-items: flex-end; }
             .modal-layout { padding: 0; width: 100%; }
-            #central-container { width: 100%; }
+            #central-container { width: 100%; margin: 0; }
             .modal-main { 
-                width: 100% !important; /* На всю ширину */
-                border-radius: 25px 25px 0 0 !important; /* Только сверху скругления */
-                margin-bottom: 0 !important; 
-                box-shadow: 0 -5px 30px rgba(0,0,0,0.4); 
-                padding: 30px 20px; 
-                max-height: 85vh; 
-                overflow-y: auto; 
-                -webkit-overflow-scrolling: touch; 
+                width: 100vw !important; /* На всю ширину окна браузера */
+                margin: 0 !important; 
+                border-radius: 20px 20px 0 0 !important; 
+                box-shadow: 0 -5px 30px rgba(0,0,0,0.4); padding: 30px 20px; 
+                max-height: 85vh; overflow-y: auto; -webkit-overflow-scrolling: touch; 
+                box-sizing: border-box;
             }
             .side-panel, .side-photo, #author-avatar-support, #crypto-row-pc { display: none !important; }
             #mobile-support-list { display: block; margin-top: 15px; width: 100%; }
-            .mobile-pay-btn { display: block; width: 100%; padding: 18px; margin-bottom: 12px; border-radius: 12px; font-weight: bold; text-decoration: none; text-align: center; box-sizing: border-box; font-size: 17px; transition: 0.2s; }
+            .mobile-pay-btn { display: block; width: 100%; padding: 18px; margin-bottom: 12px; border-radius: 12px; font-weight: bold; text-decoration: none; text-align: center; box-sizing: border-box; font-size: 17px; transition: 0.2s; border: none; }
+            .mobile-pay-btn.copied { background: #28a745 !important; color: white !important; }
             #photo-viewer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: black; display: none; justify-content: center; align-items: center; bottom: auto; z-index: 9999; touch-action: none; }
             #photo-viewer img { width: 100%; height: 100%; object-fit: contain; border-radius: 0; }
             #photo-viewer .close-btn { display: none !important; }
