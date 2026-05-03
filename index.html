@@ -40,7 +40,7 @@
         #photo-toggle-wrap input { margin-right: 12px; transform: scale(1.2); }
         #mobile-photo-btn { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); z-index: 1001; background: white; border: none; width: 45px; height: 45px; border-radius: 50%; box-shadow: 0 2px 10px rgba(0,0,0,0.3); display: none; align-items: center; justify-content: center; color: #28a745; font-size: 20px; }
 
-        /* ЖМИ СЮДА */
+        /* ВИЗИТКА "ЖМИ СЮДА" */
         #hint-box { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); z-index: 1000; background: rgba(255, 255, 255, 0.95); padding: 10px 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); cursor: pointer; text-align: center; transition: 0.2s ease; }
         #hint-box:hover { transform: translateX(-50%) scale(1.08); background: #fff; }
         .hint-text { color: #ff0000; font-weight: 900; font-size: 17px; text-transform: uppercase; letter-spacing: 1px; }
@@ -49,25 +49,29 @@
         #about-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 6000; justify-content: center; align-items: center; }
         .modal-layout { display: flex; align-items: center; justify-content: center; gap: 40px; width: 100%; max-width: 1400px; padding: 20px; box-sizing: border-box; }
         
-        .modal-main { background: white; width: 550px; border-radius: 25px; padding: 35px; text-align: center; position: relative; box-shadow: 0 15px 50px rgba(0,0,0,0.6); z-index: 2; box-sizing: border-box; overflow-y: auto; max-height: 90vh; }
-        .side-panel { width: 250px; display: none; flex-direction: column; gap: 20px; animation: slideIn 0.4s ease-out; }
+        .modal-main { background: white; width: 550px; border-radius: 25px; padding: 35px; text-align: center; position: relative; box-shadow: 0 15px 50px rgba(0,0,0,0.6); z-index: 5; box-sizing: border-box; overflow-y: auto; max-height: 90vh; }
+        
+        .side-photo { width: 350px; height: 450px; object-fit: cover; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        #author-small-pc { position: absolute; top: -40px; left: -30px; width: 100px; height: 100px; border-radius: 50%; border: 5px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 10; display: none; object-fit: cover; }
+
+        .side-panel { width: 250px; display: none; flex-direction: column; gap: 20px; animation: slideIn 0.3s ease-out; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         .qr-card { background: white; padding: 15px; border-radius: 20px; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.2); }
         .qr-card img { width: 100%; border-radius: 10px; }
         .qr-card b { font-size: 14px; display: block; margin-top: 8px; color: #333; }
-        .pay-link-btn { display: block; width: 100%; text-decoration: none; padding: 14px; border-radius: 15px; font-weight: bold; font-size: 15px; text-align: center; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 10px; }
-        .close-modal { position: absolute; top: 20px; right: 20px; font-size: 26px; cursor: pointer; color: #aaa; z-index: 10; }
+        
+        .pay-link-btn { display: flex; align-items: center; justify-content: space-between; width: 100%; text-decoration: none; padding: 14px; border-radius: 15px; font-weight: bold; font-size: 15px; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 10px; position: relative; }
+        .pay-link-btn i.fa-check { color: #28a745; opacity: 0; transition: 0.2s; position: absolute; right: 15px; }
+
+        .close-modal { position: absolute; top: 20px; right: 20px; font-size: 26px; cursor: pointer; color: #aaa; z-index: 20; }
         
         /* СОЦСЕТИ */
         .social-icons { display: flex; justify-content: center; gap: 20px; margin: 25px 0 35px 0; flex-wrap: wrap; align-items: center; }
-        .social-icons a { text-decoration: none; }
-        .social-icons i { font-size: 34px; } 
         .fa-vk { color: #0077FF; } .fa-telegram { color: #26A5E4; } .fa-youtube { color: #FF0000; } 
         .fa-instagram { color: #E1306C; } .fa-odnoklassniki { color: #ee8208; } .fa-strava { color: #FC6100; }
         
-        /* ИКОНКА ДЗЕН (SVG) */
-        .dzen-icon { width: 34px; height: 34px; background: black; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; transition: 0.2s; }
+        .dzen-icon { width: 34px; height: 34px; background: black; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .dzen-icon svg { width: 34px; height: 34px; }
         .text-icon-btn { font-weight: 900; font-size: 13px; border: 2.5px solid #469C36; padding: 6px 12px; border-radius: 10px; color: #469C36; text-transform: uppercase; }
 
@@ -75,7 +79,7 @@
         @keyframes actionPulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.5); } 50% { transform: scale(1.03); box-shadow: 0 0 0 15px rgba(40, 167, 69, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); } }
         .btn-expand-support { width: 100%; padding: 18px; background: #28a745; color: white; border: none; border-radius: 15px; font-weight: bold; font-size: 19px; cursor: pointer; animation: actionPulse 2.5s infinite ease-in-out; }
 
-        /* ПОПАПЫ */
+        /* ПОПАПЫ КАРТЫ */
         .popup-box { text-align: center; min-width: 180px; padding: 5px; }
         .popup-box b { font-size: 21px; display: block; margin-bottom: 8px; color: #333; }
         .popup-box p { font-size: 18px; margin: 5px 0; color: #555; line-height: 1.4; }
@@ -85,17 +89,13 @@
         .btn-track { background: #28a745; } .btn-vk { background: #0077FF; } .btn-dzen { background: #111111; } .btn-3d { background: #ffdb00; color: #000 !important; }
 
         /* МАРКЕРЫ */
-        .day-marker, .trans-center-marker { 
-            background: #fff; border-radius: 50%; border: 2.5px solid; color: #000; font-weight: bold; 
-            display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.5); 
-            font-size: 11px; width: 24px !important; height: 24px !important; overflow: hidden; white-space: nowrap; 
-        }
+        .day-marker, .trans-center-marker { background: #fff; border-radius: 50%; border: 2.5px solid; color: #000; font-weight: bold; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.5); font-size: 11px; width: 24px !important; height: 24px !important; overflow: hidden; white-space: nowrap; }
         .num-wrapper { position: relative; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; }
         .suffix { position: absolute; left: 85%; opacity: 0.7; } 
         .trans-center-marker { font-size: 18px !important; }
         .c2018 { border-color: #ff0000 !important; color: #ff0000; } .c2019 { border-color: #007bff !important; color: #007bff; } .c2021 { border-color: #9b59b6 !important; color: #9b59b6; } .c2024 { border-color: #ff8c00 !important; color: #ff8c00; } .cCurrent { border-color: #28a745 !important; color: #28a745; }
 
-        /* ПУЛЬСАЦИЯ (АЛЫМ) */
+        /* ПУЛЬСАЦИЯ ТЕКУЩЕЙ ТОЧКИ */
         @keyframes scarletPulse { 0% { box-shadow: 0 0 0 0px rgba(255, 36, 0, 0.9); } 70% { box-shadow: 0 0 0 18px rgba(255, 36, 0, 0); } 100% { box-shadow: 0 0 0 0px rgba(255, 36, 0, 0); } }
         .last-point-pulse { animation: scarletPulse 3s infinite ease-in-out; border-color: #28a745 !important; z-index: 1000 !important; }
 
@@ -104,7 +104,6 @@
         .photo-marker { background: none !important; border: none !important; display: flex; align-items: center; justify-content: center; }
         .map-avatar { position: absolute; bottom: 25px; right: 10px; z-index: 1000; width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; opacity: 0.8; object-fit: cover; pointer-events: none; }
         
-        /* ПРОСМОТР ФОТО (ЛАЙТБОКС) */
         #photo-viewer { position: absolute; bottom: 100px; left: 15px; z-index: 2000; width: 220px; background: white; padding: 5px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none; cursor: pointer; }
         #photo-viewer img { width: 100%; border-radius: 5px; display: block; transition: transform 0.1s ease-out; }
         #photo-viewer .close-btn { position: absolute; top: -12px; right: -12px; background: red; color: white; border-radius: 50%; width: 26px; height: 26px; text-align: center; line-height: 24px; font-weight: bold; border: 2px solid white; z-index: 2100; }
@@ -119,10 +118,9 @@
             #about-modal { align-items: flex-end; }
             .modal-layout { padding: 0; }
             .modal-main { width: 96%; border-radius: 25px 25px 0 0; margin-bottom: 0; box-shadow: 0 -5px 30px rgba(0,0,0,0.4); padding: 30px 20px; max-height: 85vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
-            .side-panel { display: none !important; }
+            .side-panel, .side-photo, #author-small-pc { display: none !important; }
             #mobile-support-list { display: block; margin-top: 15px; width: 100%; }
             .mobile-pay-btn { display: block; width: 100%; padding: 15px; margin-bottom: 12px; border-radius: 12px; font-weight: bold; text-decoration: none; text-align: center; box-sizing: border-box; }
-            
             #photo-viewer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: black; display: none; justify-content: center; align-items: center; bottom: auto; z-index: 9999; touch-action: none; }
             #photo-viewer img { width: 100%; height: 100%; object-fit: contain; border-radius: 0; }
             #photo-viewer .close-btn { display: none !important; }
@@ -136,16 +134,28 @@
     
     <div id="about-modal" onclick="closeAbout()">
         <div class="modal-layout" onclick="event.stopPropagation()">
-            <div class="side-panel" id="side-qr"></div>
+            
+            <div id="pc-left-side">
+                <img src="bike_photo.jpg" class="side-photo" id="bike-img-pc">
+                <div class="side-panel" id="side-qr"></div>
+            </div>
+
             <div class="modal-main" id="modal-main-box">
+                <img src="my_photo.jpg" id="author-small-pc">
                 <span class="close-modal" onclick="closeAbout()">&times;</span>
                 <b id="about-name" style="font-size:26px;"></b>
                 <div id="about-bio" style="margin: 20px 0; line-height:1.6; color:#444; font-size:16px; text-align: left; white-space: pre-wrap;"></div>
                 <div class="social-icons" id="about-socials"></div>
                 <button class="btn-expand-support" id="btn-support-pc" onclick="expandSupportPC()">Поддержать проект</button>
+                
                 <div id="mobile-support-list" style="display:none;"></div>
             </div>
-            <div class="side-panel" id="side-links"></div>
+
+            <div id="pc-right-side">
+                <img src="my_photo.jpg" class="side-photo" id="author-img-pc">
+                <div class="side-panel" id="side-links"></div>
+            </div>
+
         </div>
     </div>
 
@@ -180,11 +190,6 @@
         var borderClusterGroup = L.markerClusterGroup({ showCoverageOnHover: false, spiderfyOnMaxZoom: true, maxClusterRadius: 30, iconCreateFunction: function(cluster) { var svg = `<svg width="34" height="42" viewBox="0 0 34 42"><path d="M17 0C7.6 0 0 7.6 0 17c0 12.8 17 25 17 25s17-12.2 17-25c0-9.4-7.6-17-17-17z" fill="#333"/><circle cx="17" cy="17" r="10" fill="white"/><g transform="translate(10, 11) scale(0.65)"><path d="M19 13H5v-2h14v2zM7 5h2v6H7V5zm8 0h2v6h-2V5z" fill="#333"/></g></svg>`; return L.divIcon({ html: svg, className: 'photo-marker', iconSize: [34, 42], iconAnchor: [17, 42] }); } }).addTo(map);
         var hexColors = { 'c2018': '#ff0000', 'c2019': '#007bff', 'c2021': '#9b59b6', 'c2024': '#ff8c00', 'cCurrent': '#28a745' };
 
-        // МЕНЮ
-        var touchStartYMenu = 0; var menuBox = document.getElementById('menu-box');
-        menuBox.addEventListener('touchstart', e => { touchStartYMenu = e.touches[0].clientY; }, {passive: true});
-        menuBox.addEventListener('touchend', e => { if (window.innerWidth > 768) return; var diff = e.changedTouches[0].clientY - touchStartYMenu; if (diff > 60 && menuBox.classList.contains('collapsed')) toggleMenu(); if (diff < -60 && !menuBox.classList.contains('collapsed')) toggleMenu(); });
-
         function toggleMenu() { document.getElementById('menu-box').classList.toggle('collapsed'); }
         function toggleFullscreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else if (document.exitFullscreen) document.exitFullscreen(); }
         function closeAbout() { document.getElementById('about-modal').style.display = 'none'; }
@@ -216,66 +221,73 @@
             document.getElementById('about-socials').innerHTML = sHtml;
 
             if (isPC) {
-                document.getElementById('side-qr').style.display = 'none'; document.getElementById('side-links').style.display = 'none';
+                document.getElementById('bike-img-pc').style.display = 'block';
+                document.getElementById('author-img-pc').style.display = 'block';
+                document.getElementById('side-qr').style.display = 'none';
+                document.getElementById('side-links').style.display = 'none';
+                document.getElementById('author-small-pc').style.display = 'none';
                 document.getElementById('btn-support-pc').style.display = 'block';
+                
                 var qHtml = ""; aboutData.support.qrCodes.forEach(q => { qHtml += `<div class="qr-card"><b>${q.name}</b><img src="${q.img}"></div>`; });
                 document.getElementById('side-qr').innerHTML = qHtml;
-                var bHtml = ""; aboutData.support.buttons.forEach(b => { if(b.url) bHtml += `<a href="${b.url}" target="_blank" class="pay-link-btn" style="background:${b.color}; color:${b.textColor};">${b.name}</a>`; });
+
+                var bHtml = ""; aboutData.support.buttons.forEach(b => { if(b.url) bHtml += `<a href="${b.url}" target="_blank" class="pay-link-btn" style="background:${b.color}; color:${b.textColor};"><span>${b.name}</span><i class="fa-solid fa-arrow-up-right-from-square"></i></a>`; });
+                aboutData.support.crypto.forEach(c => {
+                   bHtml += `<div class="pay-link-btn" style="background:#f1f1f1; color:#333; cursor:pointer;" onclick="copyAddr('${c.address}', this)"><span><b>${c.name}</b></span><i class="fa-regular fa-copy"></i><i class="fa-solid fa-check"></i></div>`;
+                });
                 document.getElementById('side-links').innerHTML = bHtml;
             } else {
-                var mHtml = ""; aboutData.support.buttons.forEach(b => { if(b.url) mHtml += `<a href="${b.url}" target="_blank" class="mobile-pay-btn" style="background:${b.color}; color:${b.textColor};">${b.name}</a>`; });
-                document.getElementById('mobile-support-list').innerHTML = mHtml; document.getElementById('mobile-support-list').style.display = 'block';
+                var mHtml = "";
+                aboutData.support.buttons.forEach(b => { if(b.url) mHtml += `<a href="${b.url}" target="_blank" class="mobile-pay-btn" style="background:${b.color}; color:${b.textColor};">${b.name}</a>`; });
+                aboutData.support.crypto.forEach(c => {
+                   mHtml += `<div class="mobile-pay-btn" style="background:#eee; color:#333;" onclick="copyAddr('${c.address}', this)">Копировать ${c.name}</div>`;
+                });
+                document.getElementById('mobile-support-list').innerHTML = mHtml;
+                document.getElementById('mobile-support-list').style.display = 'block';
             }
             document.getElementById('about-modal').style.display = 'flex';
         }
 
-        function expandSupportPC() { document.getElementById('side-qr').style.display = 'flex'; document.getElementById('side-links').style.display = 'flex'; document.getElementById('btn-support-pc').style.display = 'none'; }
+        function expandSupportPC() {
+            document.getElementById('bike-img-pc').style.display = 'none';
+            document.getElementById('author-img-pc').style.display = 'none';
+            document.getElementById('side-qr').style.display = 'flex';
+            document.getElementById('side-links').style.display = 'flex';
+            document.getElementById('author-small-pc').style.display = 'block';
+            document.getElementById('btn-support-pc').style.display = 'none';
+        }
+
+        function copyAddr(addr, el) {
+            navigator.clipboard.writeText(addr).then(() => {
+                var check = el.querySelector('.fa-check');
+                if(check) { check.style.opacity = "1"; setTimeout(() => check.style.opacity = "0", 2000); }
+                else alert("Адрес скопирован!");
+            });
+        }
 
         var touchStartYModal = 0; var modalMain = document.getElementById('modal-main-box');
         modalMain.addEventListener('touchstart', e => { touchStartYModal = e.touches[0].clientY; }, {passive: true});
-        modalMain.addEventListener('touchend', e => { if (window.innerWidth > 768) return; var diff = e.changedTouches[0].clientY - touchStartYModal; if (diff > 100 && modalMain.scrollTop <= 0) closeAbout(); });
+        modalMain.addEventListener('touchend', e => { if (window.innerWidth > 768) return; if (e.changedTouches[0].clientY - touchStartYModal > 100 && modalMain.scrollTop <= 0) closeAbout(); });
 
-        // ФОТО-ВЬЮЕР
         var img = document.getElementById('view-img'), scale = 1, lastScale = 1, startDist = 0, posX = 0, posY = 0, startX = 0, startY = 0, isDragging = false;
-        
         function openPhoto(url) {
-            // Блокируем карту ТОЛЬКО НА МОБИЛЬНЫХ
-            if (window.innerWidth <= 768) {
-                map.dragging.disable();
-                map.touchZoom.disable();
-                map.doubleClickZoom.disable();
-                map.scrollWheelZoom.disable();
-            }
-            document.getElementById('view-img').src = url;
-            document.getElementById('photo-viewer').style.display = 'flex';
+            if (window.innerWidth <= 768) { map.dragging.disable(); map.touchZoom.disable(); }
+            document.getElementById('view-img').src = url; document.getElementById('photo-viewer').style.display = 'flex';
         }
-
-        function closePhoto() {
-            // Всегда пробуем разблокировать при закрытии
-            map.dragging.enable();
-            map.touchZoom.enable();
-            map.doubleClickZoom.enable();
-            map.scrollWheelZoom.enable();
-            
-            scale = 1; lastScale = 1; posX = 0; posY = 0; updateTransform();
-            document.getElementById('photo-viewer').style.display = 'none';
-        }
-
+        function closePhoto() { map.dragging.enable(); map.touchZoom.enable(); scale = 1; lastScale = 1; posX = 0; posY = 0; updateTransform(); document.getElementById('photo-viewer').style.display = 'none'; }
+        
         img.addEventListener('touchstart', e => { 
             if (window.innerWidth <= 768) e.stopPropagation(); 
             if (e.touches.length === 1) { isDragging = true; startX = e.touches[0].pageX - posX; startY = e.touches[0].pageY - posY; } 
             else if (e.touches.length === 2) { isDragging = false; startDist = Math.hypot(e.touches[0].pageX-e.touches[1].pageX, e.touches[0].pageY-e.touches[1].pageY); lastScale = scale; } 
         });
-        
         img.addEventListener('touchmove', e => { 
             if (window.innerWidth <= 768) e.stopPropagation(); 
             if (scale > 1 || e.touches.length > 1) e.preventDefault(); 
             if (e.touches.length === 1 && isDragging && scale > 1) { posX = e.touches[0].pageX - startX; posY = e.touches[0].pageY - startY; updateTransform(); } 
             else if (e.touches.length === 2) { var d = Math.hypot(e.touches[0].pageX-e.touches[1].pageX, e.touches[0].pageY-e.touches[1].pageY); scale = Math.min(Math.max(1, lastScale * (d / startDist)), 5); updateTransform(); } 
         });
-        
         img.addEventListener('touchend', e => { if (window.innerWidth <= 768) e.stopPropagation(); isDragging = false; lastScale = scale; });
-        
         function updateTransform() { if (scale <= 1) { posX = 0; posY = 0; } img.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`; }
         function handlePhotoClick(e) { e.stopPropagation(); if (window.innerWidth > 768) window.open(e.target.src, '_blank'); else { if (scale > 1.1) { scale = 1; posX = 0; posY = 0; updateTransform(); } else closePhoto(); } }
         function handleBackgroundClick() { if (window.innerWidth <= 768) closePhoto(); }
@@ -339,7 +351,11 @@
         }
         function focusOnCurrent() { if (typeof myPoints !== 'undefined' && myPoints.length > 0) { var last = myPoints[myPoints.length-1]; map.setView([last.lat || (last.from ? last.from[0] : 50), last.lng || (last.from ? last.from[1] : 80)], 8); } }
         function togglePhotos() { var checkbox = document.getElementById('photo-toggle'); checkbox.checked = !checkbox.checked; updateMarkers(true); var mobileBtn = document.getElementById('mobile-photo-btn'); if(checkbox.checked) { mobileBtn.style.background = '#28a745'; mobileBtn.style.color = '#fff'; } else { mobileBtn.style.background = '#fff'; mobileBtn.style.color = '#28a745'; } }
-        if (typeof myPoints !== 'undefined') { focusOnCurrent(); updateMarkers(true); }
+        
+        window.onload = function() {
+            if (window.location.search.includes('about')) { openAbout(); }
+            if (typeof myPoints !== 'undefined') { focusOnCurrent(); updateMarkers(true); }
+        };
     </script>
 </body>
 </html>
