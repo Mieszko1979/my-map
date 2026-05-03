@@ -49,67 +49,70 @@
         .modal-layout { display: flex; align-items: center; justify-content: center; gap: 40px; width: 100%; max-width: 1600px; padding: 20px; box-sizing: border-box; }
         
         #central-container { position: relative; width: 550px; display: flex; flex-direction: column; align-items: center; }
-        .modal-main { background: white; width: 100%; border-radius: 25px; padding: 35px; text-align: center; position: relative; box-shadow: 0 15px 50px rgba(0,0,0,0.6); z-index: 5; box-sizing: border-box; overflow-y: auto; max-height: 80vh; font-family: Arial, sans-serif !important; }
+        .modal-main { background: white; width: 100%; border-radius: 25px; padding: 40px; text-align: center; position: relative; box-shadow: 0 15px 50px rgba(0,0,0,0.6); z-index: 5; box-sizing: border-box; overflow-y: auto; max-height: 80vh; }
         
-        .side-photo { width: 350px; height: 450px; object-fit: cover; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .side-photo { width: 350px; height: 480px; object-fit: cover; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         
-        /* Аватарка при поддержке: над окном, слева */
-        #author-avatar-support { position: absolute; top: -60px; left: -20px; width: 120px; height: 120px; border-radius: 50%; border: 6px solid white; box-shadow: 0 8px 25px rgba(0,0,0,0.4); z-index: 10; display: none; object-fit: cover; }
+        /* КРУПНАЯ АВАТАРКА: поднята выше, касается только краем */
+        #author-avatar-support { position: absolute; top: -90px; left: -30px; width: 140px; height: 140px; border-radius: 50%; border: 7px solid white; box-shadow: 0 8px 30px rgba(0,0,0,0.4); z-index: 10; display: none; object-fit: cover; }
 
         .side-panel { width: 250px; display: none; flex-direction: column; gap: 20px; animation: slideIn 0.3s ease-out; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         .qr-card { background: white; padding: 15px; border-radius: 20px; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.2); }
         .qr-card img { width: 100%; border-radius: 10px; }
-        .qr-card b { font-size: 14px; display: block; margin-top: 8px; color: #333; font-family: Arial, sans-serif; }
+        .qr-card b { font-size: 14px; display: block; margin-top: 8px; color: #333; }
         
-        /* Кнопки оплаты: текст по центру, без лишних иконок */
-        .pay-link-btn { display: block; width: 100%; text-decoration: none; padding: 14px; border-radius: 15px; font-weight: bold; font-size: 15px; text-align: center; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 10px; transition: 0.2s; font-family: Arial, sans-serif; position: relative; }
+        .pay-link-btn { display: flex; align-items: center; justify-content: center; width: 100%; text-decoration: none; padding: 16px; border-radius: 15px; font-weight: bold; font-size: 16px; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 12px; transition: 0.2s; position: relative; }
         .pay-link-btn:hover { transform: translateY(-2px); }
-        .pay-link-btn i.fa-check { color: #28a745; opacity: 0; transition: 0.2s; position: absolute; right: 15px; top: 50%; transform: translateY(-50%); }
 
-        /* КРИПТО: закрепили внизу экрана */
-        #crypto-row-pc { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: none; width: 550px; justify-content: center; gap: 20px; z-index: 7000; animation: slideIn 0.5s ease-out; }
-        .crypto-card { background: white; padding: 14px 20px; border-radius: 18px; box-shadow: 0 8px 25px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: space-between; width: 48%; cursor: pointer; position: relative; transition: 0.2s; }
-        .crypto-card:hover { transform: translateY(-3px); background: #fdfdfd; }
-        .crypto-card b { font-size: 15px; color: #333; font-family: Arial, sans-serif; }
-        .crypto-card i.fa-copy { color: #28a745; font-size: 18px; }
-        .crypto-card i.fa-check { color: #28a745; position: absolute; right: 20px; opacity: 0; }
+        /* КРИПТО: зазор и цвета */
+        #crypto-row-pc { position: fixed; bottom: 35px; left: 50%; transform: translateX(-50%); display: none; width: 550px; justify-content: center; gap: 25px; z-index: 7000; animation: slideIn 0.5s ease-out; }
+        .crypto-card { background: white; padding: 14px 22px; border-radius: 18px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: space-between; width: 46%; cursor: pointer; position: relative; transition: 0.3s; border: 1px solid transparent; }
+        .crypto-card b { font-size: 15px; color: #333; }
+        .crypto-card i.fa-copy { color: #000; font-size: 18px; } /* Окошки черные */
+        .crypto-card i.fa-check { position: absolute; right: 20px; opacity: 0; color: #ffdb00; font-size: 18px; } /* Галочка желтая */
+        
+        /* Класс при копировании */
+        .crypto-card.copied { background: #28a745 !important; color: white !important; }
+        .crypto-card.copied b { color: white !important; }
+        .crypto-card.copied i.fa-copy { opacity: 0; }
+        .crypto-card.copied i.fa-check { opacity: 1; }
 
         .close-modal { position: absolute; top: 20px; right: 20px; font-size: 26px; cursor: pointer; color: #aaa; z-index: 20; }
         
-        /* СОЦСЕТИ */
-        .social-icons { display: flex; justify-content: center; gap: 20px; margin: 30px 0 40px 0; flex-wrap: wrap; align-items: center; }
+        /* СОЦСЕТИ - КРУПНО */
+        .social-icons { display: flex; justify-content: center; gap: 20px; margin: 35px 0 45px 0; flex-wrap: wrap; align-items: center; }
         .social-icons i { font-size: 34px; } 
         .fa-vk { color: #0077FF; } .fa-telegram { color: #26A5E4; } .fa-youtube { color: #FF0000; } 
         .fa-instagram { color: #E1306C; } .fa-odnoklassniki { color: #ee8208; } .fa-strava { color: #FC6100; }
         .dzen-icon { width: 34px; height: 34px; background: black; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .dzen-icon svg { width: 34px; height: 34px; }
-        .text-icon-btn { font-weight: 900; font-size: 13px; border: 2.5px solid #469C36; padding: 6px 12px; border-radius: 10px; color: #469C36; text-transform: uppercase; font-family: Arial, sans-serif; }
+        .text-icon-btn { font-weight: 900; font-size: 13px; border: 2.5px solid #469C36; padding: 6px 12px; border-radius: 10px; color: #469C36; text-transform: uppercase; }
 
-        /* КНОПКА ПОДДЕРЖКИ */
-        @keyframes actionPulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.5); } 50% { transform: scale(1.04); box-shadow: 0 0 0 15px rgba(40, 167, 69, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); } }
-        .btn-expand-support { width: 100%; padding: 20px; background: #28a745; color: white; border: none; border-radius: 15px; font-weight: bold; font-size: 19px; cursor: pointer; animation: actionPulse 2.5s infinite ease-in-out; font-family: Arial, sans-serif; }
+        /* КНОПКА ПОДДЕРЖКИ (МАНЯЩАЯ) */
+        @keyframes strongPulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.6); } 50% { transform: scale(1.05); box-shadow: 0 0 0 18px rgba(40, 167, 69, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); } }
+        .btn-expand-support { width: 100%; padding: 22px; background: #28a745; color: white; border: none; border-radius: 18px; font-weight: bold; font-size: 21px; cursor: pointer; animation: strongPulse 2s infinite ease-in-out; transition: 0.2s; }
+        .btn-expand-support:hover { background: #218838; }
 
-        /* ПОПАПЫ */
-        .popup-box { text-align: center; min-width: 180px; padding: 5px; font-family: Arial, sans-serif; }
+        /* ПОПАПЫ КАРТЫ */
+        .popup-box { text-align: center; min-width: 180px; padding: 5px; }
         .popup-box b { font-size: 21px; display: block; margin-bottom: 8px; color: #333; }
         .popup-box p { font-size: 18px; margin: 5px 0; color: #555; line-height: 1.4; }
         .coords { font-size: 13px; color: #777; font-family: monospace; margin: 8px 0; }
         .btn-row { display: flex; justify-content: center; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
-        .btn { text-decoration: none !important; font-weight: bold; font-size: 13px; padding: 8px 18px; border-radius: 20px; cursor: pointer; display: inline-block; color: white !important; font-family: Arial, sans-serif; }
+        .btn { text-decoration: none !important; font-weight: bold; font-size: 13px; padding: 8px 18px; border-radius: 20px; cursor: pointer; display: inline-block; color: white !important; }
         .btn-track { background: #28a745; } .btn-vk { background: #0077FF; } .btn-dzen { background: #111111; } .btn-3d { background: #ffdb00; color: #000 !important; }
 
         /* МАРКЕРЫ */
         .day-marker, .trans-center-marker { background: #fff; border-radius: 50%; border: 2.5px solid; color: #000; font-weight: bold; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.5); font-size: 11px; width: 24px !important; height: 24px !important; overflow: hidden; white-space: nowrap; }
         .num-wrapper { position: relative; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; }
         .suffix { position: absolute; left: 85%; opacity: 0.7; } 
-        .trans-center-marker { font-size: 18px !important; }
         .c2018 { border-color: #ff0000 !important; color: #ff0000; } .c2019 { border-color: #007bff !important; color: #007bff; } .c2021 { border-color: #9b59b6 !important; color: #9b59b6; } .c2024 { border-color: #ff8c00 !important; color: #ff8c00; } .cCurrent { border-color: #28a745 !important; color: #28a745; }
 
         /* ПУЛЬСАЦИЯ ТЕКУЩЕЙ ТОЧКИ (АЛАЯ) */
-        @keyframes scarletPulse { 0% { box-shadow: 0 0 0 0px rgba(255, 36, 0, 0.9); } 70% { box-shadow: 0 0 0 18px rgba(255, 36, 0, 0); } 100% { box-shadow: 0 0 0 0px rgba(255, 36, 0, 0); } }
-        .last-point-pulse { animation: scarletPulse 3s infinite ease-in-out; border-color: #28a745 !important; z-index: 1000 !important; }
+        @keyframes scarletPulse { 0% { box-shadow: 0 0 0 0px rgba(255, 36, 0, 1); } 70% { box-shadow: 0 0 0 18px rgba(255, 36, 0, 0); } 100% { box-shadow: 0 0 0 0px rgba(255, 36, 0, 0); } }
+        .last-point-pulse { animation: scarletPulse 2.5s infinite ease-in-out; border-color: #28a745 !important; z-index: 1000 !important; }
 
         .flag-stuck { animation: flagWaver 2.5s infinite ease-in-out; transform-origin: bottom center; display: flex; align-items: center; justify-content: center; }
         @keyframes flagWaver { 0% { transform: rotate(0deg); } 50% { transform: rotate(6deg); } 100% { transform: rotate(0deg); } }
@@ -122,7 +125,7 @@
         #detail-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 7000; background: #000; display: none; border: none; }
 
         @media (max-width: 768px) {
-            #menu-box { left: 5%; width: 90% !important; top: 15px; box-sizing: border-box; }
+            #menu-box { left: 5%; width: 90% !important; top: 15px; }
             #photo-toggle-wrap { display: none !important; }
             #mobile-photo-btn { display: flex; }
             #hint-box { top: auto; bottom: 30px; left: 50%; transform: translateX(-50%); }
@@ -130,10 +133,10 @@
             #about-modal { align-items: flex-end; }
             .modal-layout { padding: 0; width: 100%; }
             #central-container { width: 100%; }
-            .modal-main { width: 94%; border-radius: 25px 25px 0 0; margin-bottom: 0; box-shadow: 0 -5px 30px rgba(0,0,0,0.4); padding: 30px 20px; max-height: 85vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+            .modal-main { width: 94%; border-radius: 25px 25px 0 0; margin-bottom: 0; box-shadow: 0 -5px 30px rgba(0,0,0,0.4); padding: 35px 20px; max-height: 85vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
             .side-panel, .side-photo, #author-avatar-support, #crypto-row-pc { display: none !important; }
-            #mobile-support-list { display: block; margin-top: 15px; width: 100%; }
-            .mobile-pay-btn { display: block; width: 100%; padding: 16px; margin-bottom: 12px; border-radius: 12px; font-weight: bold; text-decoration: none; text-align: center; box-sizing: border-box; }
+            #mobile-support-list { display: block; margin-top: 20px; width: 100%; }
+            .mobile-pay-btn { display: block; width: 100%; padding: 18px; margin-bottom: 12px; border-radius: 12px; font-weight: bold; text-decoration: none; text-align: center; box-sizing: border-box; font-size: 17px; }
             #photo-viewer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: black; display: none; justify-content: center; align-items: center; bottom: auto; z-index: 9999; touch-action: none; }
             #photo-viewer img { width: 100%; height: 100%; object-fit: contain; border-radius: 0; }
             #photo-viewer .close-btn { display: none !important; }
@@ -149,7 +152,7 @@
         <div class="modal-layout" onclick="event.stopPropagation()">
             
             <div id="pc-left-side">
-                <img src="bike_photo.jpg" class="side-photo" id="bike-img-pc">
+                <img src="my_photo.jpg" class="side-photo" id="author-img-pc">
                 <div class="side-panel" id="side-qr"></div>
             </div>
 
@@ -157,18 +160,17 @@
                 <img src="my_photo.jpg" id="author-avatar-support">
                 <div class="modal-main" id="modal-main-box">
                     <span class="close-modal" onclick="closeAbout()">&times;</span>
-                    <b id="about-name" style="font-size:26px; display:block; font-family: Arial, sans-serif !important;"></b>
-                    <div id="about-bio" style="margin: 20px 0; line-height:1.6; color:#444; font-size:16px; text-align: left; white-space: pre-wrap; font-family: Arial, sans-serif !important;"></div>
+                    <b id="about-name" style="font-size:32px; display:block; margin-bottom:15px;"></b>
+                    <div id="about-bio" style="margin: 25px 0; line-height:1.6; color:#333; font-size:20px; text-align: left; white-space: pre-wrap;"></div>
                     <div class="social-icons" id="about-socials"></div>
                     <button class="btn-expand-support" id="btn-support-pc" onclick="expandSupportPC()">Поддержать проект</button>
                     <div id="mobile-support-list" style="display:none;"></div>
                 </div>
-                <!-- Крипто в самом низу экрана ПК -->
                 <div id="crypto-row-pc"></div>
             </div>
 
             <div id="pc-right-side">
-                <img src="my_photo.jpg" class="side-photo" id="author-img-pc">
+                <img src="bike_photo.jpg" class="side-photo" id="bike-img-pc">
                 <div class="side-panel" id="side-links"></div>
             </div>
 
@@ -226,7 +228,7 @@
             document.getElementById('about-socials').innerHTML = sHtml;
 
             if (isPC) {
-                document.getElementById('bike-img-pc').style.display = 'block'; document.getElementById('author-img-pc').style.display = 'block';
+                document.getElementById('author-img-pc').style.display = 'block'; document.getElementById('bike-img-pc').style.display = 'block';
                 document.getElementById('side-qr').style.display = 'none'; document.getElementById('side-links').style.display = 'none';
                 document.getElementById('author-avatar-support').style.display = 'none'; document.getElementById('crypto-row-pc').style.display = 'none';
                 document.getElementById('btn-support-pc').style.display = 'block';
@@ -245,13 +247,18 @@
         }
 
         function expandSupportPC() {
-            document.getElementById('bike-img-pc').style.display = 'none'; document.getElementById('author-img-pc').style.display = 'none';
+            document.getElementById('author-img-pc').style.display = 'none'; document.getElementById('bike-img-pc').style.display = 'none';
             document.getElementById('side-qr').style.display = 'flex'; document.getElementById('side-links').style.display = 'flex';
             document.getElementById('author-avatar-support').style.display = 'block'; document.getElementById('crypto-row-pc').style.display = 'flex';
             document.getElementById('btn-support-pc').style.display = 'none';
         }
 
-        function copyAddr(addr, el) { navigator.clipboard.writeText(addr).then(() => { var check = el.querySelector('.fa-check'); if(check) { check.style.opacity = "1"; setTimeout(() => check.style.opacity = "0", 2000); } else alert("Адрес скопирован!"); }); }
+        function copyAddr(addr, el) { 
+            navigator.clipboard.writeText(addr).then(() => { 
+                el.classList.add('copied'); 
+                setTimeout(() => el.classList.remove('copied'), 2000); 
+            }); 
+        }
 
         function openTrackView(url) { if (window.innerWidth <= 768) { var overlay = document.getElementById('detail-overlay'); overlay.src = url; overlay.style.display = 'block'; } else { window.open(url, '_blank'); } }
         window.closeTrackView = function() { var overlay = document.getElementById('detail-overlay'); overlay.style.display = 'none'; overlay.src = ""; };
