@@ -25,7 +25,7 @@
         html, body, #map { height: 100%; margin: 0; padding: 0; overflow: hidden; background: #000; font-family: Arial, sans-serif; }
         
         /* МЕНЮ УПРАВЛЕНИЯ */
-        #menu-box { position: absolute; top: 15px; left: 15px; z-index: 1000; background: rgba(255, 255, 255, 0.95); padding: 15px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); min-width: 320px; transition: all 0.3s ease; box-sizing: border-box; }
+        #menu-box { position: absolute; top: 10px; left: 15px; z-index: 1000; background: rgba(255, 255, 255, 0.95); padding: 15px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); min-width: 320px; transition: all 0.3s ease; box-sizing: border-box; }
         .menu-collapse-btn { display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 16px; cursor: pointer; color: #333; }
         #menu-content { max-height: 1000px; overflow: hidden; opacity: 1; transition: all 0.3s ease; margin-top: 15px; padding-top: 12px; border-top: 1px solid #ccc; }
         #menu-box.collapsed #menu-content { max-height: 0; opacity: 0; margin-top: 0; padding-top: 0; border-top: none; }
@@ -39,7 +39,7 @@
         #photo-toggle-wrap input { margin-right: 12px; transform: scale(1.2); }
         #mobile-photo-btn { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); z-index: 1001; background: white; border: none; width: 45px; height: 45px; border-radius: 50%; box-shadow: 0 2px 10px rgba(0,0,0,0.3); display: none; align-items: center; justify-content: center; color: #28a745; font-size: 20px; }
 
-        /* ЖМИ СЮДА */
+        /* ВИЗИТКА "ЖМИ СЮДА" */
         #hint-box { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); z-index: 1000; background: rgba(255, 255, 255, 0.95); padding: 10px 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); cursor: pointer; text-align: center; transition: 0.2s ease; }
         #hint-box:hover { transform: translateX(-50%) scale(1.08); background: #fff; }
         .hint-text { color: #ff0000; font-weight: 900; font-size: 17px; text-transform: uppercase; letter-spacing: 1px; }
@@ -61,7 +61,7 @@
         .qr-card img { width: 100%; border-radius: 10px; }
         .qr-card b { font-size: 14px; display: block; margin-top: 8px; color: #333; font-family: Arial, sans-serif; }
         
-        .pay-link-btn { display: block; width: 100%; text-decoration: none; padding: 14px; border-radius: 15px; font-weight: bold; font-size: 15px; text-align: center; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 10px; transition: 0.2s; font-family: Arial, sans-serif; }
+        .pay-link-btn { display: block; width: 100%; text-decoration: none; padding: 14px; border-radius: 15px; font-weight: bold; font-size: 15px; text-align: center; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 10px; transition: 0.2s; font-family: Arial, sans-serif; position: relative; }
         .pay-link-btn:hover { transform: translateY(-2px); }
 
         /* КРИПТО ПК */
@@ -91,15 +91,6 @@
         @keyframes actionPulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.5); } 50% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(40, 167, 69, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); } }
         .btn-expand-support { width: 100%; padding: 22px; background: #28a745; color: white; border: none; border-radius: 18px; font-weight: bold; font-size: 19px; cursor: pointer; animation: actionPulse 2.5s infinite ease-in-out; margin-top: 15px; font-family: Arial, sans-serif; }
 
-        /* ПОПАПЫ */
-        .popup-box { text-align: center; min-width: 180px; padding: 5px; font-family: Arial, sans-serif; }
-        .popup-box b { font-size: 21px; display: block; margin-bottom: 8px; color: #333; }
-        .popup-box p { font-size: 18px; margin: 5px 0; color: #555; line-height: 1.4; }
-        .coords { font-size: 13px; color: #777; font-family: monospace; margin: 8px 0; }
-        .btn-row { display: flex; justify-content: center; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
-        .btn { text-decoration: none !important; font-weight: bold; font-size: 13px; padding: 8px 18px; border-radius: 20px; cursor: pointer; display: inline-block; color: white !important; font-family: Arial, sans-serif; }
-        .btn-track { background: #28a745; } .btn-vk { background: #0077FF; } .btn-dzen { background: #111111; } .btn-3d { background: #ffdb00; color: #000 !important; }
-
         /* МАРКЕРЫ */
         .day-marker, .trans-center-marker { background: #fff; border-radius: 50%; border: 2.5px solid; color: #000; font-weight: bold; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.5); font-size: 11px; width: 24px !important; height: 24px !important; overflow: hidden; white-space: nowrap; }
         .num-wrapper { position: relative; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; }
@@ -107,7 +98,7 @@
         .trans-center-marker { font-size: 18px !important; }
         .c2018 { border-color: #ff0000 !important; color: #ff0000; } .c2019 { border-color: #007bff !important; color: #007bff; } .c2021 { border-color: #9b59b6 !important; color: #9b59b6; } .c2024 { border-color: #ff8c00 !important; color: #ff8c00; } .cCurrent { border-color: #28a745 !important; color: #28a745; }
 
-        /* ПУЛЬСАЦИЯ ТЕКУЩЕЙ ТОЧКИ (АЛАЯ) */
+        /* ПУЛЬСАЦИЯ (АЛАЯ) */
         @keyframes scarletPulse { 0% { box-shadow: 0 0 0 0px rgba(255, 36, 0, 0.9); } 70% { box-shadow: 0 0 0 18px rgba(255, 36, 0, 0); } 100% { box-shadow: 0 0 0 0px rgba(255, 36, 0, 0); } }
         .last-point-pulse { animation: scarletPulse 3s infinite ease-in-out; border-color: #28a745 !important; z-index: 1000 !important; }
 
@@ -121,43 +112,30 @@
         #photo-viewer .close-btn { position: absolute; top: -12px; right: -12px; background: red; color: white; border-radius: 50%; width: 26px; height: 26px; text-align: center; line-height: 24px; font-weight: bold; border: 2px solid white; z-index: 2100; }
         #detail-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 7000; background: #000; display: none; border: none; }
 
-        /* МОБИЛЬНАЯ ВЕРСИЯ - НОВЫЙ ДИЗАЙН С ОБЛОЖКОЙ */
+        /* МОБИЛЬНАЯ ВЕРСИЯ - МОНОЛИТНАЯ ШТОРКА С ОБЛОЖКОЙ */
         @media (max-width: 768px) {
             #menu-box { left: 5%; width: 90% !important; top: 10px; box-sizing: border-box; }
             #photo-toggle-wrap { display: none !important; }
             #mobile-photo-btn { display: flex; }
             #hint-box { top: auto; bottom: 30px; left: 50%; transform: translateX(-50%); }
             .map-avatar { bottom: 18px; right: 5px; width: 45px; height: 45px; }
-            
             #about-modal { align-items: flex-end; }
             .modal-layout { padding: 0; width: 100%; }
             #central-container { width: 100%; margin: 0; }
-            
             .modal-main { 
-                width: 100vw !important; border-radius: 25px 25px 0 0 !important; 
-                margin-bottom: 0 !important; padding: 0 !important; /* Обнуляем для обложки */
+                width: 100% !important; border-radius: 20px 20px 0 0 !important; 
+                margin-bottom: 0 !important; padding: 0 !important; 
                 box-shadow: 0 -5px 30px rgba(0,0,0,0.4); 
                 max-height: 85vh; overflow-y: auto; -webkit-overflow-scrolling: touch; 
                 box-sizing: border-box;
             }
-
-            /* Мобильный Hero-блок */
             #mobile-hero-wrap { display: block !important; position: relative; width: 100%; height: 200px; }
             #mobile-hero-img { width: 100%; height: 100%; object-fit: cover; }
-            #mobile-avatar-img { 
-                position: absolute; bottom: -45px; left: 20px; 
-                width: 90px; height: 90px; border-radius: 50%; 
-                border: 4px solid white; box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
-                object-fit: cover; z-index: 10;
-            }
-            
-            /* Обертка для текста на мобильном */
+            #mobile-avatar-img { position: absolute; bottom: -45px; left: 20px; width: 90px; height: 90px; border-radius: 50%; border: 4px solid white; box-shadow: 0 4px 15px rgba(0,0,0,0.3); object-fit: cover; z-index: 10; }
             #mobile-text-padding { padding: 55px 20px 30px 20px; }
-            
             .side-panel, .side-photo, #author-avatar-support, #crypto-row-pc { display: none !important; }
             #mobile-support-list { display: block; margin-top: 15px; width: 100%; }
             .mobile-pay-btn { display: block; width: 100%; padding: 18px; margin-bottom: 12px; border-radius: 12px; font-weight: bold; text-decoration: none; text-align: center; box-sizing: border-box; font-size: 17px; transition: 0.2s; border: none; }
-            
             #photo-viewer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: black; display: none; justify-content: center; align-items: center; bottom: auto; z-index: 9999; touch-action: none; }
             #photo-viewer img { width: 100%; height: 100%; object-fit: contain; border-radius: 0; }
             #photo-viewer .close-btn { display: none !important; }
@@ -172,7 +150,6 @@
     <div id="about-modal" onclick="closeAbout()">
         <div class="modal-layout" onclick="event.stopPropagation()">
             
-            <!-- Лево: Михаил (Intro) / QR (Support) -->
             <div id="pc-left-side">
                 <img src="my_photo.jpg" class="side-photo" id="author-img-pc">
                 <div class="side-panel" id="side-qr"></div>
@@ -182,13 +159,11 @@
                 <img src="my_photo.jpg" id="author-avatar-support">
                 <div class="modal-main" id="modal-main-box">
                     
-                    <!-- Только для МОБИЛОК: Хедер с обложкой и аватаром -->
                     <div id="mobile-hero-wrap" style="display:none;">
-                        <img src="bike_photo.jpg" id="mobile-hero-img">
+                        <img src="mobile_cover.jpg" id="mobile-hero-img">
                         <img src="my_photo.jpg" id="mobile-avatar-img">
                     </div>
 
-                    <!-- Обертка контента -->
                     <div id="mobile-text-padding">
                         <span class="close-modal" onclick="closeAbout()">&times;</span>
                         <b id="about-name" style="font-size:28px; display:block; margin-bottom:12px; font-family: Arial, sans-serif !important;"></b>
@@ -202,7 +177,6 @@
                 <div id="crypto-row-pc"></div>
             </div>
 
-            <!-- Право: Вел (Intro) / Кнопки (Support) -->
             <div id="pc-right-side">
                 <img src="bike_photo.jpg" class="side-photo" id="bike-img-pc">
                 <div class="side-panel" id="side-links"></div>
@@ -379,4 +353,3 @@
     </script>
 </body>
 </html>
- 
