@@ -5,6 +5,7 @@ const aboutData = {
     // ФОТО (имена файлов, которые ты сохранил)
     authorPhoto: "my_photo.jpg",
     bikePhoto: "bike_photo.jpg",
+    mobileCover: "mobile_cover.jpg",
 
     // СОЦИАЛЬНЫЕ СЕТИ
     socials: [
