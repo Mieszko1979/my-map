@@ -62,7 +62,8 @@
         .qr-card b { font-size: 14px; display: block; margin-top: 8px; color: #333; font-family: Arial, sans-serif; }
         
         .pay-link-btn { display: block; width: 100%; text-decoration: none; padding: 14px; border-radius: 15px; font-weight: bold; font-size: 15px; text-align: center; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 10px; transition: 0.2s; font-family: Arial, sans-serif; }
-        
+        .pay-link-btn:hover { transform: translateY(-2px); }
+
         /* КРИПТО ПК */
         #crypto-row-pc { position: fixed; bottom: 35px; left: 50%; transform: translateX(-50%); display: none; width: 550px; justify-content: center; gap: 25px; z-index: 7000; animation: slideIn 0.5s ease-out; }
         .crypto-card { background: white; padding: 14px 22px; border-radius: 18px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: space-between; width: 46%; cursor: pointer; position: relative; transition: 0.3s; border: 1px solid transparent; }
@@ -76,10 +77,10 @@
         .crypto-card.copied i.fa-check { opacity: 1; }
 
         .close-modal { position: absolute; top: 20px; right: 20px; font-size: 26px; cursor: pointer; color: #ff0000; z-index: 20; }
-        .close-modal:hover {color: #cc0000; transform: scale(1.2); } 
+        .close-modal:hover { color: #cc0000; transform: scale(1.2); }
         
         /* СОЦСЕТИ */
-        .social-icons { display: flex; justify-content: center; gap: 20px; margin: 15px 0 5px 0; flex-wrap: wrap; align-items: center; }
+        .social-icons { display: flex; justify-content: center; gap: 20px; margin: 20px 0 10px 0; flex-wrap: wrap; align-items: center; }
         .social-icons i { font-size: 34px; } 
         .fa-vk { color: #0077FF; } .fa-telegram { color: #26A5E4; } .fa-youtube { color: #FF0000; } 
         .fa-instagram { color: #E1306C; } .fa-odnoklassniki { color: #ee8208; } .fa-strava { color: #FC6100; }
@@ -91,7 +92,7 @@
         @keyframes actionPulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.5); } 50% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(40, 167, 69, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); } }
         .btn-expand-support { width: 100%; padding: 22px; background: #28a745; color: white; border: none; border-radius: 18px; font-weight: bold; font-size: 19px; cursor: pointer; animation: actionPulse 2.5s infinite ease-in-out; margin-top: 15px; font-family: Arial, sans-serif; }
 
-        /* ПОПАПЫ КАРТЫ */
+        /* ПОПАПЫ */
         .popup-box { text-align: center; min-width: 180px; padding: 5px; font-family: Arial, sans-serif; }
         .popup-box b { font-size: 21px; display: block; margin-bottom: 8px; color: #333; }
         .popup-box p { font-size: 18px; margin: 5px 0; color: #555; line-height: 1.4; }
@@ -121,7 +122,7 @@
         #photo-viewer .close-btn { position: absolute; top: -12px; right: -12px; background: red; color: white; border-radius: 50%; width: 26px; height: 26px; text-align: center; line-height: 24px; font-weight: bold; border: 2px solid white; z-index: 2100; }
         #detail-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 7000; background: #000; display: none; border: none; }
 
-        /* МОБИЛЬНАЯ ВЕРСИЯ - ФИКСАЦИЯ ШИРИНЫ И ОБЛОЖКА */
+        /* МОБИЛЬНАЯ ВЕРСИЯ */
         @media (max-width: 768px) {
             #menu-box { left: 5%; width: 90% !important; top: 10px; box-sizing: border-box; }
             #photo-toggle-wrap { display: none !important; }
@@ -138,6 +139,7 @@
                 box-shadow: 0 -5px 30px rgba(0,0,0,0.4); 
                 max-height: 85vh; overflow-y: auto; -webkit-overflow-scrolling: touch; 
                 box-sizing: border-box;
+                touch-action: pan-y; /* Разрешаем только вертикальный скролл, запрещаем зум */
             }
 
             #mobile-hero-wrap { display: block !important; position: relative; width: 100%; height: 200px; }
@@ -148,7 +150,7 @@
             .side-panel, .side-photo, #author-avatar-support, #crypto-row-pc { display: none !important; }
             #mobile-support-list { display: block; margin-top: 15px; width: 100%; }
             .mobile-pay-btn { display: block; width: 100%; padding: 18px; margin-bottom: 12px; border-radius: 12px; font-weight: bold; text-decoration: none; text-align: center; box-sizing: border-box; font-size: 17px; transition: 0.2s; border: none; }
-            .mobile-pay-btn.copied { background: #28a745 !important; color: white !important; }
+            
             #photo-viewer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: black; display: none; justify-content: center; align-items: center; bottom: auto; z-index: 9999; touch-action: none; }
             #photo-viewer img { width: 100%; height: 100%; object-fit: contain; border-radius: 0; }
             #photo-viewer .close-btn { display: none !important; }
@@ -296,7 +298,10 @@
 
         var touchStartYModal = 0; var modalMain = document.getElementById('modal-main-box');
         modalMain.addEventListener('touchstart', e => { touchStartYModal = e.touches[0].clientY; }, {passive: true});
-        modalMain.addEventListener('touchend', e => { if (window.innerWidth > 768) return; if (e.changedTouches[0].clientY - touchStartYModal > 100 && modalMain.scrollTop <= 0) closeAbout(); });
+        modalMain.addEventListener('touchmove', e => {
+            if (window.innerWidth <= 768 && e.touches.length > 1) { e.preventDefault(); } // Запрещаем зум шторки пальцами
+        }, {passive: false});
+        modalMain.addEventListener('touchend', e => { if (window.innerWidth > 768) return; var diff = e.changedTouches[0].clientY - touchStartYModal; if (diff > 100 && modalMain.scrollTop <= 0) closeAbout(); });
 
         var img = document.getElementById('view-img'), scale = 1, lastScale = 1, startDist = 0, posX = 0, posY = 0, startX = 0, startY = 0, isDragging = false;
         function openPhoto(url) { if (window.innerWidth <= 768) { map.dragging.disable(); map.touchZoom.disable(); } document.getElementById('view-img').src = url; document.getElementById('photo-viewer').style.display = 'flex'; }
