@@ -3,7 +3,7 @@
 <head>
     <title>Мой Велоархив</title>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -24,9 +24,6 @@
     <style>
         html, body, #map { height: 100%; margin: 0; padding: 0; overflow: hidden; background: #000; font-family: Arial, sans-serif; }
         
-        /* КАРТА ПРИ БЛОКИРОВКЕ (физический запрет всех касаний) */
-        #map.frozen { pointer-events: none !important; touch-action: none !important; }
-
         /* МЕНЮ УПРАВЛЕНИЯ */
         #menu-box { position: absolute; top: 15px; left: 15px; z-index: 1000; background: rgba(255, 255, 255, 0.95); padding: 15px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); min-width: 320px; transition: all 0.3s ease; box-sizing: border-box; }
         .menu-collapse-btn { display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 16px; cursor: pointer; color: #333; }
@@ -51,50 +48,60 @@
         #about-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 6000; justify-content: center; align-items: center; }
         .modal-layout { display: flex; align-items: center; justify-content: center; gap: 40px; width: 100%; max-width: 1600px; padding: 20px; box-sizing: border-box; }
         
-        #central-container { position: relative; width: 550px; display: flex; flex-direction: column; align-items: center; }
-        .modal-main { background: white; width: 100%; border-radius: 25px; padding: 30px; text-align: center; position: relative; box-shadow: 0 15px 50px rgba(0,0,0,0.6); z-index: 5; box-sizing: border-box; overflow-y: auto; max-height: 80vh; font-family: Arial, sans-serif !important; }
+        #central-container { position: relative; width: 550px; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+        .modal-main { background: white; width: 100%; border-radius: 25px; padding: 35px; text-align: center; position: relative; box-shadow: 0 15px 50px rgba(0,0,0,0.6); z-index: 5; box-sizing: border-box; overflow-y: auto; max-height: 80vh; }
         
-        .side-photo { width: 350px; height: 450px; object-fit: cover; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        #author-avatar-support { position: absolute; top: -90px; left: -30px; width: 140px; height: 140px; border-radius: 50%; border: 7px solid white; box-shadow: 0 8px 30px rgba(0,0,0,0.4); z-index: 10; display: none; object-fit: cover; }
+        .side-photo { width: 350px; height: 480px; object-fit: cover; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        
+        /* Аватарка при поддержке */
+        #author-avatar-support { position: absolute; top: -80px; left: -20px; width: 140px; height: 140px; border-radius: 50%; border: 7px solid white; box-shadow: 0 8px 30px rgba(0,0,0,0.4); z-index: 10; display: none; object-fit: cover; }
 
         .side-panel { width: 250px; display: none; flex-direction: column; gap: 20px; animation: slideIn 0.3s ease-out; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        .qr-card { background: white; padding: 15px; border-radius: 20px; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.2); margin-bottom: 5px; }
+        .qr-card { background: white; padding: 15px; border-radius: 20px; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.2); }
         .qr-card img { width: 100%; border-radius: 10px; }
-        .qr-card b { font-size: 14px; display: block; margin-top: 8px; color: #333; font-family: Arial, sans-serif; }
+        .qr-card b { font-size: 14px; display: block; margin-top: 8px; color: #333; }
         
-        .pay-link-btn { display: block; width: 100%; text-decoration: none; padding: 14px; border-radius: 15px; font-weight: bold; font-size: 15px; text-align: center; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 10px; transition: 0.2s; font-family: Arial, sans-serif; }
+        .pay-link-btn { display: block; width: 100%; text-decoration: none; padding: 14px; border-radius: 15px; font-weight: bold; font-size: 15px; text-align: center; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 10px; transition: 0.2s; }
         .pay-link-btn:hover { transform: translateY(-2px); }
 
         /* КРИПТО ПК */
-        #crypto-row-pc { position: fixed; bottom: 35px; left: 50%; transform: translateX(-50%); display: none; width: 550px; justify-content: center; gap: 25px; z-index: 7000; animation: slideIn 0.5s ease-out; }
-        .crypto-card { background: white; padding: 14px 22px; border-radius: 18px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: space-between; width: 46%; cursor: pointer; position: relative; transition: 0.3s; border: 1px solid transparent; }
-        .crypto-card b { font-size: 15px; color: #333; font-family: Arial, sans-serif; }
+        #crypto-row-pc { width: 100%; display: none; justify-content: center; gap: 20px; margin-top: 5px; }
+        .crypto-card { background: white; padding: 14px 20px; border-radius: 18px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: space-between; width: 48%; cursor: pointer; position: relative; transition: 0.3s; }
+        .crypto-card b { font-size: 15px; color: #333; }
         .crypto-card i.fa-copy { color: #000; font-size: 18px; }
         .crypto-card i.fa-check { position: absolute; right: 20px; opacity: 0; color: #ffdb00; font-size: 18px; }
         
-        .crypto-card.copied, .mobile-pay-btn.copied { background: #28a745 !important; border-color: #28a745; color: white !important; }
+        .crypto-card.copied, .mobile-pay-btn.copied { background: #28a745 !important; color: white !important; }
         .crypto-card.copied b { color: white !important; }
         .crypto-card.copied i.fa-copy { opacity: 0; }
         .crypto-card.copied i.fa-check { opacity: 1; }
 
-        /* КРАСНЫЙ КРЕСТИК */
         .close-modal { position: absolute; top: 20px; right: 20px; font-size: 26px; cursor: pointer; color: #ff0000; z-index: 20; font-weight: bold; }
-        .close-modal:hover { color: #cc0000; transform: scale(1.2); }
+        .close-modal:hover { transform: scale(1.2); color: #cc0000; }
         
         /* СОЦСЕТИ */
-        .social-icons { display: flex; justify-content: center; gap: 20px; margin: 20px 0 10px 0; flex-wrap: wrap; align-items: center; }
+        .social-icons { display: flex; justify-content: center; gap: 20px; margin: 20px 0 5px 0; flex-wrap: wrap; align-items: center; }
         .social-icons i { font-size: 34px; } 
         .fa-vk { color: #0077FF; } .fa-telegram { color: #26A5E4; } .fa-youtube { color: #FF0000; } 
         .fa-instagram { color: #E1306C; } .fa-odnoklassniki { color: #ee8208; } .fa-strava { color: #FC6100; }
         .dzen-icon { width: 34px; height: 34px; background: black; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .dzen-icon svg { width: 34px; height: 34px; }
-        .text-icon-btn { font-weight: 900; font-size: 13px; border: 2.5px solid #469C36; padding: 6px 12px; border-radius: 10px; color: #469C36; text-transform: uppercase; font-family: Arial, sans-serif; text-decoration: none !important; }
+        .text-icon-btn { font-weight: 900; font-size: 13px; border: 2.5px solid #469C36; padding: 6px 12px; border-radius: 10px; color: #469C36; text-transform: uppercase; text-decoration: none !important; }
 
         /* КНОПКА ПОДДЕРЖКИ */
         @keyframes actionPulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.5); } 50% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(40, 167, 69, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); } }
-        .btn-expand-support { width: 100%; padding: 22px; background: #28a745; color: white; border: none; border-radius: 18px; font-weight: bold; font-size: 19px; cursor: pointer; animation: actionPulse 2.5s infinite ease-in-out; margin-top: 15px; font-family: Arial, sans-serif; }
+        .btn-expand-support { width: 100%; padding: 22px; background: #28a745; color: white; border: none; border-radius: 18px; font-weight: bold; font-size: 19px; cursor: pointer; animation: actionPulse 2s infinite ease-in-out; margin-top: 15px; }
+
+        /* ПОПАПЫ */
+        .popup-box { text-align: center; min-width: 180px; padding: 5px; }
+        .popup-box b { font-size: 21px; display: block; margin-bottom: 8px; color: #333; }
+        .popup-box p { font-size: 18px; margin: 5px 0; color: #555; line-height: 1.4; }
+        .coords { font-size: 13px; color: #777; font-family: monospace; margin: 8px 0; }
+        .btn-row { display: flex; justify-content: center; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+        .btn { text-decoration: none !important; font-weight: bold; font-size: 13px; padding: 8px 18px; border-radius: 20px; cursor: pointer; display: inline-block; color: white !important; }
+        .btn-track { background: #28a745; } .btn-vk { background: #0077FF; } .btn-dzen { background: #111111; } .btn-3d { background: #ffdb00; color: #000 !important; }
 
         /* МАРКЕРЫ */
         .day-marker, .trans-center-marker { background: #fff; border-radius: 50%; border: 2.5px solid; color: #000; font-weight: bold; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.5); font-size: 11px; width: 24px !important; height: 24px !important; overflow: hidden; white-space: nowrap; }
@@ -107,24 +114,30 @@
         @keyframes scarletPulse { 0% { box-shadow: 0 0 0 0px rgba(255, 36, 0, 0.9); } 70% { box-shadow: 0 0 0 18px rgba(255, 36, 0, 0); } 100% { box-shadow: 0 0 0 0px rgba(255, 36, 0, 0); } }
         .last-point-pulse { animation: scarletPulse 3s infinite ease-in-out; border-color: #28a745 !important; z-index: 1000 !important; }
 
-        /* МОБИЛЬНАЯ ВЕРСИЯ */
+        .flag-stuck { animation: flagWaver 2.5s infinite ease-in-out; transform-origin: bottom center; display: flex; align-items: center; justify-content: center; }
+        @keyframes flagWaver { 0% { transform: rotate(0deg); } 50% { transform: rotate(6deg); } 100% { transform: rotate(0deg); } }
+        .photo-marker { background: none !important; border: none !important; display: flex; align-items: center; justify-content: center; }
+        .map-avatar { position: absolute; bottom: 25px; right: 10px; z-index: 1000; width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; opacity: 0.8; object-fit: cover; pointer-events: none; }
+        
+        #photo-viewer { position: absolute; bottom: 100px; left: 15px; z-index: 2000; width: 220px; background: white; padding: 5px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none; cursor: pointer; }
+        #photo-viewer img { width: 100%; border-radius: 5px; display: block; transition: transform 0.1s ease-out; }
+        #photo-viewer .close-btn { position: absolute; top: -12px; right: -12px; background: red; color: white; border-radius: 50%; width: 26px; height: 26px; text-align: center; line-height: 24px; font-weight: bold; border: 2px solid white; z-index: 2100; }
+        #detail-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 7000; background: #000; display: none; border: none; }
+
         @media (max-width: 768px) {
             #menu-box { left: 5%; width: 90% !important; top: 10px; box-sizing: border-box; }
-            #photo-toggle-wrap { display: none !important; }
+            #photo-toggle-wrap, .side-photo, .side-panel, #author-avatar-support, #crypto-row-pc { display: none !important; }
             #mobile-photo-btn { display: flex; }
             #hint-box { top: auto; bottom: 30px; left: 50%; transform: translateX(-50%); }
             .map-avatar { bottom: 18px; right: 5px; width: 45px; height: 45px; }
             #about-modal { align-items: flex-end; }
             .modal-layout { padding: 0; width: 100%; }
             #central-container { width: 100%; }
-            .modal-main { 
-                width: 100vw !important; border-radius: 20px 20px 0 0 !important; 
-                margin-bottom: 0 !important; padding: 0 !important; 
-                box-shadow: 0 -5px 30px rgba(0,0,0,0.4); 
-                max-height: 85vh; overflow-y: auto; -webkit-overflow-scrolling: touch; 
-                box-sizing: border-box; touch-action: pan-y !important; /* Разрешаем только свайп/прокрутку */
-            }
-            .side-panel, .side-photo, #author-avatar-support, #crypto-row-pc { display: none !important; }
+            .modal-main { width: 100% !important; border-radius: 20px 20px 0 0 !important; margin-bottom: 0 !important; padding: 0 !important; box-shadow: 0 -5px 30px rgba(0,0,0,0.4); max-height: 85vh; overflow-y: auto; -webkit-overflow-scrolling: touch; box-sizing: border-box; }
+            #mobile-hero-wrap { display: block !important; position: relative; width: 100%; height: 200px; }
+            #mobile-hero-img { width: 100%; height: 100%; object-fit: cover; }
+            #mobile-avatar-img { position: absolute; bottom: -45px; left: 20px; width: 90px; height: 90px; border-radius: 50%; border: 4px solid white; box-shadow: 0 4px 15px rgba(0,0,0,0.3); object-fit: cover; z-index: 10; }
+            #mobile-text-padding { padding: 55px 20px 30px 20px; }
             #mobile-support-list { display: block; margin-top: 15px; width: 100%; }
             .mobile-pay-btn { display: block; width: 100%; padding: 18px; margin-bottom: 12px; border-radius: 12px; font-weight: bold; text-decoration: none; text-align: center; box-sizing: border-box; font-size: 17px; transition: 0.2s; border: none; }
             #photo-viewer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: black; display: none; justify-content: center; align-items: center; bottom: auto; z-index: 9999; touch-action: none; }
@@ -149,21 +162,15 @@
             <div id="central-container">
                 <img src="my_photo.jpg" id="author-avatar-support">
                 <div class="modal-main" id="modal-main-box">
-                    
-                    <div id="mobile-hero-wrap" style="display:none;">
-                        <img src="mobile_cover.jpg" id="mobile-hero-img">
-                        <img src="my_photo.jpg" id="mobile-avatar-img">
-                    </div>
-
+                    <div id="mobile-hero-wrap" style="display:none;"><img src="mobile_cover.jpg" id="mobile-hero-img"><img src="my_photo.jpg" id="mobile-avatar-img"></div>
                     <div id="mobile-text-padding">
                         <span class="close-modal" onclick="closeAbout()">&times;</span>
-                        <b id="about-name" style="font-size:28px; display:block; margin-bottom:12px; font-family: Arial, sans-serif !important;"></b>
-                        <div id="about-bio" style="margin: 15px 0; line-height:1.35; color:#333; font-size:17px; text-align: left; white-space: pre-wrap; font-family: Arial, sans-serif !important;"></div>
+                        <b id="about-name" style="font-size:28px; display:block; margin-bottom:12px;"></b>
+                        <div id="about-bio" style="margin: 15px 0; line-height:1.35; color:#333; font-size:17px; text-align: left; white-space: pre-wrap;"></div>
                         <div class="social-icons" id="about-socials"></div>
                         <button class="btn-expand-support" id="btn-support-pc" onclick="expandSupportPC()">Поддержать проект</button>
                         <div id="mobile-support-list" style="display:none;"></div>
                     </div>
-
                 </div>
                 <div id="crypto-row-pc"></div>
             </div>
@@ -209,28 +216,11 @@
 
         function toggleMenu() { document.getElementById('menu-box').classList.toggle('collapsed'); }
         function toggleFullscreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else if (document.exitFullscreen) document.exitFullscreen(); }
-
-        // ЗАКРЫТИЕ (Сброс зума и разморозка)
-        function closeAbout() { 
-            const m = document.getElementById('map');
-            m.classList.remove('frozen');
-            map.dragging.enable(); map.touchZoom.enable(); map.doubleClickZoom.enable(); map.scrollWheelZoom.enable();
-            
-            // ПРИНУДИТЕЛЬНЫЙ СБРОС ВЬЮПОРТА (чтобы кнопки не улетали)
-            document.querySelector('meta[name="viewport"]').setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
-            
-            document.getElementById('about-modal').style.display = 'none'; 
-        }
+        function closeAbout() { document.getElementById('about-modal').style.display = 'none'; }
 
         function openAbout() {
             if (typeof aboutData === 'undefined') return;
             var isPC = window.innerWidth > 768;
-            if (!isPC) { 
-                const m = document.getElementById('map');
-                m.classList.add('frozen');
-                map.dragging.disable(); map.touchZoom.disable(); map.doubleClickZoom.disable(); map.scrollWheelZoom.disable(); 
-            }
-
             document.getElementById('about-name').innerText = aboutData.name;
             document.getElementById('about-bio').innerText = aboutData.bio;
             
@@ -271,14 +261,9 @@
 
         function copyAddr(addr, el) { 
             navigator.clipboard.writeText(addr).then(() => { 
-                const isMobile = window.innerWidth <= 768;
-                const originalText = el.innerText;
-                el.classList.add('copied'); 
-                if (isMobile) el.innerText = "Скопировано!";
-                setTimeout(() => { 
-                    el.classList.remove('copied'); 
-                    if (isMobile) el.innerText = originalText;
-                }, 2000); 
+                const isMobile = window.innerWidth <= 768; const originalText = el.innerText;
+                el.classList.add('copied'); if (isMobile) el.innerText = "Скопировано!";
+                setTimeout(() => { el.classList.remove('copied'); if (isMobile) el.innerText = originalText; }, 2000); 
             }); 
         }
 
@@ -290,17 +275,8 @@
         menuBox.addEventListener('touchend', e => { if (window.innerWidth > 768) return; var diff = e.changedTouches[0].clientY - touchStartYMenu; if (diff > 60 && menuBox.classList.contains('collapsed')) toggleMenu(); if (diff < -60 && !menuBox.classList.contains('collapsed')) toggleMenu(); });
 
         var touchStartYModal = 0; var modalMain = document.getElementById('modal-main-box');
-        modalMain.addEventListener('touchstart', e => { 
-            if (e.touches.length > 1) e.preventDefault(); // ЗАПРЕТ ЗУМА ПАЛЬЦАМИ
-            if (window.innerWidth <= 768) e.stopPropagation();
-            touchStartYModal = e.touches[0].clientY; 
-        }, {passive: false});
-        
-        modalMain.addEventListener('touchend', e => { 
-            if (window.innerWidth > 768) return; 
-            var diff = e.changedTouches[0].clientY - touchStartYModal; 
-            if (diff > 100 && modalMain.scrollTop <= 0) closeAbout(); 
-        });
+        modalMain.addEventListener('touchstart', e => { touchStartYModal = e.touches[0].clientY; if (window.innerWidth <= 768) e.stopPropagation(); }, {passive: true});
+        modalMain.addEventListener('touchend', e => { if (window.innerWidth > 768) return; if (e.changedTouches[0].clientY - touchStartYModal > 100 && modalMain.scrollTop <= 0) closeAbout(); });
 
         var img = document.getElementById('view-img'), scale = 1, lastScale = 1, startDist = 0, posX = 0, posY = 0, startX = 0, startY = 0, isDragging = false;
         function openPhoto(url) { if (window.innerWidth <= 768) { map.dragging.disable(); map.touchZoom.disable(); } document.getElementById('view-img').src = url; document.getElementById('photo-viewer').style.display = 'flex'; }
