@@ -3,7 +3,7 @@
 <head>
     <title>Мой Велоархив</title>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -24,7 +24,7 @@
     <style>
         html, body, #map { height: 100%; margin: 0; padding: 0; overflow: hidden; background: #000; font-family: Arial, sans-serif; }
         
-        /* КАРТА ПРИ БЛОКИРОВКЕ (защита от зума) */
+        /* КАРТА ПРИ БЛОКИРОВКЕ (физический запрет всех касаний) */
         #map.frozen { pointer-events: none !important; touch-action: none !important; }
 
         /* МЕНЮ УПРАВЛЕНИЯ */
@@ -54,9 +54,7 @@
         #central-container { position: relative; width: 550px; display: flex; flex-direction: column; align-items: center; }
         .modal-main { background: white; width: 100%; border-radius: 25px; padding: 30px; text-align: center; position: relative; box-shadow: 0 15px 50px rgba(0,0,0,0.6); z-index: 5; box-sizing: border-box; overflow-y: auto; max-height: 80vh; font-family: Arial, sans-serif !important; }
         
-        .side-photo { width: 350px; height: 480px; object-fit: cover; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        
-        /* Крупная аватарка: касается краем, поднята выше */
+        .side-photo { width: 350px; height: 450px; object-fit: cover; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         #author-avatar-support { position: absolute; top: -90px; left: -30px; width: 140px; height: 140px; border-radius: 50%; border: 7px solid white; box-shadow: 0 8px 30px rgba(0,0,0,0.4); z-index: 10; display: none; object-fit: cover; }
 
         .side-panel { width: 250px; display: none; flex-direction: column; gap: 20px; animation: slideIn 0.3s ease-out; }
@@ -98,15 +96,6 @@
         @keyframes actionPulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.5); } 50% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(40, 167, 69, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); } }
         .btn-expand-support { width: 100%; padding: 22px; background: #28a745; color: white; border: none; border-radius: 18px; font-weight: bold; font-size: 19px; cursor: pointer; animation: actionPulse 2.5s infinite ease-in-out; margin-top: 15px; font-family: Arial, sans-serif; }
 
-        /* ПОПАПЫ */
-        .popup-box { text-align: center; min-width: 180px; padding: 5px; font-family: Arial, sans-serif; }
-        .popup-box b { font-size: 21px; display: block; margin-bottom: 8px; color: #333; }
-        .popup-box p { font-size: 18px; margin: 5px 0; color: #555; line-height: 1.4; }
-        .coords { font-size: 13px; color: #777; font-family: monospace; margin: 8px 0; }
-        .btn-row { display: flex; justify-content: center; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
-        .btn { text-decoration: none !important; font-weight: bold; font-size: 13px; padding: 8px 18px; border-radius: 20px; cursor: pointer; display: inline-block; color: white !important; font-family: Arial, sans-serif; }
-        .btn-track { background: #28a745; } .btn-vk { background: #0077FF; } .btn-dzen { background: #111111; } .btn-3d { background: #ffdb00; color: #000 !important; }
-
         /* МАРКЕРЫ */
         .day-marker, .trans-center-marker { background: #fff; border-radius: 50%; border: 2.5px solid; color: #000; font-weight: bold; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.5); font-size: 11px; width: 24px !important; height: 24px !important; overflow: hidden; white-space: nowrap; }
         .num-wrapper { position: relative; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; }
@@ -118,17 +107,7 @@
         @keyframes scarletPulse { 0% { box-shadow: 0 0 0 0px rgba(255, 36, 0, 0.9); } 70% { box-shadow: 0 0 0 18px rgba(255, 36, 0, 0); } 100% { box-shadow: 0 0 0 0px rgba(255, 36, 0, 0); } }
         .last-point-pulse { animation: scarletPulse 3s infinite ease-in-out; border-color: #28a745 !important; z-index: 1000 !important; }
 
-        .flag-stuck { animation: flagWaver 2.5s infinite ease-in-out; transform-origin: bottom center; display: flex; align-items: center; justify-content: center; }
-        @keyframes flagWaver { 0% { transform: rotate(0deg); } 50% { transform: rotate(6deg); } 100% { transform: rotate(0deg); } }
-        .photo-marker { background: none !important; border: none !important; display: flex; align-items: center; justify-content: center; }
-        .map-avatar { position: absolute; bottom: 25px; right: 10px; z-index: 1000; width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; opacity: 0.8; object-fit: cover; pointer-events: none; }
-        
-        #photo-viewer { position: absolute; bottom: 100px; left: 15px; z-index: 2000; width: 220px; background: white; padding: 5px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none; cursor: pointer; }
-        #photo-viewer img { width: 100%; border-radius: 5px; display: block; transition: transform 0.1s ease-out; }
-        #photo-viewer .close-btn { position: absolute; top: -12px; right: -12px; background: red; color: white; border-radius: 50%; width: 26px; height: 26px; text-align: center; line-height: 24px; font-weight: bold; border: 2px solid white; z-index: 2100; }
-        #detail-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 7000; background: #000; display: none; border: none; }
-
-        /* МОБИЛЬНАЯ ВЕРСИЯ - МОНОЛИТНАЯ ШТОРКА */
+        /* МОБИЛЬНАЯ ВЕРСИЯ */
         @media (max-width: 768px) {
             #menu-box { left: 5%; width: 90% !important; top: 10px; box-sizing: border-box; }
             #photo-toggle-wrap { display: none !important; }
@@ -137,25 +116,17 @@
             .map-avatar { bottom: 18px; right: 5px; width: 45px; height: 45px; }
             #about-modal { align-items: flex-end; }
             .modal-layout { padding: 0; width: 100%; }
-            #central-container { width: 100%; margin: 0; }
-            
+            #central-container { width: 100%; }
             .modal-main { 
                 width: 100vw !important; border-radius: 20px 20px 0 0 !important; 
                 margin-bottom: 0 !important; padding: 0 !important; 
                 box-shadow: 0 -5px 30px rgba(0,0,0,0.4); 
                 max-height: 85vh; overflow-y: auto; -webkit-overflow-scrolling: touch; 
-                box-sizing: border-box;
+                box-sizing: border-box; touch-action: pan-y !important; /* Разрешаем только свайп/прокрутку */
             }
-
-            #mobile-hero-wrap { display: block !important; position: relative; width: 100%; height: 200px; }
-            #mobile-hero-img { width: 100%; height: 100%; object-fit: cover; }
-            #mobile-avatar-img { position: absolute; bottom: -45px; left: 20px; width: 90px; height: 90px; border-radius: 50%; border: 4px solid white; box-shadow: 0 4px 15px rgba(0,0,0,0.3); object-fit: cover; z-index: 10; }
-            #mobile-text-padding { padding: 55px 20px 30px 20px; }
-            
             .side-panel, .side-photo, #author-avatar-support, #crypto-row-pc { display: none !important; }
             #mobile-support-list { display: block; margin-top: 15px; width: 100%; }
             .mobile-pay-btn { display: block; width: 100%; padding: 18px; margin-bottom: 12px; border-radius: 12px; font-weight: bold; text-decoration: none; text-align: center; box-sizing: border-box; font-size: 17px; transition: 0.2s; border: none; }
-            
             #photo-viewer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: black; display: none; justify-content: center; align-items: center; bottom: auto; z-index: 9999; touch-action: none; }
             #photo-viewer img { width: 100%; height: 100%; object-fit: contain; border-radius: 0; }
             #photo-viewer .close-btn { display: none !important; }
@@ -239,15 +210,18 @@
         function toggleMenu() { document.getElementById('menu-box').classList.toggle('collapsed'); }
         function toggleFullscreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else if (document.exitFullscreen) document.exitFullscreen(); }
 
-        // ЗАКРЫТИЕ (РАЗМОРОЗКА КАРТЫ)
+        // ЗАКРЫТИЕ (Сброс зума и разморозка)
         function closeAbout() { 
             const m = document.getElementById('map');
             m.classList.remove('frozen');
             map.dragging.enable(); map.touchZoom.enable(); map.doubleClickZoom.enable(); map.scrollWheelZoom.enable();
+            
+            // ПРИНУДИТЕЛЬНЫЙ СБРОС ВЬЮПОРТА (чтобы кнопки не улетали)
+            document.querySelector('meta[name="viewport"]').setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+            
             document.getElementById('about-modal').style.display = 'none'; 
         }
 
-        // ОТКРЫТИЕ (ЗАМОРОЗКА КАРТЫ)
         function openAbout() {
             if (typeof aboutData === 'undefined') return;
             var isPC = window.innerWidth > 768;
@@ -316,9 +290,17 @@
         menuBox.addEventListener('touchend', e => { if (window.innerWidth > 768) return; var diff = e.changedTouches[0].clientY - touchStartYMenu; if (diff > 60 && menuBox.classList.contains('collapsed')) toggleMenu(); if (diff < -60 && !menuBox.classList.contains('collapsed')) toggleMenu(); });
 
         var touchStartYModal = 0; var modalMain = document.getElementById('modal-main-box');
-        modalMain.addEventListener('touchstart', e => { if (window.innerWidth <= 768) e.stopPropagation(); touchStartYModal = e.touches[0].clientY; }, {passive: true});
-        modalMain.addEventListener('touchend', e => { if (window.innerWidth > 768) return; var diff = e.changedTouches[0].clientY - touchStartYModal; if (diff > 100 && modalMain.scrollTop <= 0) closeAbout(); });
-        modalMain.addEventListener('touchmove', e => { if (window.innerWidth <= 768) e.stopPropagation(); }, {passive: true});
+        modalMain.addEventListener('touchstart', e => { 
+            if (e.touches.length > 1) e.preventDefault(); // ЗАПРЕТ ЗУМА ПАЛЬЦАМИ
+            if (window.innerWidth <= 768) e.stopPropagation();
+            touchStartYModal = e.touches[0].clientY; 
+        }, {passive: false});
+        
+        modalMain.addEventListener('touchend', e => { 
+            if (window.innerWidth > 768) return; 
+            var diff = e.changedTouches[0].clientY - touchStartYModal; 
+            if (diff > 100 && modalMain.scrollTop <= 0) closeAbout(); 
+        });
 
         var img = document.getElementById('view-img'), scale = 1, lastScale = 1, startDist = 0, posX = 0, posY = 0, startX = 0, startY = 0, isDragging = false;
         function openPhoto(url) { if (window.innerWidth <= 768) { map.dragging.disable(); map.touchZoom.disable(); } document.getElementById('view-img').src = url; document.getElementById('photo-viewer').style.display = 'flex'; }
