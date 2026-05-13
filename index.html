@@ -22,7 +22,8 @@
     <script src="archive/2024/points.js"></script>
 
     <style>
-        html, body, #map { height: 100%; margin: 0; padding: 0; overflow: hidden; background: #000; font-family: Arial, sans-serif; }
+        html, body { height: 100%; margin: 0; padding: 0; background: #000; font-family: Arial, sans-serif; overflow: hidden; }
+        #map { position: absolute; top: 0; bottom: 0; width: 100%; z-index: 1; }
         
         /* МЕНЮ УПРАВЛЕНИЯ */
         #menu-box { position: absolute; top: 15px; left: 15px; z-index: 1000; background: rgba(255, 255, 255, 0.95); padding: 15px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); min-width: 320px; transition: all 0.3s ease; box-sizing: border-box; }
@@ -41,40 +42,30 @@
 
         /* ЖМИ СЮДА */
         #hint-box { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); z-index: 1000; background: rgba(255, 255, 255, 0.95); padding: 10px 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); cursor: pointer; text-align: center; transition: 0.2s ease; }
-        #hint-box:hover { transform: translateX(-50%) scale(1.08); background: #fff; }
         .hint-text { color: #ff0000; font-weight: 900; font-size: 17px; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* --- ОБНОВЛЕННОЕ МОДАЛЬНОЕ ОКНО --- */
+        /* МОДАЛЬНОЕ ОКНО */
         #about-modal { 
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.85); z-index: 6000; 
-            overflow: auto; /* Включает прокрутку во все стороны */
+            background: rgba(0,0,0,0.8); z-index: 6000; overflow: auto;
         }
         .modal-layout { 
-            display: inline-flex; /* Важно для горизонтальной прокрутки */
-            align-items: center; justify-content: center; 
-            min-width: 100%; min-height: 100%; 
-            gap: 3vw; padding: 50px; box-sizing: border-box; 
+            display: flex; align-items: center; justify-content: center; 
+            min-height: 100%; padding: 40px; box-sizing: border-box; gap: 30px;
         }
         
-        /* Пропорции панелей */
-        #central-container { position: relative; width: 35vw; min-width: 450px; display: flex; flex-direction: column; align-items: center; }
-        .side-panel-wrapper { width: 18vw; min-width: 250px; display: flex; flex-direction: column; align-items: center; }
-        
+        /* Десктопные панели */
+        .side-panel-wrapper { width: 300px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; }
+        #central-container { width: 500px; flex-shrink: 0; position: relative; }
+
         .modal-main { 
-            background: white; width: 100%; border-radius: 25px; padding: 2.5vw; 
+            background: white; width: 100%; border-radius: 25px; padding: 30px; 
             text-align: center; position: relative; box-shadow: 0 15px 50px rgba(0,0,0,0.6); 
-            z-index: 5; box-sizing: border-box; padding-top: 70px;
+            z-index: 5; box-sizing: border-box; padding-top: 60px;
         }
         
-        .side-photo { width: 100%; height: auto; aspect-ratio: 350/480; object-fit: cover; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        
-        #author-avatar-support { 
-            position: absolute; top: -80px; left: -30px; 
-            width: 130px; height: 130px; border-radius: 50%; 
-            border: 7px solid white; box-shadow: 0 8px 30px rgba(0,0,0,0.4); 
-            z-index: 10; display: none; object-fit: cover; 
-        }
+        .side-photo { width: 100%; height: auto; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        #author-avatar-support { position: absolute; top: -80px; left: -20px; width: 140px; height: 140px; border-radius: 50%; border: 7px solid white; box-shadow: 0 8px 30px rgba(0,0,0,0.4); z-index: 10; display: none; object-fit: cover; }
 
         .side-panel { width: 100%; display: none; flex-direction: column; gap: 15px; animation: slideIn 0.3s ease-out; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -82,69 +73,55 @@
         /* QR СЕТКА */
         .qr-grid { display: grid; grid-template-columns: 1fr; gap: 12px; width: 100%; }
         .qr-grid.multi-col { grid-template-columns: 1fr 1fr; }
-        .qr-card { background: white; padding: 12px; border-radius: 18px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.15); }
+        .qr-card { background: white; padding: 12px; border-radius: 18px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.15); box-sizing: border-box; }
         .qr-card img { width: 100%; height: auto; border-radius: 8px; }
-        .qr-card b { font-size: 13px; display: block; margin-top: 8px; color: #333; line-height: 1.2; }
+        .qr-card b { font-size: 13px; display: block; margin-top: 8px; color: #333; }
         
-        .pay-link-btn { 
-            display: block; width: 100%; text-decoration: none; padding: 16px; 
-            border-radius: 15px; font-weight: bold; font-size: 15px; text-align: center; 
-            box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: 0.2s; 
-        }
+        .pay-link-btn { display: block; width: 100%; text-decoration: none; padding: 16px; border-radius: 15px; font-weight: bold; font-size: 15px; text-align: center; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: 0.2s; }
 
         /* КРИПТО */
-        #crypto-row-pc { display: none; width: 100%; margin-top: 30px; justify-content: center; gap: 20px; z-index: 6; }
-        .crypto-card { 
-            background: white; padding: 14px 20px; border-radius: 15px; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3); display: flex; align-items: center; 
-            justify-content: space-between; width: 48%; cursor: pointer; 
-            box-sizing: border-box; border: 1px solid transparent; 
-        }
-        .crypto-card b { font-size: 14px; color: #333; }
+        #crypto-row-pc { display: none; width: 100%; margin-top: 25px; justify-content: center; gap: 15px; z-index: 6; }
+        .crypto-card { background: white; padding: 14px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: space-between; width: 48%; cursor: pointer; box-sizing: border-box; border: 1px solid transparent; }
+        .crypto-card b { font-size: 13px; }
         .crypto-card.copied { background: #28a745 !important; color: white !important; }
-        .crypto-card.copied b { color: white !important; }
 
         .close-modal { position: absolute; top: 20px; right: 20px; font-size: 28px; cursor: pointer; color: #ff0000; z-index: 20; font-weight: bold; }
-        .close-modal:hover { transform: scale(1.2); }
         
         /* СОЦСЕТИ */
         .social-icons { display: flex; justify-content: center; gap: 15px; margin: 25px 0 10px 0; flex-wrap: wrap; }
         .social-icons i { font-size: 34px; } 
         .fa-vk { color: #0077FF; } .fa-telegram { color: #26A5E4; } .fa-youtube { color: #FF0000; } 
         .fa-instagram { color: #E1306C; } .fa-odnoklassniki { color: #ee8208; } .fa-strava { color: #FC6100; }
-        .dzen-icon, .komoot-icon { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; }
+        .dzen-icon, .komoot-icon { width: 34px; height: 34px; }
         .dzen-icon svg, .komoot-icon svg { width: 34px; height: 34px; }
 
-        .btn-expand-support { 
-            width: 100%; padding: 22px; background: #28a745; color: white; 
-            border: none; border-radius: 18px; font-weight: bold; font-size: 19px; 
-            cursor: pointer; animation: actionPulse 2.5s infinite ease-in-out; margin-top: 15px; 
-        }
+        .btn-expand-support { width: 100%; padding: 22px; background: #28a745; color: white; border: none; border-radius: 18px; font-weight: bold; font-size: 19px; cursor: pointer; animation: actionPulse 2.5s infinite ease-in-out; margin-top: 15px; }
+        @keyframes actionPulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.5); } 50% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(40, 167, 69, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); } }
 
         /* МАРКЕРЫ */
-        .day-marker, .trans-center-marker { background: #fff; border-radius: 50%; border: 2.5px solid; color: #000; font-weight: bold; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.5); font-size: 11px; width: 24px !important; height: 24px !important; }
+        .day-marker { background: #fff; border-radius: 50%; border: 2.5px solid; color: #000; font-weight: bold; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.5); font-size: 11px; width: 24px !important; height: 24px !important; }
         .c2018 { border-color: #ff0000 !important; color: #ff0000; } .c2019 { border-color: #007bff !important; color: #007bff; } .c2021 { border-color: #9b59b6 !important; color: #9b59b6; } .c2024 { border-color: #ff8c00 !important; color: #ff8c00; } .cCurrent { border-color: #28a745 !important; color: #28a745; }
         @keyframes scarletPulse { 0% { box-shadow: 0 0 0 0px rgba(255, 36, 0, 0.9); } 70% { box-shadow: 0 0 0 18px rgba(255, 36, 0, 0); } 100% { box-shadow: 0 0 0 0px rgba(255, 36, 0, 0); } }
         .last-point-pulse { animation: scarletPulse 3s infinite ease-in-out; border-color: #28a745 !important; z-index: 1000 !important; }
 
-        .map-avatar { position: absolute; bottom: 25px; right: 10px; z-index: 1000; width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; opacity: 0.8; object-fit: cover; pointer-events: none; }
-        #detail-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 7000; background: #000; display: none; border: none; }
+        .map-avatar-wrap { position: absolute; bottom: 25px; right: 10px; z-index: 1000; text-align: right; pointer-events: none; }
+        .map-avatar { width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; opacity: 0.9; object-fit: cover; }
+        .avatar-label { display: block; color: white; font-size: 10px; font-weight: bold; margin-top: 4px; text-shadow: 1px 1px 2px black; }
 
-        /* МОБИЛЬНАЯ ВЕРСИЯ - СТРОГО ОТДЕЛЬНО */
+        /* МОБИЛЬНАЯ ВЕРСИЯ */
         @media (max-width: 768px) {
-            #about-modal { display: flex; align-items: flex-end; overflow: hidden; background: rgba(0,0,0,0.7); }
-            .modal-layout { display: block; width: 100%; padding: 0; min-width: auto; }
-            #central-container { width: 100% !important; min-width: auto; margin: 0; }
+            #about-modal { align-items: flex-end; overflow: hidden; }
+            .modal-layout { display: block; width: 100%; padding: 0; }
             .side-panel-wrapper { display: none; }
+            #central-container { width: 100% !important; margin: 0; }
             .modal-main { width: 100vw !important; border-radius: 20px 20px 0 0 !important; max-height: 85vh; padding: 0 !important; overflow-y: auto; }
             #mobile-hero-wrap { display: block !important; position: relative; width: 100%; height: 200px; }
             #mobile-hero-img { width: 100%; height: 100%; object-fit: cover; }
             #mobile-avatar-img { position: absolute; bottom: -45px; left: 20px; width: 90px; height: 90px; border-radius: 50%; border: 4px solid white; z-index: 10; object-fit: cover; }
             #mobile-text-padding { padding: 55px 20px 30px 20px; }
-            #mobile-support-list { display: block; margin-top: 15px; }
             .mobile-pay-btn { display: block; width: 100%; padding: 18px; margin-bottom: 12px; border-radius: 12px; font-weight: bold; text-align: center; border: none; font-size: 17px; text-decoration: none; }
             #mobile-photo-btn { display: flex; }
-            #menu-box { width: 90%; left: 5%; }
+            .map-avatar { width: 45px; height: 45px; }
         }
     </style>
 </head>
@@ -155,13 +132,7 @@
     
     <div id="about-modal" onclick="closeAbout()">
         <div class="modal-layout" onclick="event.stopPropagation()">
-            <!-- ЛЕВАЯ ПАНЕЛЬ -->
-            <div class="side-panel-wrapper">
-                <img src="my_photo.jpg" class="side-photo" id="author-img-pc">
-                <div class="side-panel" id="side-qr"></div>
-            </div>
-
-            <!-- ЦЕНТР -->
+            <div class="side-panel-wrapper"><img src="my_photo.jpg" class="side-photo" id="author-img-pc"><div class="side-panel" id="side-qr"></div></div>
             <div id="central-container">
                 <img src="my_photo.jpg" id="author-avatar-support">
                 <div class="modal-main" id="modal-main-box">
@@ -177,17 +148,16 @@
                 </div>
                 <div id="crypto-row-pc"></div>
             </div>
-
-            <!-- ПРАВАЯ ПАНЕЛЬ -->
-            <div class="side-panel-wrapper">
-                <img src="bike_photo.jpg" class="side-photo" id="bike-img-pc">
-                <div class="side-panel" id="side-links"></div>
-            </div>
+            <div class="side-panel-wrapper"><img src="bike_photo.jpg" class="side-photo" id="bike-img-pc"><div class="side-panel" id="side-links"></div></div>
         </div>
     </div>
 
     <div id="hint-box" onclick="openAbout()"><span class="hint-text">ЖМИ СЮДА</span></div>
-    <img src="avatar.jpg" class="map-avatar">
+    
+    <div class="map-avatar-wrap">
+        <img src="avatar.jpg" class="map-avatar">
+        <span class="avatar-label">Мое велопутешествие</span>
+    </div>
     
     <div id="menu-box">
         <div class="menu-collapse-btn" onclick="toggleMenu()"><span><i class="fa-solid fa-map-location-dot" style="margin-right:8px; color:#28a745;"></i>Управление</span><div><button class="fs-btn" onclick="event.stopPropagation(); toggleFullscreen()"><i class="fa-solid fa-expand"></i></button><i class="fa-solid fa-chevron-up" id="menu-chevron"></i></div></div>
@@ -207,11 +177,10 @@
 
     <script>
         var map = L.map('map', {zoomControl: false, attributionControl: true}).setView([50, 80], 4);
-        map.attributionControl.setPrefix('Мое велопутешествие');
+        map.attributionControl.setPrefix('');
         L.tileLayer('http://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3'] }).addTo(map);
 
         var currentTripLayer = L.layerGroup().addTo(map), archiveLayerGroup = L.layerGroup().addTo(map), photoClusterGroup = L.markerClusterGroup({ showCoverageOnHover: false, maxClusterRadius: 40 }).addTo(map);
-        var borderClusterGroup = L.markerClusterGroup({ showCoverageOnHover: false, spiderfyOnMaxZoom: true, maxClusterRadius: 30 }).addTo(map);
         var hexColors = { 'c2018': '#ff0000', 'c2019': '#007bff', 'c2021': '#9b59b6', 'c2024': '#ff8c00', 'cCurrent': '#28a745' };
 
         function toggleMenu() { document.getElementById('menu-box').classList.toggle('collapsed'); }
@@ -224,7 +193,7 @@
 
         function openAbout() {
             if (typeof aboutData === 'undefined') return;
-            map.dragging.disable(); map.scrollWheelZoom.disable(); // Блокируем карту
+            map.dragging.disable(); map.scrollWheelZoom.disable();
             
             var isPC = window.innerWidth > 768;
             document.getElementById('about-name').innerText = aboutData.name;
@@ -273,44 +242,41 @@
 
         function copyAddr(addr, el) { 
             navigator.clipboard.writeText(addr).then(() => { 
-                const originalText = el.querySelector('b').innerText;
-                el.classList.add('copied'); el.querySelector('b').innerText = "Скопировано!";
-                setTimeout(() => { el.classList.remove('copied'); el.querySelector('b').innerText = originalText; }, 2000); 
+                const originalText = el.querySelector('b') ? el.querySelector('b').innerText : el.innerText;
+                el.classList.add('copied'); 
+                if (el.querySelector('b')) el.querySelector('b').innerText = "Скопировано!"; else el.innerText = "Скопировано!";
+                setTimeout(() => { 
+                    el.classList.remove('copied'); 
+                    if (el.querySelector('b')) el.querySelector('b').innerText = originalText; else el.innerText = originalText;
+                }, 2000); 
             }); 
         }
 
-        // Остальные функции Leaflet и Фото (без изменений)
-        function openTrackView(url) { if (window.innerWidth <= 768) { var overlay = document.getElementById('detail-overlay'); overlay.src = url; overlay.style.display = 'block'; } else { window.open(url, '_blank'); } }
-        window.closeTrackView = function() { var overlay = document.getElementById('detail-overlay'); overlay.style.display = 'none'; overlay.src = ""; };
+        // Фото и треки
         function openPhoto(url) { if (window.innerWidth <= 768) { map.dragging.disable(); map.touchZoom.disable(); } document.getElementById('view-img').src = url; document.getElementById('photo-viewer').style.display = 'flex'; }
         function closePhoto() { map.dragging.enable(); map.touchZoom.enable(); document.getElementById('photo-viewer').style.display = 'none'; }
         function handleBackgroundClick() { if (window.innerWidth <= 768) closePhoto(); }
         function handlePhotoClick(e) { e.stopPropagation(); if (window.innerWidth > 768) window.open(e.target.src, '_blank'); else closePhoto(); }
         
-        function toggleList() { var show = document.getElementById('main-toggle').checked; document.getElementById('trip-list').style.display = show ? 'block' : 'none'; if(!show) { currentTripLayer.addTo(map); archiveLayerGroup.clearLayers(); photoClusterGroup.clearLayers(); borderClusterGroup.clearLayers(); focusOnCurrent(); } else { map.removeLayer(currentTripLayer); } updateMarkers(true); }
+        function toggleList() { var show = document.getElementById('main-toggle').checked; document.getElementById('trip-list').style.display = show ? 'block' : 'none'; updateMarkers(true); }
         function updateMarkers(onlyPhotos) {
-            archiveLayerGroup.clearLayers(); photoClusterGroup.clearLayers(); borderClusterGroup.clearLayers();
+            archiveLayerGroup.clearLayers(); photoClusterGroup.clearLayers();
             var showPhotos = document.getElementById('photo-toggle').checked, isArchive = document.getElementById('main-toggle').checked;
             if (isArchive) {
-                if (document.getElementById('chk2018').checked) { drawTrip(points2018, archiveLayerGroup, 'c2018', 'archive/2018/', false); if(showPhotos) loadPhotos('archive-2018-photos', hexColors['c2018']); }
-                if (document.getElementById('chk2019').checked) { drawTrip(points2019, archiveLayerGroup, 'c2019', 'archive/2019/', false); if(showPhotos) loadPhotos('archive-2019-photos', hexColors['c2019']); }
-                if (document.getElementById('chk2021').checked) { drawTrip(points2021, archiveLayerGroup, 'c2021', 'archive/2021/', false); if(showPhotos) loadPhotos('archive-2021-photos', hexColors['c2021']); }
-                if (document.getElementById('chk2024').checked) { drawTrip(points2024, archiveLayerGroup, 'c2024', 'archive/2024/', false); if(showPhotos) loadPhotos('archive-2024-photos', hexColors['c2024']); }
+                if (document.getElementById('chk2018').checked) { drawTrip(points2018, archiveLayerGroup, 'c2018', 'archive/2018/'); if(showPhotos) loadPhotos('archive-2018-photos', hexColors['c2018']); }
+                if (document.getElementById('chk2019').checked) { drawTrip(points2019, archiveLayerGroup, 'c2019', 'archive/2019/'); if(showPhotos) loadPhotos('archive-2019-photos', hexColors['c2019']); }
+                if (document.getElementById('chk2021').checked) { drawTrip(points2021, archiveLayerGroup, 'c2021', 'archive/2021/'); if(showPhotos) loadPhotos('archive-2021-photos', hexColors['c2021']); }
+                if (document.getElementById('chk2024').checked) { drawTrip(points2024, archiveLayerGroup, 'c2024', 'archive/2024/'); if(showPhotos) loadPhotos('archive-2024-photos', hexColors['c2024']); }
             } else { if (typeof myPoints !== 'undefined') drawTrip(myPoints, currentTripLayer, 'cCurrent', 'tracks/', true); if(showPhotos) loadPhotos('archive-2026-photos', hexColors['cCurrent']); }
         }
         function drawTrip(data, target, colorClass, folder, isCurrent) {
-            var hex = hexColors[colorClass];
             data.forEach((p, i) => {
-                if (p.type === 'border') {
-                    var flagHtml = `<div class="flag-stuck"><div style="width:4px; height:50px; background:#444; position:relative;"><img src="https://flagcdn.com/w80/${p.country.toLowerCase().trim()}.png" style="position:absolute; top:0; left:4px; width:45px; border:1.5px solid #fff;"></div></div>`;
-                    L.marker([p.lat, p.lng], {icon: L.divIcon({ className: '', html: flagHtml, iconSize: [50, 50], iconAnchor: [2, 50] })}).addTo(borderClusterGroup).bindPopup(createPopup(p, folder));
-                } else if (!p.type || p.type === 'day') {
-                    var isLast = isCurrent && i === data.length - 1;
-                    L.marker([p.lat, p.lng], {icon: L.divIcon({ className: 'day-marker ' + colorClass + (isLast ? ' last-point-pulse' : ''), html: `<span>${p.day || (i+1)}</span>`, iconSize: [24, 24], iconAnchor: [12, 12] })}).addTo(target).bindPopup(createPopup(p, folder));
+                var isLast = isCurrent && i === data.length - 1;
+                if (!p.type || p.type === 'day') {
+                    L.marker([p.lat, p.lng], {icon: L.divIcon({ className: 'day-marker ' + colorClass + (isLast ? ' last-point-pulse' : ''), html: `<span>${p.day || (i+1)}</span>`, iconSize: [24, 24], iconAnchor: [12, 12] })}).addTo(target);
                 }
             });
         }
-        function createPopup(p, folder) { return `<div class="popup-box"><b>${p.title}</b><p>${p.desc}</p><div class="btn-row"><a onclick="openTrackView('view.html?folder=${folder}&file=${p.link}')" class="btn btn-track">Трек</a></div></div>`; }
         function loadPhotos(repo, hex) {
             fetch(`https://mieszko1979.github.io/${repo}/photos.json?t=${Date.now()}`).then(r => r.json()).then(data => {
                 data.forEach(photo => {
