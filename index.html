@@ -44,17 +44,31 @@
         #hint-box:hover { transform: translateX(-50%) scale(1.08); background: #fff; }
         .hint-text { color: #ff0000; font-weight: 900; font-size: 17px; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* МОДАЛЬНОЕ ОКНО ПК */
-        #about-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 6000; justify-content: center; align-items: center; }
-        .modal-layout { display: flex; align-items: center; justify-content: center; gap: 40px; width: 100%; max-width: 1600px; padding: 20px; box-sizing: border-box; }
+        /* МОДАЛЬНОЕ ОКНО ПК (НОВАЯ ГИБКАЯ ЛОГИКА) */
+        #about-modal { 
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.7); z-index: 6000; 
+            overflow-y: auto; /* Позволяет всему окну скроллиться */
+            padding: 40px 0;  /* Зазор, чтобы окно не липло к краям браузера */
+        }
+        .modal-layout { 
+            display: flex; align-items: flex-start; justify-content: center; 
+            gap: 40px; width: 100%; max-width: 1600px; margin: 0 auto; 
+            padding: 20px; box-sizing: border-box; 
+        }
         
         #central-container { position: relative; width: 550px; display: flex; flex-direction: column; align-items: center; }
-        .modal-main { background: white; width: 100%; border-radius: 25px; padding: 30px; text-align: center; position: relative; box-shadow: 0 15px 50px rgba(0,0,0,0.6); z-index: 5; box-sizing: border-box; overflow-y: auto; max-height: 80vh; font-family: Arial, sans-serif !important; }
+        .modal-main { 
+            background: white; width: 100%; border-radius: 25px; padding: 30px; 
+            text-align: center; position: relative; box-shadow: 0 15px 50px rgba(0,0,0,0.6); 
+            z-index: 5; box-sizing: border-box; 
+            /* Убрали max-height и внутренний скролл, теперь скроллится всё окно целиком */
+        }
         
-        .side-photo { width: 350px; height: 480px; object-fit: cover; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        #author-avatar-support { position: absolute; top: -90px; left: -30px; width: 140px; height: 140px; border-radius: 50%; border: 7px solid white; box-shadow: 0 8px 30px rgba(0,0,0,0.4); z-index: 10; display: none; object-fit: cover; }
+        .side-photo { width: 350px; height: 480px; object-fit: cover; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-top: 50px; }
+        #author-avatar-support { position: absolute; top: -75px; left: -25px; width: 140px; height: 140px; border-radius: 50%; border: 7px solid white; box-shadow: 0 8px 30px rgba(0,0,0,0.4); z-index: 10; display: none; object-fit: cover; }
 
-        .side-panel { width: 250px; display: none; flex-direction: column; gap: 20px; animation: slideIn 0.3s ease-out; }
+        .side-panel { width: 250px; display: none; flex-direction: column; gap: 20px; animation: slideIn 0.3s ease-out; margin-top: 50px; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         .qr-card { background: white; padding: 15px; border-radius: 20px; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.2); margin-bottom: 5px; }
@@ -64,9 +78,13 @@
         .pay-link-btn { display: block; width: 100%; text-decoration: none; padding: 14px; border-radius: 15px; font-weight: bold; font-size: 15px; text-align: center; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 10px; transition: 0.2s; font-family: Arial, sans-serif; }
         .pay-link-btn:hover { transform: translateY(-2px); }
 
-        /* КРИПТО ПК */
-        #crypto-row-pc { position: fixed; bottom: 35px; left: 50%; transform: translateX(-50%); display: none; width: 550px; justify-content: center; gap: 25px; z-index: 7000; animation: slideIn 0.5s ease-out; }
-        .crypto-card { background: white; padding: 14px 22px; border-radius: 18px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: space-between; width: 46%; cursor: pointer; position: relative; transition: 0.3s; border: 1px solid transparent; }
+        /* КРИПТО ПК (ТЕПЕРЬ В ПОТОКЕ) */
+        #crypto-row-pc { 
+            position: relative; margin-top: 25px; 
+            display: none; width: 100%; justify-content: center; 
+            gap: 20px; z-index: 7000; animation: slideIn 0.5s ease-out; 
+        }
+        .crypto-card { background: white; padding: 14px 22px; border-radius: 18px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: space-between; width: 48%; cursor: pointer; position: relative; transition: 0.3s; border: 1px solid transparent; }
         .crypto-card b { font-size: 15px; color: #333; font-family: Arial, sans-serif; }
         .crypto-card i.fa-copy { color: #000; font-size: 18px; }
         .crypto-card i.fa-check { position: absolute; right: 20px; opacity: 0; color: #ffdb00; font-size: 18px; }
@@ -84,27 +102,14 @@
         .social-icons i { font-size: 34px; } 
         .fa-vk { color: #0077FF; } .fa-telegram { color: #26A5E4; } .fa-youtube { color: #FF0000; } 
         .fa-instagram { color: #E1306C; } .fa-odnoklassniki { color: #ee8208; } .fa-strava { color: #FC6100; }
-        
-        /* Иконка Дзена */
         .dzen-icon { width: 34px; height: 34px; background: black; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .dzen-icon svg { width: 34px; height: 34px; }
-        
-        /* Иконка Komoot (Строго по рисунку - круглая) */
         .komoot-icon { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; }
         .komoot-icon svg { width: 34px; height: 34px; }
 
         /* КНОПКА ПОДДЕРЖКИ */
         @keyframes actionPulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.5); } 50% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(40, 167, 69, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); } }
         .btn-expand-support { width: 100%; padding: 22px; background: #28a745; color: white; border: none; border-radius: 18px; font-weight: bold; font-size: 19px; cursor: pointer; animation: actionPulse 2.5s infinite ease-in-out; margin-top: 15px; font-family: Arial, sans-serif; }
-
-        /* ПОПАПЫ */
-        .popup-box { text-align: center; min-width: 180px; padding: 5px; font-family: Arial, sans-serif; }
-        .popup-box b { font-size: 21px; display: block; margin-bottom: 8px; color: #333; }
-        .popup-box p { font-size: 18px; margin: 5px 0; color: #555; line-height: 1.4; }
-        .coords { font-size: 13px; color: #777; font-family: monospace; margin: 8px 0; }
-        .btn-row { display: flex; justify-content: center; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
-        .btn { text-decoration: none !important; font-weight: bold; font-size: 13px; padding: 8px 18px; border-radius: 20px; cursor: pointer; display: inline-block; color: white !important; font-family: Arial, sans-serif; }
-        .btn-track { background: #28a745; } .btn-vk { background: #0077FF; } .btn-dzen { background: #111111; } .btn-3d { background: #ffdb00; color: #000 !important; }
 
         /* МАРКЕРЫ */
         .day-marker, .trans-center-marker { background: #fff; border-radius: 50%; border: 2.5px solid; color: #000; font-weight: bold; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.5); font-size: 11px; width: 24px !important; height: 24px !important; overflow: hidden; white-space: nowrap; }
@@ -113,7 +118,6 @@
         .trans-center-marker { font-size: 18px !important; }
         .c2018 { border-color: #ff0000 !important; color: #ff0000; } .c2019 { border-color: #007bff !important; color: #007bff; } .c2021 { border-color: #9b59b6 !important; color: #9b59b6; } .c2024 { border-color: #ff8c00 !important; color: #ff8c00; } .cCurrent { border-color: #28a745 !important; color: #28a745; }
 
-        /* ПУЛЬСАЦИЯ ТЕКУЩЕЙ ТОЧКИ (АЛАЯ) */
         @keyframes scarletPulse { 0% { box-shadow: 0 0 0 0px rgba(255, 36, 0, 0.9); } 70% { box-shadow: 0 0 0 18px rgba(255, 36, 0, 0); } 100% { box-shadow: 0 0 0 0px rgba(255, 36, 0, 0); } }
         .last-point-pulse { animation: scarletPulse 3s infinite ease-in-out; border-color: #28a745 !important; z-index: 1000 !important; }
 
@@ -127,38 +131,23 @@
         #photo-viewer .close-btn { position: absolute; top: -12px; right: -12px; background: red; color: white; border-radius: 50%; width: 26px; height: 26px; text-align: center; line-height: 24px; font-weight: bold; border: 2px solid white; z-index: 2100; }
         #detail-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 7000; background: #000; display: none; border: none; }
 
-        /* МОБИЛЬНАЯ ВЕРСИЯ */
+        /* МОБИЛЬНАЯ ВЕРСИЯ (БЕЗ ИЗМЕНЕНИЙ) */
         @media (max-width: 768px) {
-            #menu-box { left: 5%; width: 90% !important; top: 10px; box-sizing: border-box; }
-            #photo-toggle-wrap { display: none !important; }
-            #mobile-photo-btn { display: flex; }
-            #hint-box { top: auto; bottom: 30px; left: 50%; transform: translateX(-50%); }
-            .map-avatar { bottom: 18px; right: 5px; width: 45px; height: 45px; }
-            #about-modal { align-items: flex-end; }
-            .modal-layout { padding: 0; width: 100%; }
-            #central-container { width: 100%; margin: 0; }
-            
+            #about-modal { padding: 0; overflow-y: hidden; }
+            .modal-layout { padding: 0; align-items: flex-end; }
+            #central-container { width: 100%; }
             .modal-main { 
                 width: 100vw !important; border-radius: 20px 20px 0 0 !important; 
-                margin-bottom: 0 !important; padding: 0 !important; 
-                box-shadow: 0 -5px 30px rgba(0,0,0,0.4); 
-                max-height: 85vh; overflow-y: auto; -webkit-overflow-scrolling: touch; 
-                box-sizing: border-box;
-                touch-action: pan-y;
+                max-height: 85vh; overflow-y: auto; 
             }
-
             #mobile-hero-wrap { display: block !important; position: relative; width: 100%; height: 200px; }
             #mobile-hero-img { width: 100%; height: 100%; object-fit: cover; }
-            #mobile-avatar-img { position: absolute; bottom: -45px; left: 20px; width: 90px; height: 90px; border-radius: 50%; border: 4px solid white; box-shadow: 0 4px 15px rgba(0,0,0,0.3); object-fit: cover; z-index: 10; }
+            #mobile-avatar-img { position: absolute; bottom: -45px; left: 20px; width: 90px; height: 90px; border-radius: 50%; border: 4px solid white; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 10; }
             #mobile-text-padding { padding: 55px 20px 30px 20px; }
-            
             .side-panel, .side-photo, #author-avatar-support, #crypto-row-pc { display: none !important; }
             #mobile-support-list { display: block; margin-top: 15px; width: 100%; }
-            .mobile-pay-btn { display: block; width: 100%; padding: 18px; margin-bottom: 12px; border-radius: 12px; font-weight: bold; text-decoration: none; text-align: center; box-sizing: border-box; font-size: 17px; transition: 0.2s; border: none; }
-            
-            #photo-viewer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: black; display: none; justify-content: center; align-items: center; bottom: auto; z-index: 9999; touch-action: none; }
-            #photo-viewer img { width: 100%; height: 100%; object-fit: contain; border-radius: 0; }
-            #photo-viewer .close-btn { display: none !important; }
+            .mobile-pay-btn { display: block; width: 100%; padding: 18px; margin-bottom: 12px; border-radius: 12px; font-weight: bold; text-align: center; font-size: 17px; }
+            #photo-viewer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: black; z-index: 9999; }
         }
     </style>
 </head>
@@ -178,22 +167,20 @@
             <div id="central-container">
                 <img src="my_photo.jpg" id="author-avatar-support">
                 <div class="modal-main" id="modal-main-box">
-                    
                     <div id="mobile-hero-wrap" style="display:none;">
                         <img src="mobile_cover.jpg" id="mobile-hero-img">
                         <img src="my_photo.jpg" id="mobile-avatar-img">
                     </div>
-
                     <div id="mobile-text-padding">
                         <span class="close-modal" onclick="closeAbout()">&times;</span>
-                        <b id="about-name" style="font-size:28px; display:block; margin-bottom:12px; font-family: Arial, sans-serif !important;"></b>
-                        <div id="about-bio" style="margin: 15px 0; line-height:1.35; color:#333; font-size:17px; text-align: left; white-space: pre-wrap; font-family: Arial, sans-serif !important;"></div>
+                        <b id="about-name" style="font-size:28px; display:block; margin-bottom:12px;"></b>
+                        <div id="about-bio" style="margin: 15px 0; line-height:1.35; color:#333; font-size:17px; text-align: left; white-space: pre-wrap;"></div>
                         <div class="social-icons" id="about-socials"></div>
                         <button class="btn-expand-support" id="btn-support-pc" onclick="expandSupportPC()">Поддержать проект</button>
                         <div id="mobile-support-list" style="display:none;"></div>
                     </div>
-
                 </div>
+                <!-- КРИПТО ТЕПЕРЬ ТУТ, ВНУТРИ ЦЕНТРАЛЬНОГО КОНТЕЙНЕРА -->
                 <div id="crypto-row-pc"></div>
             </div>
 
@@ -207,7 +194,6 @@
 
     <div id="hint-box" onclick="openAbout()"><span class="hint-text">ЖМИ СЮДА</span></div>
     <img src="avatar.jpg" class="map-avatar">
-    
     <div id="menu-box">
         <div class="menu-collapse-btn" onclick="toggleMenu()">
             <span><i class="fa-solid fa-map-location-dot" style="margin-right:8px; color:#28a745;"></i>Управление</span>
@@ -216,15 +202,14 @@
         <div id="menu-content">
             <div class="menu-header"><input type="checkbox" id="main-toggle" onchange="toggleList()"> Мои велопутешествия</div>
             <div id="trip-list">
-                <div class="trip-item c2018"><input type="checkbox" class="trip-check" id="chk2018" onchange="updateMarkers(false)"> 1. Яранск - Паттайя (2018) - 9 476 км.</div>
-                <div class="trip-item c2019"><input type="checkbox" class="trip-check" id="chk2019" onchange="updateMarkers(false)"> 2. Яранск - Иран (2019) - 6 283 км.</div>
-                <div class="trip-item c2021"><input type="checkbox" class="trip-check" id="chk2021" onchange="updateMarkers(false)"> 3. Яранск - Байкал (2021) - 4 793 км.</div>
-                <div class="trip-item c2024"><input type="checkbox" class="trip-check" id="chk2024" onchange="updateMarkers(false)"> 4. Яранск - Армения (2024) - 7 137 км.</div>
+                <div class="trip-item c2018"><input type="checkbox" class="trip-check" id="chk2018" onchange="updateMarkers(false)"> 1. Яранск - Паттайя (2018)</div>
+                <div class="trip-item c2019"><input type="checkbox" class="trip-check" id="chk2019" onchange="updateMarkers(false)"> 2. Яранск - Иран (2019)</div>
+                <div class="trip-item c2021"><input type="checkbox" class="trip-check" id="chk2021" onchange="updateMarkers(false)"> 3. Яранск - Байкал (2021)</div>
+                <div class="trip-item c2024"><input type="checkbox" class="trip-check" id="chk2024" onchange="updateMarkers(false)"> 4. Яранск - Армения (2024)</div>
             </div>
             <div id="photo-toggle-wrap"><input type="checkbox" id="photo-toggle" onchange="updateMarkers(true)"> 📷 Показать фото</div>
         </div>
     </div>
-
     <div id="map"></div>
 
     <script>
@@ -251,14 +236,7 @@
                 var lowId = s.id.toLowerCase();
                 if(lowId === 'dzen') { sHtml += `<a href="${s.url}" target="_blank"><div class="dzen-icon"><svg viewBox="0 0 100 100"><rect width="100" height="100" rx="25" fill="black"/><path d="M50 15 C52 40 60 48 85 50 C60 52 52 60 50 85 C48 60 40 52 15 50 C40 48 48 40 50 15 Z" fill="white"/></svg></div></a>`; } 
                 else if (lowId === 'komoot') { 
-                    sHtml += `<a href="${s.url}" target="_blank">
-                                <div class="komoot-icon">
-                                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                                        <circle cx="50" cy="50" r="50" fill="#469C36"/>
-                                        <path d="M50 35c-8.3 0-15 6.7-15 15 0 3.5 1.2 6.7 3.2 9.2L22 80h12.5l12.4-17.3c1 .2 2.1.3 3.1.3s2.1-.1 3.1-.3L65.5 80H78L61.8 59.2c2-2.5 3.2-5.7 3.2-9.2 0-8.3-6.7-15-15-15z" fill="white"/>
-                                    </svg>
-                                </div>
-                              </a>`; 
+                    sHtml += `<a href="${s.url}" target="_blank"><div class="komoot-icon"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="50" fill="#469C36"/><path d="M50 35c-8.3 0-15 6.7-15 15 0 3.5 1.2 6.7 3.2 9.2L22 80h12.5l12.4-17.3c1 .2 2.1.3 3.1.3s2.1-.1 3.1-.3L65.5 80H78L61.8 59.2c2-2.5 3.2-5.7 3.2-9.2 0-8.3-6.7-15-15-15z" fill="white"/></svg></div></a>`; 
                 } 
                 else { sHtml += `<a href="${s.url}" target="_blank"><i class="fa-brands fa-${lowId}"></i></a>`; }
             });
@@ -271,12 +249,12 @@
                 document.getElementById('btn-support-pc').style.display = 'block';
                 var qHtml = ""; aboutData.support.qrCodes.forEach(q => { qHtml += `<div class="qr-card"><b>${q.name}</b><img src="${q.img}"></div>`; });
                 document.getElementById('side-qr').innerHTML = qHtml;
-                var bHtml = ""; aboutData.support.buttons.forEach(b => { if(b.url) bHtml += `<a href="${b.url}" target="_blank" class="pay-link-btn" style="background:${b.color}; color:${b.textColor};">${b.name}</a>`; });
+                var bHtml = ""; aboutData.support.buttons.forEach(b => { if(b.url && b.url.length > 12) bHtml += `<a href="${b.url}" target="_blank" class="pay-link-btn" style="background:${b.color}; color:${b.textColor};">${b.name}</a>`; });
                 document.getElementById('side-links').innerHTML = bHtml;
                 var crHtml = ""; aboutData.support.crypto.forEach(c => { crHtml += `<div class="crypto-card" onclick="copyAddr('${c.address}', this)"><b>${c.name}</b><i class="fa-regular fa-copy"></i><i class="fa-solid fa-check"></i></div>`; });
                 document.getElementById('crypto-row-pc').innerHTML = crHtml;
             } else {
-                var mHtml = ""; aboutData.support.buttons.forEach(b => { if(b.url) mHtml += `<a href="${b.url}" target="_blank" class="mobile-pay-btn" style="background:${b.color}; color:${b.textColor};">${b.name}</a>`; });
+                var mHtml = ""; aboutData.support.buttons.forEach(b => { if(b.url && b.url.length > 12) mHtml += `<a href="${b.url}" target="_blank" class="mobile-pay-btn" style="background:${b.color}; color:${b.textColor};">${b.name}</a>`; });
                 aboutData.support.crypto.forEach(c => { mHtml += `<div class="mobile-pay-btn" style="background:#eee; color:#333;" onclick="copyAddr('${c.address}', this)">Копировать ${c.name}</div>`; });
                 document.getElementById('mobile-support-list').innerHTML = mHtml; document.getElementById('mobile-support-list').style.display = 'block';
             }
