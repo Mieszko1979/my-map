@@ -44,31 +44,17 @@
         #hint-box:hover { transform: translateX(-50%) scale(1.08); background: #fff; }
         .hint-text { color: #ff0000; font-weight: 900; font-size: 17px; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* МОДАЛЬНОЕ ОКНО ПК (НОВАЯ ГИБКАЯ ЛОГИКА) */
-        #about-modal { 
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.7); z-index: 6000; 
-            overflow-y: auto; /* Позволяет всему окну скроллиться */
-            padding: 40px 0;  /* Зазор, чтобы окно не липло к краям браузера */
-        }
-        .modal-layout { 
-            display: flex; align-items: flex-start; justify-content: center; 
-            gap: 40px; width: 100%; max-width: 1600px; margin: 0 auto; 
-            padding: 20px; box-sizing: border-box; 
-        }
+        /* МОДАЛЬНОЕ ОКНО ПК */
+        #about-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 6000; overflow-y: auto; justify-content: center; align-items: center; }
+        .modal-layout { display: flex; align-items: center; justify-content: center; gap: 40px; width: 100%; max-width: 1600px; padding: 40px 20px; box-sizing: border-box; min-height: 100%; }
         
         #central-container { position: relative; width: 550px; display: flex; flex-direction: column; align-items: center; }
-        .modal-main { 
-            background: white; width: 100%; border-radius: 25px; padding: 30px; 
-            text-align: center; position: relative; box-shadow: 0 15px 50px rgba(0,0,0,0.6); 
-            z-index: 5; box-sizing: border-box; 
-            /* Убрали max-height и внутренний скролл, теперь скроллится всё окно целиком */
-        }
+        .modal-main { background: white; width: 100%; border-radius: 25px; padding: 30px; text-align: center; position: relative; box-shadow: 0 15px 50px rgba(0,0,0,0.6); z-index: 5; box-sizing: border-box; font-family: Arial, sans-serif !important; }
         
-        .side-photo { width: 350px; height: 480px; object-fit: cover; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-top: 50px; }
-        #author-avatar-support { position: absolute; top: -75px; left: -25px; width: 140px; height: 140px; border-radius: 50%; border: 7px solid white; box-shadow: 0 8px 30px rgba(0,0,0,0.4); z-index: 10; display: none; object-fit: cover; }
+        .side-photo { width: 350px; height: 480px; object-fit: cover; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        #author-avatar-support { position: absolute; top: -90px; left: -30px; width: 140px; height: 140px; border-radius: 50%; border: 7px solid white; box-shadow: 0 8px 30px rgba(0,0,0,0.4); z-index: 10; display: none; object-fit: cover; }
 
-        .side-panel { width: 250px; display: none; flex-direction: column; gap: 20px; animation: slideIn 0.3s ease-out; margin-top: 50px; }
+        .side-panel { width: 250px; display: none; flex-direction: column; gap: 20px; animation: slideIn 0.3s ease-out; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         .qr-card { background: white; padding: 15px; border-radius: 20px; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.2); margin-bottom: 5px; }
@@ -78,13 +64,9 @@
         .pay-link-btn { display: block; width: 100%; text-decoration: none; padding: 14px; border-radius: 15px; font-weight: bold; font-size: 15px; text-align: center; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 10px; transition: 0.2s; font-family: Arial, sans-serif; }
         .pay-link-btn:hover { transform: translateY(-2px); }
 
-        /* КРИПТО ПК (ТЕПЕРЬ В ПОТОКЕ) */
-        #crypto-row-pc { 
-            position: relative; margin-top: 25px; 
-            display: none; width: 100%; justify-content: center; 
-            gap: 20px; z-index: 7000; animation: slideIn 0.5s ease-out; 
-        }
-        .crypto-card { background: white; padding: 14px 22px; border-radius: 18px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: space-between; width: 48%; cursor: pointer; position: relative; transition: 0.3s; border: 1px solid transparent; }
+        /* КРИПТО ПК */
+        #crypto-row-pc { margin-top: 25px; display: none; width: 550px; justify-content: center; gap: 25px; z-index: 7000; animation: slideIn 0.5s ease-out; }
+        .crypto-card { background: white; padding: 14px 22px; border-radius: 18px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: space-between; width: 46%; cursor: pointer; position: relative; transition: 0.3s; border: 1px solid transparent; }
         .crypto-card b { font-size: 15px; color: #333; font-family: Arial, sans-serif; }
         .crypto-card i.fa-copy { color: #000; font-size: 18px; }
         .crypto-card i.fa-check { position: absolute; right: 20px; opacity: 0; color: #ffdb00; font-size: 18px; }
@@ -131,22 +113,25 @@
         #photo-viewer .close-btn { position: absolute; top: -12px; right: -12px; background: red; color: white; border-radius: 50%; width: 26px; height: 26px; text-align: center; line-height: 24px; font-weight: bold; border: 2px solid white; z-index: 2100; }
         #detail-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 7000; background: #000; display: none; border: none; }
 
-        /* МОБИЛЬНАЯ ВЕРСИЯ (БЕЗ ИЗМЕНЕНИЙ) */
+        /* МОБИЛЬНАЯ ВЕРСИЯ */
         @media (max-width: 768px) {
-            #about-modal { padding: 0; overflow-y: hidden; }
-            .modal-layout { padding: 0; align-items: flex-end; }
+            #about-modal { overflow-y: hidden; align-items: flex-end; display: none; }
+            .modal-layout { padding: 0; align-items: flex-end; min-height: 100%; }
             #central-container { width: 100%; }
             .modal-main { 
                 width: 100vw !important; border-radius: 20px 20px 0 0 !important; 
-                max-height: 85vh; overflow-y: auto; 
+                margin-bottom: 0 !important; padding: 0 !important; 
+                box-shadow: 0 -5px 30px rgba(0,0,0,0.4); 
+                max-height: 85vh; overflow-y: auto; -webkit-overflow-scrolling: touch; 
+                box-sizing: border-box;
             }
             #mobile-hero-wrap { display: block !important; position: relative; width: 100%; height: 200px; }
             #mobile-hero-img { width: 100%; height: 100%; object-fit: cover; }
-            #mobile-avatar-img { position: absolute; bottom: -45px; left: 20px; width: 90px; height: 90px; border-radius: 50%; border: 4px solid white; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 10; }
+            #mobile-avatar-img { position: absolute; bottom: -45px; left: 20px; width: 90px; height: 90px; border-radius: 50%; border: 4px solid white; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 10; object-fit: cover; }
             #mobile-text-padding { padding: 55px 20px 30px 20px; }
             .side-panel, .side-photo, #author-avatar-support, #crypto-row-pc { display: none !important; }
             #mobile-support-list { display: block; margin-top: 15px; width: 100%; }
-            .mobile-pay-btn { display: block; width: 100%; padding: 18px; margin-bottom: 12px; border-radius: 12px; font-weight: bold; text-align: center; font-size: 17px; }
+            .mobile-pay-btn { display: block; width: 100%; padding: 18px; margin-bottom: 12px; border-radius: 12px; font-weight: bold; text-decoration: none; text-align: center; box-sizing: border-box; font-size: 17px; transition: 0.2s; border: none; }
             #photo-viewer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: black; z-index: 9999; }
         }
     </style>
@@ -180,7 +165,6 @@
                         <div id="mobile-support-list" style="display:none;"></div>
                     </div>
                 </div>
-                <!-- КРИПТО ТЕПЕРЬ ТУТ, ВНУТРИ ЦЕНТРАЛЬНОГО КОНТЕЙНЕРА -->
                 <div id="crypto-row-pc"></div>
             </div>
 
