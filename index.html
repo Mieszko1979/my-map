@@ -89,7 +89,7 @@
         .dzen-icon { width: 34px; height: 34px; background: black; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .dzen-icon svg { width: 34px; height: 34px; }
         
-        /* Иконка Komoot (Круглая по рисунку) */
+        /* Иконка Komoot (Строго по рисунку - круглая) */
         .komoot-icon { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; }
         .komoot-icon svg { width: 34px; height: 34px; }
 
@@ -97,13 +97,23 @@
         @keyframes actionPulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.5); } 50% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(40, 167, 69, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); } }
         .btn-expand-support { width: 100%; padding: 22px; background: #28a745; color: white; border: none; border-radius: 18px; font-weight: bold; font-size: 19px; cursor: pointer; animation: actionPulse 2.5s infinite ease-in-out; margin-top: 15px; font-family: Arial, sans-serif; }
 
-        /* МАРКЕРЫ И КАРТА */
+        /* ПОПАПЫ */
+        .popup-box { text-align: center; min-width: 180px; padding: 5px; font-family: Arial, sans-serif; }
+        .popup-box b { font-size: 21px; display: block; margin-bottom: 8px; color: #333; }
+        .popup-box p { font-size: 18px; margin: 5px 0; color: #555; line-height: 1.4; }
+        .coords { font-size: 13px; color: #777; font-family: monospace; margin: 8px 0; }
+        .btn-row { display: flex; justify-content: center; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+        .btn { text-decoration: none !important; font-weight: bold; font-size: 13px; padding: 8px 18px; border-radius: 20px; cursor: pointer; display: inline-block; color: white !important; font-family: Arial, sans-serif; }
+        .btn-track { background: #28a745; } .btn-vk { background: #0077FF; } .btn-dzen { background: #111111; } .btn-3d { background: #ffdb00; color: #000 !important; }
+
+        /* МАРКЕРЫ */
         .day-marker, .trans-center-marker { background: #fff; border-radius: 50%; border: 2.5px solid; color: #000; font-weight: bold; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.5); font-size: 11px; width: 24px !important; height: 24px !important; overflow: hidden; white-space: nowrap; }
         .num-wrapper { position: relative; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; }
         .suffix { position: absolute; left: 85%; opacity: 0.7; } 
         .trans-center-marker { font-size: 18px !important; }
         .c2018 { border-color: #ff0000 !important; color: #ff0000; } .c2019 { border-color: #007bff !important; color: #007bff; } .c2021 { border-color: #9b59b6 !important; color: #9b59b6; } .c2024 { border-color: #ff8c00 !important; color: #ff8c00; } .cCurrent { border-color: #28a745 !important; color: #28a745; }
 
+        /* ПУЛЬСАЦИЯ ТЕКУЩЕЙ ТОЧКИ (АЛАЯ) */
         @keyframes scarletPulse { 0% { box-shadow: 0 0 0 0px rgba(255, 36, 0, 0.9); } 70% { box-shadow: 0 0 0 18px rgba(255, 36, 0, 0); } 100% { box-shadow: 0 0 0 0px rgba(255, 36, 0, 0); } }
         .last-point-pulse { animation: scarletPulse 3s infinite ease-in-out; border-color: #28a745 !important; z-index: 1000 !important; }
 
@@ -127,19 +137,28 @@
             #about-modal { align-items: flex-end; }
             .modal-layout { padding: 0; width: 100%; }
             #central-container { width: 100%; margin: 0; }
-            .modal-main { width: 100vw !important; border-radius: 20px 20px 0 0 !important; margin-bottom: 0 !important; padding: 0 !important; box-shadow: 0 -5px 30px rgba(0,0,0,0.4); max-height: 85vh; overflow-y: auto; -webkit-overflow-scrolling: touch; box-sizing: border-box; touch-action: pan-y; }
+            
+            .modal-main { 
+                width: 100vw !important; border-radius: 20px 20px 0 0 !important; 
+                margin-bottom: 0 !important; padding: 0 !important; 
+                box-shadow: 0 -5px 30px rgba(0,0,0,0.4); 
+                max-height: 85vh; overflow-y: auto; -webkit-overflow-scrolling: touch; 
+                box-sizing: border-box;
+                touch-action: pan-y;
+            }
+
             #mobile-hero-wrap { display: block !important; position: relative; width: 100%; height: 200px; }
             #mobile-hero-img { width: 100%; height: 100%; object-fit: cover; }
             #mobile-avatar-img { position: absolute; bottom: -45px; left: 20px; width: 90px; height: 90px; border-radius: 50%; border: 4px solid white; box-shadow: 0 4px 15px rgba(0,0,0,0.3); object-fit: cover; z-index: 10; }
             #mobile-text-padding { padding: 55px 20px 30px 20px; }
+            
             .side-panel, .side-photo, #author-avatar-support, #crypto-row-pc { display: none !important; }
             #mobile-support-list { display: block; margin-top: 15px; width: 100%; }
             .mobile-pay-btn { display: block; width: 100%; padding: 18px; margin-bottom: 12px; border-radius: 12px; font-weight: bold; text-decoration: none; text-align: center; box-sizing: border-box; font-size: 17px; transition: 0.2s; border: none; }
+            
             #photo-viewer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: black; display: none; justify-content: center; align-items: center; bottom: auto; z-index: 9999; touch-action: none; }
             #photo-viewer img { width: 100%; height: 100%; object-fit: contain; border-radius: 0; }
             #photo-viewer .close-btn { display: none !important; }
-            /* Декоративная кнопка на мобилках */
-            #btn-support-pc { pointer-events: none; cursor: default; }
         }
     </style>
 </head>
@@ -159,18 +178,21 @@
             <div id="central-container">
                 <img src="my_photo.jpg" id="author-avatar-support">
                 <div class="modal-main" id="modal-main-box">
+                    
                     <div id="mobile-hero-wrap" style="display:none;">
                         <img src="mobile_cover.jpg" id="mobile-hero-img">
                         <img src="my_photo.jpg" id="mobile-avatar-img">
                     </div>
+
                     <div id="mobile-text-padding">
                         <span class="close-modal" onclick="closeAbout()">&times;</span>
                         <b id="about-name" style="font-size:28px; display:block; margin-bottom:12px; font-family: Arial, sans-serif !important;"></b>
                         <div id="about-bio" style="margin: 15px 0; line-height:1.35; color:#333; font-size:17px; text-align: left; white-space: pre-wrap; font-family: Arial, sans-serif !important;"></div>
                         <div class="social-icons" id="about-socials"></div>
-                        <button class="btn-expand-support" id="btn-support-pc">Поддержать проект</button>
+                        <button class="btn-expand-support" id="btn-support-pc" onclick="expandSupportPC()">Поддержать проект</button>
                         <div id="mobile-support-list" style="display:none;"></div>
                     </div>
+
                 </div>
                 <div id="crypto-row-pc"></div>
             </div>
@@ -221,8 +243,6 @@
         function openAbout() {
             if (typeof aboutData === 'undefined') return;
             var isPC = window.innerWidth > 768;
-            var supportBtn = document.getElementById('btn-support-pc');
-            
             document.getElementById('about-name').innerText = aboutData.name;
             document.getElementById('about-bio').innerText = aboutData.bio;
             
@@ -248,17 +268,15 @@
                 document.getElementById('author-img-pc').style.display = 'block'; document.getElementById('bike-img-pc').style.display = 'block';
                 document.getElementById('side-qr').style.display = 'none'; document.getElementById('side-links').style.display = 'none';
                 document.getElementById('author-avatar-support').style.display = 'none'; document.getElementById('crypto-row-pc').style.display = 'none';
-                supportBtn.style.display = 'block'; supportBtn.style.pointerEvents = 'auto'; supportBtn.onclick = expandSupportPC;
-
+                document.getElementById('btn-support-pc').style.display = 'block';
                 var qHtml = ""; aboutData.support.qrCodes.forEach(q => { qHtml += `<div class="qr-card"><b>${q.name}</b><img src="${q.img}"></div>`; });
                 document.getElementById('side-qr').innerHTML = qHtml;
-                var bHtml = ""; aboutData.support.buttons.forEach(b => { if(b.url && b.url.length > 12) bHtml += `<a href="${b.url}" target="_blank" class="pay-link-btn" style="background:${b.color}; color:${b.textColor};">${b.name}</a>`; });
+                var bHtml = ""; aboutData.support.buttons.forEach(b => { if(b.url) bHtml += `<a href="${b.url}" target="_blank" class="pay-link-btn" style="background:${b.color}; color:${b.textColor};">${b.name}</a>`; });
                 document.getElementById('side-links').innerHTML = bHtml;
                 var crHtml = ""; aboutData.support.crypto.forEach(c => { crHtml += `<div class="crypto-card" onclick="copyAddr('${c.address}', this)"><b>${c.name}</b><i class="fa-regular fa-copy"></i><i class="fa-solid fa-check"></i></div>`; });
                 document.getElementById('crypto-row-pc').innerHTML = crHtml;
             } else {
-                supportBtn.style.display = 'block'; supportBtn.style.pointerEvents = 'none'; supportBtn.onclick = null;
-                var mHtml = ""; aboutData.support.buttons.forEach(b => { if(b.url && b.url.length > 12) mHtml += `<a href="${b.url}" target="_blank" class="mobile-pay-btn" style="background:${b.color}; color:${b.textColor};">${b.name}</a>`; });
+                var mHtml = ""; aboutData.support.buttons.forEach(b => { if(b.url) mHtml += `<a href="${b.url}" target="_blank" class="mobile-pay-btn" style="background:${b.color}; color:${b.textColor};">${b.name}</a>`; });
                 aboutData.support.crypto.forEach(c => { mHtml += `<div class="mobile-pay-btn" style="background:#eee; color:#333;" onclick="copyAddr('${c.address}', this)">Копировать ${c.name}</div>`; });
                 document.getElementById('mobile-support-list').innerHTML = mHtml; document.getElementById('mobile-support-list').style.display = 'block';
             }
@@ -272,16 +290,33 @@
             document.getElementById('btn-support-pc').style.display = 'none';
         }
 
-        function copyAddr(addr, el) { navigator.clipboard.writeText(addr).then(() => { const isMobile = window.innerWidth <= 768; const originalText = el.innerText; el.classList.add('copied'); if (isMobile) el.innerText = "Скопировано!"; setTimeout(() => { el.classList.remove('copied'); if (isMobile) el.innerText = originalText; }, 2000); }); }
+        function copyAddr(addr, el) { 
+            navigator.clipboard.writeText(addr).then(() => { 
+                const isMobile = window.innerWidth <= 768;
+                const originalText = el.innerText;
+                el.classList.add('copied'); 
+                if (isMobile) el.innerText = "Скопировано!";
+                setTimeout(() => { 
+                    el.classList.remove('copied'); 
+                    if (isMobile) el.innerText = originalText;
+                }, 2000); 
+            }); 
+        }
+
         function openTrackView(url) { if (window.innerWidth <= 768) { var overlay = document.getElementById('detail-overlay'); overlay.src = url; overlay.style.display = 'block'; } else { window.open(url, '_blank'); } }
         window.closeTrackView = function() { var overlay = document.getElementById('detail-overlay'); overlay.style.display = 'none'; overlay.src = ""; };
+
         var touchStartYMenu = 0; var menuBox = document.getElementById('menu-box');
         menuBox.addEventListener('touchstart', e => { touchStartYMenu = e.touches[0].clientY; }, {passive: true});
         menuBox.addEventListener('touchend', e => { if (window.innerWidth > 768) return; var diff = e.changedTouches[0].clientY - touchStartYMenu; if (diff > 60 && menuBox.classList.contains('collapsed')) toggleMenu(); if (diff < -60 && !menuBox.classList.contains('collapsed')) toggleMenu(); });
+
         var touchStartYModal = 0; var modalMain = document.getElementById('modal-main-box');
         modalMain.addEventListener('touchstart', e => { touchStartYModal = e.touches[0].clientY; }, {passive: true});
-        modalMain.addEventListener('touchmove', e => { if (window.innerWidth <= 768 && e.touches.length > 1) { e.preventDefault(); } }, {passive: false});
+        modalMain.addEventListener('touchmove', e => {
+            if (window.innerWidth <= 768 && e.touches.length > 1) { e.preventDefault(); } 
+        }, {passive: false});
         modalMain.addEventListener('touchend', e => { if (window.innerWidth > 768) return; var diff = e.changedTouches[0].clientY - touchStartYModal; if (diff > 100 && modalMain.scrollTop <= 0) closeAbout(); });
+
         var img = document.getElementById('view-img'), scale = 1, lastScale = 1, startDist = 0, posX = 0, posY = 0, startX = 0, startY = 0, isDragging = false;
         function openPhoto(url) { if (window.innerWidth <= 768) { map.dragging.disable(); map.touchZoom.disable(); } document.getElementById('view-img').src = url; document.getElementById('photo-viewer').style.display = 'flex'; }
         function closePhoto() { map.dragging.enable(); map.touchZoom.enable(); scale = 1; lastScale = 1; posX = 0; posY = 0; updateTransform(); document.getElementById('photo-viewer').style.display = 'none'; }
