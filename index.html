@@ -44,67 +44,76 @@
         #hint-box:hover { transform: translateX(-50%) scale(1.08); background: #fff; }
         .hint-text { color: #ff0000; font-weight: 900; font-size: 17px; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* ОКНО "О СЕБЕ" ПК - АДАПТИВНОЕ */
-        #about-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 6000; justify-content: center; align-items: center; overflow-y: auto; }
-        .modal-layout { display: flex; align-items: center; justify-content: center; gap: 2.5vw; width: 100%; max-width: 1700px; padding: 20px; box-sizing: border-box; }
+        /* МОДАЛЬНОЕ ОКНО ПК */
+        #about-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 6000; justify-content: center; align-items: center; }
+        .modal-layout { display: flex; align-items: center; justify-content: center; gap: 40px; width: 100%; max-width: 1600px; padding: 20px; box-sizing: border-box; }
         
-        #central-container { position: relative; width: 33vw; min-width: 480px; display: flex; flex-direction: column; align-items: center; }
-        .modal-main { background: white; width: 100%; border-radius: 25px; padding: 35px; text-align: center; position: relative; box-shadow: 0 15px 50px rgba(0,0,0,0.6); z-index: 5; box-sizing: border-box; }
+        #central-container { position: relative; width: 550px; display: flex; flex-direction: column; align-items: center; }
+        .modal-main { background: white; width: 100%; border-radius: 25px; padding: 30px; text-align: center; position: relative; box-shadow: 0 15px 50px rgba(0,0,0,0.6); z-index: 5; box-sizing: border-box; overflow-y: auto; max-height: 80vh; font-family: Arial, sans-serif !important; }
         
-        /* Аватарка: наезд 10% (14px) */
-        #author-avatar-support { position: absolute; top: -126px; left: -20px; width: 140px; height: 140px; border-radius: 50%; border: 7px solid white; box-shadow: 0 8px 30px rgba(0,0,0,0.4); z-index: 10; display: none; object-fit: cover; }
+        .side-photo { width: 350px; height: 480px; object-fit: cover; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        #author-avatar-support { position: absolute; top: -90px; left: -30px; width: 140px; height: 140px; border-radius: 50%; border: 7px solid white; box-shadow: 0 8px 30px rgba(0,0,0,0.4); z-index: 10; display: none; object-fit: cover; }
 
-        .side-photo { width: 22vw; min-width: 300px; height: auto; aspect-ratio: 350 / 480; object-fit: cover; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .side-panel { width: 17vw; min-width: 250px; display: none; flex-direction: column; gap: 15px; animation: slideIn 0.3s ease-out; }
+        .side-panel { width: 250px; display: none; flex-direction: column; gap: 20px; animation: slideIn 0.3s ease-out; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* КУАР КОДЫ: Эстетичная сетка */
-        #side-qr { grid-template-columns: 1fr; }
-        #side-qr.grid-2x2 { grid-template-columns: 1fr 1fr; }
-        .qr-card { background: white; padding: 12px; border-radius: 20px; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.2); box-sizing: border-box; }
-        .qr-card img { width: 100%; height: auto; border-radius: 10px; max-height: 25vh; object-fit: contain; }
-        .qr-card b { font-size: 13px; display: block; margin-top: 8px; color: #333; }
+        .qr-card { background: white; padding: 15px; border-radius: 20px; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.2); margin-bottom: 5px; }
+        .qr-card img { width: 100%; border-radius: 10px; }
+        .qr-card b { font-size: 14px; display: block; margin-top: 8px; color: #333; font-family: Arial, sans-serif; }
         
-        /* КНОПКИ ОПЛАТЫ */
-        .pay-link-btn { display: flex; align-items: center; justify-content: center; width: 100%; text-decoration: none; padding: 15px 10px; border-radius: 15px; font-weight: 900; font-size: 1.1vw; min-font-size: 14px; text-align: center; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: 0.2s; }
+        .pay-link-btn { display: block; width: 100%; text-decoration: none; padding: 14px; border-radius: 15px; font-weight: bold; font-size: 15px; text-align: center; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 10px; transition: 0.2s; font-family: Arial, sans-serif; }
+        .pay-link-btn:hover { transform: translateY(-2px); }
 
-        /* КРИПТОВАЛЮТА */
-        #crypto-row-pc { margin-top: 4vh; display: none; width: 100%; justify-content: center; gap: 20px; z-index: 7000; }
-        .crypto-card { background: white; padding: 14px 22px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: space-between; width: 48%; cursor: pointer; position: relative; transition: 0.3s; border: 1px solid transparent; box-sizing: border-box; }
-        .crypto-card b { font-size: 14px; color: #333; font-weight: 900; }
+        /* КРИПТО ПК */
+        #crypto-row-pc { position: fixed; bottom: 35px; left: 50%; transform: translateX(-50%); display: none; width: 550px; justify-content: center; gap: 25px; z-index: 7000; animation: slideIn 0.5s ease-out; }
+        .crypto-card { background: white; padding: 14px 22px; border-radius: 18px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: space-between; width: 46%; cursor: pointer; position: relative; transition: 0.3s; border: 1px solid transparent; }
+        .crypto-card b { font-size: 15px; color: #333; font-family: Arial, sans-serif; }
         .crypto-card i.fa-copy { color: #000; font-size: 18px; }
         .crypto-card i.fa-check { position: absolute; right: 20px; opacity: 0; color: #ffdb00; font-size: 18px; }
-        .crypto-card.copied { background: #28a745 !important; border-color: #28a745; color: white !important; }
-        .crypto-card.copied b { color: white !important; } .crypto-card.copied i.fa-copy { opacity: 0; } .crypto-card.copied i.fa-check { opacity: 1; }
+        
+        .crypto-card.copied, .mobile-pay-btn.copied { background: #28a745 !important; border-color: #28a745; color: white !important; }
+        .crypto-card.copied b { color: white !important; }
+        .crypto-card.copied i.fa-copy { opacity: 0; }
+        .crypto-card.copied i.fa-check { opacity: 1; }
 
         .close-modal { position: absolute; top: 20px; right: 20px; font-size: 26px; cursor: pointer; color: #ff0000; z-index: 20; }
-        .social-icons { display: flex; justify-content: center; gap: 20px; margin: 25px 0 10px 0; flex-wrap: wrap; align-items: center; }
+        .close-modal:hover { color: #cc0000; transform: scale(1.2); }
+        
+        /* СОЦСЕТИ */
+        .social-icons { display: flex; justify-content: center; gap: 20px; margin: 20px 0 10px 0; flex-wrap: wrap; align-items: center; }
         .social-icons i { font-size: 34px; } 
         .fa-vk { color: #0077FF; } .fa-telegram { color: #26A5E4; } .fa-youtube { color: #FF0000; } 
         .fa-instagram { color: #E1306C; } .fa-odnoklassniki { color: #ee8208; } .fa-strava { color: #FC6100; }
+        
+        /* Иконка Дзена */
         .dzen-icon { width: 34px; height: 34px; background: black; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .dzen-icon svg { width: 34px; height: 34px; }
+        
+        /* Иконка Komoot (Строго по рисунку - круглая) */
         .komoot-icon { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; }
         .komoot-icon svg { width: 34px; height: 34px; }
 
+        /* КНОПКА ПОДДЕРЖКИ */
         @keyframes actionPulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.5); } 50% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(40, 167, 69, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); } }
-        .btn-expand-support { width: 100%; padding: 22px; background: #28a745; color: white; border: none; border-radius: 18px; font-weight: bold; font-size: 19px; cursor: pointer; animation: actionPulse 2.5s infinite ease-in-out; margin-top: 15px; }
+        .btn-expand-support { width: 100%; padding: 22px; background: #28a745; color: white; border: none; border-radius: 18px; font-weight: bold; font-size: 19px; cursor: pointer; animation: actionPulse 2.5s infinite ease-in-out; margin-top: 15px; font-family: Arial, sans-serif; }
 
-        /* ПОПАПЫ И МАРКЕРЫ */
-        .popup-box { text-align: center; min-width: 180px; padding: 5px; }
+        /* ПОПАПЫ */
+        .popup-box { text-align: center; min-width: 180px; padding: 5px; font-family: Arial, sans-serif; }
         .popup-box b { font-size: 21px; display: block; margin-bottom: 8px; color: #333; }
         .popup-box p { font-size: 18px; margin: 5px 0; color: #555; line-height: 1.4; }
         .coords { font-size: 13px; color: #777; font-family: monospace; margin: 8px 0; }
         .btn-row { display: flex; justify-content: center; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
-        .btn { text-decoration: none !important; font-weight: bold; font-size: 13px; padding: 8px 18px; border-radius: 20px; color: white !important; cursor: pointer; }
+        .btn { text-decoration: none !important; font-weight: bold; font-size: 13px; padding: 8px 18px; border-radius: 20px; cursor: pointer; display: inline-block; color: white !important; font-family: Arial, sans-serif; }
         .btn-track { background: #28a745; } .btn-vk { background: #0077FF; } .btn-dzen { background: #111111; } .btn-3d { background: #ffdb00; color: #000 !important; }
 
+        /* МАРКЕРЫ */
         .day-marker, .trans-center-marker { background: #fff; border-radius: 50%; border: 2.5px solid; color: #000; font-weight: bold; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.5); font-size: 11px; width: 24px !important; height: 24px !important; overflow: hidden; white-space: nowrap; }
         .num-wrapper { position: relative; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; }
         .suffix { position: absolute; left: 85%; opacity: 0.7; } 
         .trans-center-marker { font-size: 18px !important; }
         .c2018 { border-color: #ff0000 !important; color: #ff0000; } .c2019 { border-color: #007bff !important; color: #007bff; } .c2021 { border-color: #9b59b6 !important; color: #9b59b6; } .c2024 { border-color: #ff8c00 !important; color: #ff8c00; } .cCurrent { border-color: #28a745 !important; color: #28a745; }
 
+        /* ПУЛЬСАЦИЯ ТЕКУЩЕЙ ТОЧКИ (АЛАЯ) */
         @keyframes scarletPulse { 0% { box-shadow: 0 0 0 0px rgba(255, 36, 0, 0.9); } 70% { box-shadow: 0 0 0 18px rgba(255, 36, 0, 0); } 100% { box-shadow: 0 0 0 0px rgba(255, 36, 0, 0); } }
         .last-point-pulse { animation: scarletPulse 3s infinite ease-in-out; border-color: #28a745 !important; z-index: 1000 !important; }
 
@@ -114,11 +123,11 @@
         .map-avatar { position: absolute; bottom: 25px; right: 10px; z-index: 1000; width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; opacity: 0.8; object-fit: cover; pointer-events: none; }
         
         #photo-viewer { position: absolute; bottom: 100px; left: 15px; z-index: 2000; width: 220px; background: white; padding: 5px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none; cursor: pointer; }
-        #photo-viewer img { width: 100%; border-radius: 5px; display: block; }
+        #photo-viewer img { width: 100%; border-radius: 5px; display: block; transition: transform 0.1s ease-out; }
         #photo-viewer .close-btn { position: absolute; top: -12px; right: -12px; background: red; color: white; border-radius: 50%; width: 26px; height: 26px; text-align: center; line-height: 24px; font-weight: bold; border: 2px solid white; z-index: 2100; }
         #detail-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 7000; background: #000; display: none; border: none; }
 
-        /* МОБИЛЬНАЯ ВЕРСИЯ - СТРОГО ПО ЭТАЛОНУ */
+        /* МОБИЛЬНАЯ ВЕРСИЯ */
         @media (max-width: 768px) {
             #menu-box { left: 5%; width: 90% !important; top: 10px; box-sizing: border-box; }
             #photo-toggle-wrap { display: none !important; }
@@ -126,18 +135,29 @@
             #hint-box { top: auto; bottom: 30px; left: 50%; transform: translateX(-50%); }
             .map-avatar { bottom: 18px; right: 5px; width: 45px; height: 45px; }
             #about-modal { align-items: flex-end; }
-            .modal-layout { padding: 0; width: 100%; display: block; }
-            #central-container { width: 100%; margin: 0; min-width: 100%; }
-            .modal-main { width: 100vw !important; border-radius: 20px 20px 0 0 !important; padding: 0 !important; box-shadow: 0 -5px 30px rgba(0,0,0,0.4); max-height: 85vh; overflow-y: auto; -webkit-overflow-scrolling: touch; touch-action: pan-y; }
+            .modal-layout { padding: 0; width: 100%; }
+            #central-container { width: 100%; margin: 0; }
+            
+            .modal-main { 
+                width: 100vw !important; border-radius: 20px 20px 0 0 !important; 
+                margin-bottom: 0 !important; padding: 0 !important; 
+                box-shadow: 0 -5px 30px rgba(0,0,0,0.4); 
+                max-height: 85vh; overflow-y: auto; -webkit-overflow-scrolling: touch; 
+                box-sizing: border-box;
+                touch-action: pan-y;
+            }
+
             #mobile-hero-wrap { display: block !important; position: relative; width: 100%; height: 200px; }
             #mobile-hero-img { width: 100%; height: 100%; object-fit: cover; }
             #mobile-avatar-img { position: absolute; bottom: -45px; left: 20px; width: 90px; height: 90px; border-radius: 50%; border: 4px solid white; box-shadow: 0 4px 15px rgba(0,0,0,0.3); object-fit: cover; z-index: 10; }
-            #mobile-text-padding { padding: 55px 20px 30px 20px; text-align: center; }
+            #mobile-text-padding { padding: 55px 20px 30px 20px; }
+            
             .side-panel, .side-photo, #author-avatar-support, #crypto-row-pc { display: none !important; }
             #mobile-support-list { display: block; margin-top: 15px; width: 100%; }
-            .mobile-pay-btn { display: block; width: 100%; padding: 18px; margin-bottom: 12px; border-radius: 12px; font-weight: bold; text-decoration: none; text-align: center; font-size: 17px; }
+            .mobile-pay-btn { display: block; width: 100%; padding: 18px; margin-bottom: 12px; border-radius: 12px; font-weight: bold; text-decoration: none; text-align: center; box-sizing: border-box; font-size: 17px; transition: 0.2s; border: none; }
+            
             #photo-viewer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: black; display: none; justify-content: center; align-items: center; bottom: auto; z-index: 9999; touch-action: none; }
-            #photo-viewer img { width: 100%; height: 100%; object-fit: contain; }
+            #photo-viewer img { width: 100%; height: 100%; object-fit: contain; border-radius: 0; }
             #photo-viewer .close-btn { display: none !important; }
         }
     </style>
@@ -149,29 +169,39 @@
     
     <div id="about-modal" onclick="closeAbout()">
         <div class="modal-layout" onclick="event.stopPropagation()">
+            
             <div id="pc-left-side">
                 <img src="my_photo.jpg" class="side-photo" id="author-img-pc">
                 <div class="side-panel" id="side-qr"></div>
             </div>
+
             <div id="central-container">
                 <img src="my_photo.jpg" id="author-avatar-support">
                 <div class="modal-main" id="modal-main-box">
-                    <div id="mobile-hero-wrap" style="display:none;"><img src="mobile_cover.jpg" id="mobile-hero-img"><img src="my_photo.jpg" id="mobile-avatar-img"></div>
+                    
+                    <div id="mobile-hero-wrap" style="display:none;">
+                        <img src="mobile_cover.jpg" id="mobile-hero-img">
+                        <img src="my_photo.jpg" id="mobile-avatar-img">
+                    </div>
+
                     <div id="mobile-text-padding">
                         <span class="close-modal" onclick="closeAbout()">&times;</span>
-                        <b id="about-name" style="font-size:28px; display:block; margin-bottom:12px;"></b>
-                        <div id="about-bio" style="margin: 15px 0; line-height:1.35; color:#333; font-size:17px; text-align: left; white-space: pre-wrap;"></div>
+                        <b id="about-name" style="font-size:28px; display:block; margin-bottom:12px; font-family: Arial, sans-serif !important;"></b>
+                        <div id="about-bio" style="margin: 15px 0; line-height:1.35; color:#333; font-size:17px; text-align: left; white-space: pre-wrap; font-family: Arial, sans-serif !important;"></div>
                         <div class="social-icons" id="about-socials"></div>
                         <button class="btn-expand-support" id="btn-support-pc" onclick="expandSupportPC()">Поддержать проект</button>
                         <div id="mobile-support-list" style="display:none;"></div>
                     </div>
+
                 </div>
                 <div id="crypto-row-pc"></div>
             </div>
+
             <div id="pc-right-side">
                 <img src="bike_photo.jpg" class="side-photo" id="bike-img-pc">
                 <div class="side-panel" id="side-links"></div>
             </div>
+
         </div>
     </div>
 
@@ -221,7 +251,14 @@
                 var lowId = s.id.toLowerCase();
                 if(lowId === 'dzen') { sHtml += `<a href="${s.url}" target="_blank"><div class="dzen-icon"><svg viewBox="0 0 100 100"><rect width="100" height="100" rx="25" fill="black"/><path d="M50 15 C52 40 60 48 85 50 C60 52 52 60 50 85 C48 60 40 52 15 50 C40 48 48 40 50 15 Z" fill="white"/></svg></div></a>`; } 
                 else if (lowId === 'komoot') { 
-                    sHtml += `<a href="${s.url}" target="_blank"><div class="komoot-icon"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="50" fill="#469C36"/><path d="M50 35c-8.3 0-15 6.7-15 15 0 3.5 1.2 6.7 3.2 9.2L22 80h12.5l12.4-17.3c1 .2 2.1.3 3.1.3s2.1-.1 3.1-.3L65.5 80H78L61.8 59.2c2-2.5 3.2-5.7 3.2-9.2 0-8.3-6.7-15-15-15z" fill="white"/></svg></div></a>`; 
+                    sHtml += `<a href="${s.url}" target="_blank">
+                                <div class="komoot-icon">
+                                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="50" cy="50" r="50" fill="#469C36"/>
+                                        <path d="M50 35c-8.3 0-15 6.7-15 15 0 3.5 1.2 6.7 3.2 9.2L22 80h12.5l12.4-17.3c1 .2 2.1.3 3.1.3s2.1-.1 3.1-.3L65.5 80H78L61.8 59.2c2-2.5 3.2-5.7 3.2-9.2 0-8.3-6.7-15-15-15z" fill="white"/>
+                                    </svg>
+                                </div>
+                              </a>`; 
                 } 
                 else { sHtml += `<a href="${s.url}" target="_blank"><i class="fa-brands fa-${lowId}"></i></a>`; }
             });
@@ -232,20 +269,14 @@
                 document.getElementById('side-qr').style.display = 'none'; document.getElementById('side-links').style.display = 'none';
                 document.getElementById('author-avatar-support').style.display = 'none'; document.getElementById('crypto-row-pc').style.display = 'none';
                 document.getElementById('btn-support-pc').style.display = 'block';
-                
-                var qrContainer = document.getElementById('side-qr');
-                qrContainer.style.display = 'none'; 
-                if(aboutData.support.qrCodes.length > 2) qrContainer.classList.add('grid-2x2');
-                else qrContainer.classList.remove('grid-2x2');
-                
                 var qHtml = ""; aboutData.support.qrCodes.forEach(q => { qHtml += `<div class="qr-card"><b>${q.name}</b><img src="${q.img}"></div>`; });
-                qrContainer.innerHTML = qHtml;
-                var bHtml = ""; aboutData.support.buttons.forEach(b => { if(b.url && b.url.length > 12) bHtml += `<a href="${b.url}" target="_blank" class="pay-link-btn" style="background:${b.color}; color:${b.textColor};">${b.name}</a>`; });
+                document.getElementById('side-qr').innerHTML = qHtml;
+                var bHtml = ""; aboutData.support.buttons.forEach(b => { if(b.url) bHtml += `<a href="${b.url}" target="_blank" class="pay-link-btn" style="background:${b.color}; color:${b.textColor};">${b.name}</a>`; });
                 document.getElementById('side-links').innerHTML = bHtml;
                 var crHtml = ""; aboutData.support.crypto.forEach(c => { crHtml += `<div class="crypto-card" onclick="copyAddr('${c.address}', this)"><b>${c.name}</b><i class="fa-regular fa-copy"></i><i class="fa-solid fa-check"></i></div>`; });
                 document.getElementById('crypto-row-pc').innerHTML = crHtml;
             } else {
-                var mHtml = ""; aboutData.support.buttons.forEach(b => { if(b.url && b.url.length > 12) mHtml += `<a href="${b.url}" target="_blank" class="mobile-pay-btn" style="background:${b.color}; color:${b.textColor};">${b.name}</a>`; });
+                var mHtml = ""; aboutData.support.buttons.forEach(b => { if(b.url) mHtml += `<a href="${b.url}" target="_blank" class="mobile-pay-btn" style="background:${b.color}; color:${b.textColor};">${b.name}</a>`; });
                 aboutData.support.crypto.forEach(c => { mHtml += `<div class="mobile-pay-btn" style="background:#eee; color:#333;" onclick="copyAddr('${c.address}', this)">Копировать ${c.name}</div>`; });
                 document.getElementById('mobile-support-list').innerHTML = mHtml; document.getElementById('mobile-support-list').style.display = 'block';
             }
@@ -254,16 +285,21 @@
 
         function expandSupportPC() {
             document.getElementById('author-img-pc').style.display = 'none'; document.getElementById('bike-img-pc').style.display = 'none';
-            document.getElementById('side-qr').style.display = (aboutData.support.qrCodes.length > 2) ? 'grid' : 'flex';
-            document.getElementById('side-links').style.display = 'flex';
+            document.getElementById('side-qr').style.display = 'flex'; document.getElementById('side-links').style.display = 'flex';
             document.getElementById('author-avatar-support').style.display = 'block'; document.getElementById('crypto-row-pc').style.display = 'flex';
             document.getElementById('btn-support-pc').style.display = 'none';
         }
 
         function copyAddr(addr, el) { 
             navigator.clipboard.writeText(addr).then(() => { 
+                const isMobile = window.innerWidth <= 768;
+                const originalText = el.innerText;
                 el.classList.add('copied'); 
-                setTimeout(() => { el.classList.remove('copied'); }, 2000); 
+                if (isMobile) el.innerText = "Скопировано!";
+                setTimeout(() => { 
+                    el.classList.remove('copied'); 
+                    if (isMobile) el.innerText = originalText;
+                }, 2000); 
             }); 
         }
 
@@ -276,6 +312,9 @@
 
         var touchStartYModal = 0; var modalMain = document.getElementById('modal-main-box');
         modalMain.addEventListener('touchstart', e => { touchStartYModal = e.touches[0].clientY; }, {passive: true});
+        modalMain.addEventListener('touchmove', e => {
+            if (window.innerWidth <= 768 && e.touches.length > 1) { e.preventDefault(); } 
+        }, {passive: false});
         modalMain.addEventListener('touchend', e => { if (window.innerWidth > 768) return; var diff = e.changedTouches[0].clientY - touchStartYModal; if (diff > 100 && modalMain.scrollTop <= 0) closeAbout(); });
 
         var img = document.getElementById('view-img'), scale = 1, lastScale = 1, startDist = 0, posX = 0, posY = 0, startX = 0, startY = 0, isDragging = false;
@@ -292,6 +331,7 @@
         function updateMarkers(onlyPhotos) {
             archiveLayerGroup.clearLayers(); photoClusterGroup.clearLayers(); borderClusterGroup.clearLayers();
             var showPhotos = document.getElementById('photo-toggle').checked, isArchive = document.getElementById('main-toggle').checked;
+            if (!showPhotos) closePhoto();
             if (isArchive) {
                 if (document.getElementById('chk2018').checked) { drawTrip(points2018, archiveLayerGroup, 'c2018', 'archive/2018/', false); if(showPhotos) loadPhotos('archive-2018-photos', hexColors['c2018']); }
                 if (document.getElementById('chk2019').checked) { drawTrip(points2019, archiveLayerGroup, 'c2019', 'archive/2019/', false); if(showPhotos) loadPhotos('archive-2019-photos', hexColors['c2019']); }
