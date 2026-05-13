@@ -23,6 +23,7 @@ const aboutData = {
         // КУАР-КОДЫ (ПК версия, левая панель)
         qrCodes: [
             { name: "CloudTips (Т-Банк)", img: "CloudTips.png" },
+            { name: "CloudTips (Т-Банк)", img: "CloudTips.png" },
             { name: "OZON Банк", img: "Qrozon.png" }
         ],
         // КНОПКИ ОПЛАТЫ (ПК версия - справа, Мобайл - списком)
@@ -35,7 +36,7 @@ const aboutData = {
             { name: "Donationalerts", url: "https://www.donationalerts.com/r/mieszko", color: "#FFAD23", textColor: "#fff" },
             { name: "DonatPay", url: "", color: "#673AB7", textColor: "#fff" }, // Кнопка не появится, пока нет ссылки
             { name: "Boosty", url: "", color: "#F15F2C", textColor: "#fff" },    // Кнопка не появится, пока нет ссылки
-            { name: "Alipay", url: "https://www.", color: "#00A3EE", textColor: "#fff" }
+            { name: "Alipay", url: "https://www.donationalerts.com/r/mieszko", color: "#00A3EE", textColor: "#fff" }
         ],
         // КРИПТОВАЛЮТА (в конце списка оплаты)
         crypto: [
