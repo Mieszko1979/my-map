@@ -45,40 +45,44 @@
         .hint-text { color: #ff0000; font-weight: 900; font-size: 17px; text-transform: uppercase; letter-spacing: 1px; }
 
         /* МОДАЛЬНОЕ ОКНО ПК (АДАПТИВНОЕ) */
-        #about-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 6000; justify-content: center; align-items: center; overflow-y: auto; }
-        .modal-layout { display: flex; align-items: center; justify-content: center; gap: 3vw; width: 100%; padding: 20px; box-sizing: border-box; }
+        #about-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 6000; justify-content: center; align-items: center; }
+        .modal-layout { display: flex; align-items: center; justify-content: center; gap: 3vw; width: 100%; max-width: 1800px; padding: 20px; box-sizing: border-box; }
         
-        #central-container { position: relative; width: 35vw; min-width: 480px; max-width: 600px; display: flex; flex-direction: column; align-items: center; }
+        #central-container { position: relative; width: 35vw; min-width: 500px; display: flex; flex-direction: column; align-items: center; }
         .modal-main { background: white; width: 100%; border-radius: 25px; padding: 30px; text-align: center; position: relative; box-shadow: 0 15px 50px rgba(0,0,0,0.6); z-index: 5; box-sizing: border-box; }
         
-        .side-photo { width: 22vw; min-width: 300px; max-width: 400px; height: auto; aspect-ratio: 350 / 480; object-fit: cover; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .side-photo { width: 23vw; min-width: 320px; height: auto; aspect-ratio: 350 / 480; object-fit: cover; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         
-        #author-avatar-support { position: absolute; top: -75px; left: -25px; width: 140px; height: 140px; border-radius: 50%; border: 7px solid white; box-shadow: 0 8px 30px rgba(0,0,0,0.4); z-index: 10; display: none; object-fit: cover; }
+        /* Аватарка с наездом на 10% диаметра (14px от 140px) */
+        #author-avatar-support { position: absolute; top: -126px; left: -20px; width: 140px; height: 140px; border-radius: 50%; border: 7px solid white; box-shadow: 0 8px 30px rgba(0,0,0,0.4); z-index: 10; display: none; object-fit: cover; }
 
-        .side-panel { width: 18vw; min-width: 250px; max-width: 300px; display: none; flex-direction: column; gap: 15px; animation: slideIn 0.3s ease-out; }
+        .side-panel { width: 18vw; min-width: 250px; display: none; flex-direction: column; gap: 15px; animation: slideIn 0.3s ease-out; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         /* QR СЕТКА */
         #side-qr { display: none; grid-template-columns: 1fr; gap: 15px; }
         #side-qr.grid-2x2 { grid-template-columns: 1fr 1fr; }
-        .qr-card { background: white; padding: 12px; border-radius: 18px; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.2); box-sizing: border-box; }
-        .qr-card img { width: 100%; height: auto; border-radius: 10px; }
-        .qr-card b { font-size: 13px; display: block; margin-top: 8px; color: #333; }
+        .qr-card { background: white; padding: 12px; border-radius: 20px; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.2); }
+        .qr-card img { width: 100%; border-radius: 10px; }
+        .qr-card b { font-size: 14px; display: block; margin-top: 8px; color: #333; }
         
-        .pay-link-btn { display: block; width: 100%; text-decoration: none; padding: 14px; border-radius: 15px; font-weight: bold; font-size: 15px; text-align: center; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: 0.2s; }
+        /* КРУПНЫЕ КНОПКИ ОПЛАТЫ */
+        .pay-link-btn { display: block; width: 100%; text-decoration: none; padding: 16px; border-radius: 15px; font-weight: 900; font-size: 16px; text-align: center; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: 0.2s; }
+        .pay-link-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.2); }
 
         /* КРИПТО */
-        #crypto-row-pc { margin-top: 25px; display: none; width: 100%; justify-content: center; gap: 20px; z-index: 7000; }
-        .crypto-card { background: white; padding: 14px 20px; border-radius: 18px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: space-between; width: 48%; cursor: pointer; position: relative; transition: 0.3s; border: 1px solid transparent; box-sizing: border-box; }
-        .crypto-card b { font-size: 14px; color: #333; }
+        #crypto-row-pc { position: relative; margin-top: 25px; display: none; width: 100%; justify-content: center; gap: 20px; z-index: 7000; }
+        .crypto-card { background: white; padding: 14px 22px; border-radius: 18px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: space-between; width: 48%; cursor: pointer; position: relative; transition: 0.3s; border: 1px solid transparent; }
+        .crypto-card b { font-size: 15px; color: #333; }
         .crypto-card i.fa-copy { color: #000; font-size: 18px; }
         .crypto-card i.fa-check { position: absolute; right: 20px; opacity: 0; color: #ffdb00; font-size: 18px; }
-        .crypto-card.copied, .mobile-pay-btn.copied { background: #28a745 !important; color: white !important; }
+        .crypto-card.copied { background: #28a745 !important; color: white !important; }
         .crypto-card.copied b { color: white !important; } .crypto-card.copied i.fa-copy { opacity: 0; } .crypto-card.copied i.fa-check { opacity: 1; }
 
         .close-modal { position: absolute; top: 20px; right: 20px; font-size: 26px; cursor: pointer; color: #ff0000; z-index: 20; }
+        .close-modal:hover { color: #cc0000; transform: scale(1.2); }
         
-        /* СОЦСЕТИ - ЦВЕТА ИЗ ЭТАЛОНА */
+        /* СОЦСЕТИ */
         .social-icons { display: flex; justify-content: center; gap: 20px; margin: 20px 0 10px 0; flex-wrap: wrap; align-items: center; }
         .social-icons i { font-size: 34px; } 
         .fa-vk { color: #0077FF; } .fa-telegram { color: #26A5E4; } .fa-youtube { color: #FF0000; } 
@@ -91,7 +95,7 @@
         @keyframes actionPulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.5); } 50% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(40, 167, 69, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); } }
         .btn-expand-support { width: 100%; padding: 22px; background: #28a745; color: white; border: none; border-radius: 18px; font-weight: bold; font-size: 19px; cursor: pointer; animation: actionPulse 2.5s infinite ease-in-out; margin-top: 15px; }
 
-        /* ПОПАПЫ И МАРКЕРЫ */
+        /* ПОПАПЫ И МАРКЕРЫ (ВОССТАНОВЛЕНО ПО ЭТАЛОНУ) */
         .popup-box { text-align: center; min-width: 180px; padding: 5px; }
         .popup-box b { font-size: 21px; display: block; margin-bottom: 8px; color: #333; }
         .popup-box p { font-size: 18px; margin: 5px 0; color: #555; line-height: 1.4; }
@@ -103,6 +107,7 @@
         .day-marker, .trans-center-marker { background: #fff; border-radius: 50%; border: 2.5px solid; color: #000; font-weight: bold; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.5); font-size: 11px; width: 24px !important; height: 24px !important; overflow: hidden; white-space: nowrap; }
         .num-wrapper { position: relative; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; }
         .suffix { position: absolute; left: 85%; opacity: 0.7; } 
+        .trans-center-marker { font-size: 18px !important; }
         .c2018 { border-color: #ff0000 !important; color: #ff0000; } .c2019 { border-color: #007bff !important; color: #007bff; } .c2021 { border-color: #9b59b6 !important; color: #9b59b6; } .c2024 { border-color: #ff8c00 !important; color: #ff8c00; } .cCurrent { border-color: #28a745 !important; color: #28a745; }
 
         @keyframes scarletPulse { 0% { box-shadow: 0 0 0 0px rgba(255, 36, 0, 0.9); } 70% { box-shadow: 0 0 0 18px rgba(255, 36, 0, 0); } 100% { box-shadow: 0 0 0 0px rgba(255, 36, 0, 0); } }
@@ -118,7 +123,7 @@
         #photo-viewer .close-btn { position: absolute; top: -12px; right: -12px; background: red; color: white; border-radius: 50%; width: 26px; height: 26px; text-align: center; line-height: 24px; font-weight: bold; border: 2px solid white; z-index: 2100; }
         #detail-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 7000; background: #000; display: none; border: none; }
 
-        /* МОБИЛЬНАЯ ВЕРСИЯ - ИЗ ЭТАЛОНА (НЕ ТРОГАТЬ) */
+        /* МОБИЛЬНАЯ ВЕРСИЯ - СТРОГО ИЗ ЭТАЛОНА */
         @media (max-width: 768px) {
             #menu-box { left: 5%; width: 90% !important; top: 10px; box-sizing: border-box; }
             #photo-toggle-wrap { display: none !important; }
@@ -128,15 +133,15 @@
             #about-modal { align-items: flex-end; }
             .modal-layout { padding: 0; width: 100%; display: block; }
             #central-container { width: 100%; margin: 0; min-width: 100%; }
-            .modal-main { width: 100vw !important; border-radius: 20px 20px 0 0 !important; padding: 0 !important; box-shadow: 0 -5px 30px rgba(0,0,0,0.4); max-height: 85vh; overflow-y: auto; touch-action: pan-y; }
+            .modal-main { width: 100vw !important; border-radius: 20px 20px 0 0 !important; padding: 0 !important; box-shadow: 0 -5px 30px rgba(0,0,0,0.4); max-height: 85vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
             #mobile-hero-wrap { display: block !important; position: relative; width: 100%; height: 200px; }
             #mobile-hero-img { width: 100%; height: 100%; object-fit: cover; }
             #mobile-avatar-img { position: absolute; bottom: -45px; left: 20px; width: 90px; height: 90px; border-radius: 50%; border: 4px solid white; box-shadow: 0 4px 15px rgba(0,0,0,0.3); object-fit: cover; z-index: 10; }
             #mobile-text-padding { padding: 55px 20px 30px 20px; text-align: center; }
             .side-panel, .side-photo, #author-avatar-support, #crypto-row-pc { display: none !important; }
             #mobile-support-list { display: block; margin-top: 15px; width: 100%; }
-            .mobile-pay-btn { display: block; width: 100%; padding: 18px; margin-bottom: 12px; border-radius: 12px; font-weight: bold; text-decoration: none; text-align: center; font-size: 17px; }
-            #photo-viewer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: black; display: none; justify-content: center; align-items: center; z-index: 9999; touch-action: none; }
+            .mobile-pay-btn { display: block; width: 100%; padding: 18px; margin-bottom: 12px; border-radius: 12px; font-weight: bold; text-decoration: none; text-align: center; box-sizing: border-box; font-size: 17px; }
+            #photo-viewer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: black; display: none; justify-content: center; align-items: center; bottom: auto; z-index: 9999; touch-action: none; }
             #photo-viewer img { width: 100%; height: 100%; object-fit: contain; }
             #photo-viewer .close-btn { display: none !important; }
         }
@@ -282,6 +287,7 @@
                 if (document.getElementById('chk2019').checked) { drawTrip(points2019, archiveLayerGroup, 'c2019', 'archive/2019/', false); if(showPhotos) loadPhotos('archive-2019-photos', hexColors['c2019']); }
                 if (document.getElementById('chk2021').checked) { drawTrip(points2021, archiveLayerGroup, 'c2021', 'archive/2021/', false); if(showPhotos) loadPhotos('archive-2021-photos', hexColors['c2021']); }
                 if (document.getElementById('chk2024').checked) { drawTrip(points2024, archiveLayerGroup, 'c2024', 'archive/2024/', false); if(showPhotos) loadPhotos('archive-2024-photos', hexColors['c2024']); }
+                if (!onlyPhotos) { var layers = archiveLayerGroup.getLayers(); if (layers.length > 0) map.fitBounds(new L.featureGroup(layers).getBounds(), {padding: [50, 50]}); }
             } else { if (typeof myPoints !== 'undefined') drawTrip(myPoints, currentTripLayer, 'cCurrent', 'tracks/', true); if(showPhotos) loadPhotos('archive-2026-photos', hexColors['cCurrent']); }
         }
 
