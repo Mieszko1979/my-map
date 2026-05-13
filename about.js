@@ -33,8 +33,8 @@ const aboutData = {
             { name: "Дзен донаты", url: "https://dzen.ru/mieszko_travel?donate=true", color: "#000", textColor: "#fff" },
             { name: "VK Pay", url: "https://vk.com/mieszko_travel?w=app5727453_-171082824", color: "#0077FF", textColor: "#fff" },
             { name: "Donationalerts", url: "https://www.donationalerts.com/r/mieszko", color: "#FFAD23", textColor: "#fff" },
-            { name: "DonatPay", url: "https://dzen.ru/mieszko_travel?donate=true", color: "#673AB7", textColor: "#fff" }, // Кнопка не появится, пока нет ссылки
-            { name: "Boosty", url: "https://dzen.ru/mieszko_travel?donate=true", color: "#F15F2C", textColor: "#fff" },    // Кнопка не появится, пока нет ссылки
+            { name: "DonatPay", url: "", color: "#673AB7", textColor: "#fff" }, // Кнопка не появится, пока нет ссылки
+            { name: "Boosty", url: "", color: "#F15F2C", textColor: "#fff" },    // Кнопка не появится, пока нет ссылки
             { name: "Alipay", url: "https://www.", color: "#00A3EE", textColor: "#fff" }
         ],
         // КРИПТОВАЛЮТА (в конце списка оплаты)
