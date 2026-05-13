@@ -84,9 +84,14 @@
         .social-icons i { font-size: 34px; } 
         .fa-vk { color: #0077FF; } .fa-telegram { color: #26A5E4; } .fa-youtube { color: #FF0000; } 
         .fa-instagram { color: #E1306C; } .fa-odnoklassniki { color: #ee8208; } .fa-strava { color: #FC6100; }
+        
+        /* Иконка Дзена */
         .dzen-icon { width: 34px; height: 34px; background: black; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .dzen-icon svg { width: 34px; height: 34px; }
-        .text-icon-btn { font-weight: 900; font-size: 13px; border: 2.5px solid #469C36; padding: 6px 12px; border-radius: 10px; color: #469C36; text-transform: uppercase; font-family: Arial, sans-serif; text-decoration: none !important; }
+        
+        /* Иконка Komoot (НОВОЕ) */
+        .komoot-icon { width: 34px; height: 34px; background: #469C36; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .komoot-icon svg { width: 22px; height: 22px; }
 
         /* КНОПКА ПОДДЕРЖКИ */
         @keyframes actionPulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.5); } 50% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(40, 167, 69, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); } }
@@ -139,7 +144,7 @@
                 box-shadow: 0 -5px 30px rgba(0,0,0,0.4); 
                 max-height: 85vh; overflow-y: auto; -webkit-overflow-scrolling: touch; 
                 box-sizing: border-box;
-                touch-action: pan-y; /* Разрешаем только вертикальный скролл, запрещаем зум */
+                touch-action: pan-y;
             }
 
             #mobile-hero-wrap { display: block !important; position: relative; width: 100%; height: 200px; }
@@ -245,7 +250,17 @@
             aboutData.socials.forEach(s => { if(!s.url) return;
                 var lowId = s.id.toLowerCase();
                 if(lowId === 'dzen') { sHtml += `<a href="${s.url}" target="_blank"><div class="dzen-icon"><svg viewBox="0 0 100 100"><rect width="100" height="100" rx="25" fill="black"/><path d="M50 15 C52 40 60 48 85 50 C60 52 52 60 50 85 C48 60 40 52 15 50 C40 48 48 40 50 15 Z" fill="white"/></svg></div></a>`; } 
-                else if (lowId === 'komoot') { sHtml += `<a href="${s.url}" target="_blank" style="text-decoration:none;"><span class="text-icon-btn">Komoot</span></a>`; } 
+                else if (lowId === 'komoot') { 
+                    // Иконка Komoot вместо текста
+                    sHtml += `<a href="${s.url}" target="_blank">
+                                <div class="komoot-icon">
+                                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M50 10C27.9 10 10 27.9 10 50C10 72.1 27.9 90 50 90C72.1 90 90 72.1 90 50C90 27.9 72.1 10 50 10ZM50 78C34.5 78 22 65.5 22 50C22 34.5 34.5 22 50 22C65.5 22 78 34.5 78 50C78 65.5 65.5 78 50 78Z" fill="white"/>
+                                        <path d="M50 35L30 65H70L50 35Z" fill="white"/>
+                                    </svg>
+                                </div>
+                              </a>`; 
+                } 
                 else { sHtml += `<a href="${s.url}" target="_blank"><i class="fa-brands fa-${lowId}"></i></a>`; }
             });
             document.getElementById('about-socials').innerHTML = sHtml;
@@ -299,7 +314,7 @@
         var touchStartYModal = 0; var modalMain = document.getElementById('modal-main-box');
         modalMain.addEventListener('touchstart', e => { touchStartYModal = e.touches[0].clientY; }, {passive: true});
         modalMain.addEventListener('touchmove', e => {
-            if (window.innerWidth <= 768 && e.touches.length > 1) { e.preventDefault(); } // Запрещаем зум шторки пальцами
+            if (window.innerWidth <= 768 && e.touches.length > 1) { e.preventDefault(); } 
         }, {passive: false});
         modalMain.addEventListener('touchend', e => { if (window.innerWidth > 768) return; var diff = e.changedTouches[0].clientY - touchStartYModal; if (diff > 100 && modalMain.scrollTop <= 0) closeAbout(); });
 
