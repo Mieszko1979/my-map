@@ -89,9 +89,9 @@
         .dzen-icon { width: 34px; height: 34px; background: black; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .dzen-icon svg { width: 34px; height: 34px; }
         
-        /* Иконка Komoot (НОВОЕ) */
-        .komoot-icon { width: 34px; height: 34px; background: #469C36; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .komoot-icon svg { width: 22px; height: 22px; }
+        /* Иконка Komoot (Строго по рисунку - круглая) */
+        .komoot-icon { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; }
+        .komoot-icon svg { width: 34px; height: 34px; }
 
         /* КНОПКА ПОДДЕРЖКИ */
         @keyframes actionPulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.5); } 50% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(40, 167, 69, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); } }
@@ -251,12 +251,11 @@
                 var lowId = s.id.toLowerCase();
                 if(lowId === 'dzen') { sHtml += `<a href="${s.url}" target="_blank"><div class="dzen-icon"><svg viewBox="0 0 100 100"><rect width="100" height="100" rx="25" fill="black"/><path d="M50 15 C52 40 60 48 85 50 C60 52 52 60 50 85 C48 60 40 52 15 50 C40 48 48 40 50 15 Z" fill="white"/></svg></div></a>`; } 
                 else if (lowId === 'komoot') { 
-                    // Иконка Komoot вместо текста
                     sHtml += `<a href="${s.url}" target="_blank">
                                 <div class="komoot-icon">
-                                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M50 10C27.9 10 10 27.9 10 50C10 72.1 27.9 90 50 90C72.1 90 90 72.1 90 50C90 27.9 72.1 10 50 10ZM50 78C34.5 78 22 65.5 22 50C22 34.5 34.5 22 50 22C65.5 22 78 34.5 78 50C78 65.5 65.5 78 50 78Z" fill="white"/>
-                                        <path d="M50 35L30 65H70L50 35Z" fill="white"/>
+                                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="50" cy="50" r="50" fill="#469C36"/>
+                                        <path d="M50 35c-8.3 0-15 6.7-15 15 0 3.5 1.2 6.7 3.2 9.2L22 80h12.5l12.4-17.3c1 .2 2.1.3 3.1.3s2.1-.1 3.1-.3L65.5 80H78L61.8 59.2c2-2.5 3.2-5.7 3.2-9.2 0-8.3-6.7-15-15-15z" fill="white"/>
                                     </svg>
                                 </div>
                               </a>`; 
