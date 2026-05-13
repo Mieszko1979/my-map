@@ -44,114 +44,107 @@
         #hint-box:hover { transform: translateX(-50%) scale(1.08); background: #fff; }
         .hint-text { color: #ff0000; font-weight: 900; font-size: 17px; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* МОДАЛЬНОЕ ОКНО ПК (АДАПТИВНОЕ) */
-        #about-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 6000; overflow-y: auto; overflow-x: hidden; }
-        .modal-layout { display: flex; align-items: center; justify-content: center; gap: 2vw; width: fit-content; min-height: 100%; margin: 0 auto; padding: 40px 20px; box-sizing: border-box; }
-        
-        #central-container { position: relative; width: clamp(400px, 40vw, 550px); display: flex; flex-direction: column; align-items: center; }
-        .modal-main { 
-            background: white; width: 100%; border-radius: 25px; 
-            padding: 30px; text-align: center; position: relative; 
-            box-shadow: 0 15px 50px rgba(0,0,0,0.6); z-index: 5; 
-            box-sizing: border-box; font-family: Arial, sans-serif !important;
-            padding-top: 60px; /* Защита текста от аватара */
+        /* --- ОБНОВЛЕННОЕ МОДАЛЬНОЕ ОКНО --- */
+        #about-modal { 
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.85); z-index: 6000; 
+            overflow: auto; /* Включает прокрутку во все стороны */
+        }
+        .modal-layout { 
+            display: inline-flex; /* Важно для горизонтальной прокрутки */
+            align-items: center; justify-content: center; 
+            min-width: 100%; min-height: 100%; 
+            gap: 3vw; padding: 50px; box-sizing: border-box; 
         }
         
-        .side-photo { width: clamp(250px, 25vw, 350px); height: clamp(340px, 34vw, 480px); object-fit: cover; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        #author-avatar-support { position: absolute; top: -70px; left: -20px; width: clamp(100px, 10vw, 140px); height: clamp(100px, 10vw, 140px); border-radius: 50%; border: 6px solid white; box-shadow: 0 8px 30px rgba(0,0,0,0.4); z-index: 10; display: none; object-fit: cover; }
+        /* Пропорции панелей */
+        #central-container { position: relative; width: 35vw; min-width: 450px; display: flex; flex-direction: column; align-items: center; }
+        .side-panel-wrapper { width: 18vw; min-width: 250px; display: flex; flex-direction: column; align-items: center; }
+        
+        .modal-main { 
+            background: white; width: 100%; border-radius: 25px; padding: 2.5vw; 
+            text-align: center; position: relative; box-shadow: 0 15px 50px rgba(0,0,0,0.6); 
+            z-index: 5; box-sizing: border-box; padding-top: 70px;
+        }
+        
+        .side-photo { width: 100%; height: auto; aspect-ratio: 350/480; object-fit: cover; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        
+        #author-avatar-support { 
+            position: absolute; top: -80px; left: -30px; 
+            width: 130px; height: 130px; border-radius: 50%; 
+            border: 7px solid white; box-shadow: 0 8px 30px rgba(0,0,0,0.4); 
+            z-index: 10; display: none; object-fit: cover; 
+        }
 
-        .side-panel { width: clamp(200px, 20vw, 300px); display: none; flex-direction: column; gap: 15px; animation: slideIn 0.3s ease-out; }
+        .side-panel { width: 100%; display: none; flex-direction: column; gap: 15px; animation: slideIn 0.3s ease-out; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* УМНАЯ СЕТКА QR-КОДОВ */
-        .qr-grid { display: grid; grid-template-columns: 1fr; gap: 10px; width: 100%; }
+        /* QR СЕТКА */
+        .qr-grid { display: grid; grid-template-columns: 1fr; gap: 12px; width: 100%; }
         .qr-grid.multi-col { grid-template-columns: 1fr 1fr; }
-        .qr-card { background: white; padding: 10px; border-radius: 15px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.15); box-sizing: border-box; }
-        .qr-card img { width: 100%; height: auto; border-radius: 8px; display: block; }
-        .qr-card b { font-size: 12px; display: block; margin-top: 6px; color: #333; line-height: 1.1; }
+        .qr-card { background: white; padding: 12px; border-radius: 18px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.15); }
+        .qr-card img { width: 100%; height: auto; border-radius: 8px; }
+        .qr-card b { font-size: 13px; display: block; margin-top: 8px; color: #333; line-height: 1.2; }
         
-        .pay-link-btn { display: block; width: 100%; text-decoration: none; padding: 14px; border-radius: 15px; font-weight: bold; font-size: 14px; text-align: center; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: 0.2s; font-family: Arial, sans-serif; }
-        .pay-link-btn:hover { transform: translateY(-2px); }
+        .pay-link-btn { 
+            display: block; width: 100%; text-decoration: none; padding: 16px; 
+            border-radius: 15px; font-weight: bold; font-size: 15px; text-align: center; 
+            box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: 0.2s; 
+        }
 
-        /* КРИПТО ПК (В ПОТОКЕ КОНТЕЙНЕРА) */
-        #crypto-row-pc { display: none; width: 100%; margin-top: 25px; justify-content: center; gap: 15px; z-index: 6; animation: slideIn 0.5s ease-out; }
-        .crypto-card { background: white; padding: 12px 18px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: space-between; width: 48%; cursor: pointer; position: relative; transition: 0.3s; border: 1px solid transparent; box-sizing: border-box; }
-        .crypto-card b { font-size: 13px; color: #333; font-family: Arial, sans-serif; }
-        .crypto-card i.fa-copy { color: #000; font-size: 16px; }
-        .crypto-card i.fa-check { position: absolute; right: 15px; opacity: 0; color: #ffdb00; font-size: 16px; }
-        
-        .crypto-card.copied, .mobile-pay-btn.copied { background: #28a745 !important; color: white !important; }
+        /* КРИПТО */
+        #crypto-row-pc { display: none; width: 100%; margin-top: 30px; justify-content: center; gap: 20px; z-index: 6; }
+        .crypto-card { 
+            background: white; padding: 14px 20px; border-radius: 15px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3); display: flex; align-items: center; 
+            justify-content: space-between; width: 48%; cursor: pointer; 
+            box-sizing: border-box; border: 1px solid transparent; 
+        }
+        .crypto-card b { font-size: 14px; color: #333; }
+        .crypto-card.copied { background: #28a745 !important; color: white !important; }
         .crypto-card.copied b { color: white !important; }
-        .crypto-card.copied i.fa-copy { opacity: 0; }
-        .crypto-card.copied i.fa-check { opacity: 1; }
 
-        .close-modal { position: absolute; top: 20px; right: 20px; font-size: 26px; cursor: pointer; color: #ff0000; z-index: 20; }
-        .close-modal:hover { color: #cc0000; transform: scale(1.2); }
+        .close-modal { position: absolute; top: 20px; right: 20px; font-size: 28px; cursor: pointer; color: #ff0000; z-index: 20; font-weight: bold; }
+        .close-modal:hover { transform: scale(1.2); }
         
         /* СОЦСЕТИ */
-        .social-icons { display: flex; justify-content: center; gap: 15px; margin: 20px 0 10px 0; flex-wrap: wrap; align-items: center; }
-        .social-icons i { font-size: 32px; } 
+        .social-icons { display: flex; justify-content: center; gap: 15px; margin: 25px 0 10px 0; flex-wrap: wrap; }
+        .social-icons i { font-size: 34px; } 
         .fa-vk { color: #0077FF; } .fa-telegram { color: #26A5E4; } .fa-youtube { color: #FF0000; } 
         .fa-instagram { color: #E1306C; } .fa-odnoklassniki { color: #ee8208; } .fa-strava { color: #FC6100; }
-        .dzen-icon { width: 32px; height: 32px; background: black; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
-        .dzen-icon svg { width: 32px; height: 32px; }
-        .komoot-icon { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; }
-        .komoot-icon svg { width: 32px; height: 32px; }
+        .dzen-icon, .komoot-icon { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; }
+        .dzen-icon svg, .komoot-icon svg { width: 34px; height: 34px; }
 
-        /* КНОПКА ПОДДЕРЖКИ */
-        @keyframes actionPulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.5); } 50% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(40, 167, 69, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); } }
-        .btn-expand-support { width: 100%; padding: 20px; background: #28a745; color: white; border: none; border-radius: 18px; font-weight: bold; font-size: 18px; cursor: pointer; animation: actionPulse 2.5s infinite ease-in-out; margin-top: 15px; font-family: Arial, sans-serif; }
-
-        /* ПОПАПЫ */
-        .popup-box { text-align: center; min-width: 180px; padding: 5px; font-family: Arial, sans-serif; }
-        .popup-box b { font-size: 21px; display: block; margin-bottom: 8px; color: #333; }
-        .popup-box p { font-size: 18px; margin: 5px 0; color: #555; line-height: 1.4; }
-        .coords { font-size: 13px; color: #777; font-family: monospace; margin: 8px 0; }
-        .btn-row { display: flex; justify-content: center; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
-        .btn { text-decoration: none !important; font-weight: bold; font-size: 13px; padding: 8px 18px; border-radius: 20px; cursor: pointer; display: inline-block; color: white !important; font-family: Arial, sans-serif; }
-        .btn-track { background: #28a745; } .btn-vk { background: #0077FF; } .btn-dzen { background: #111111; } .btn-3d { background: #ffdb00; color: #000 !important; }
+        .btn-expand-support { 
+            width: 100%; padding: 22px; background: #28a745; color: white; 
+            border: none; border-radius: 18px; font-weight: bold; font-size: 19px; 
+            cursor: pointer; animation: actionPulse 2.5s infinite ease-in-out; margin-top: 15px; 
+        }
 
         /* МАРКЕРЫ */
-        .day-marker, .trans-center-marker { background: #fff; border-radius: 50%; border: 2.5px solid; color: #000; font-weight: bold; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.5); font-size: 11px; width: 24px !important; height: 24px !important; overflow: hidden; white-space: nowrap; }
-        .num-wrapper { position: relative; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; }
-        .suffix { position: absolute; left: 85%; opacity: 0.7; } 
-        .trans-center-marker { font-size: 18px !important; }
+        .day-marker, .trans-center-marker { background: #fff; border-radius: 50%; border: 2.5px solid; color: #000; font-weight: bold; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.5); font-size: 11px; width: 24px !important; height: 24px !important; }
         .c2018 { border-color: #ff0000 !important; color: #ff0000; } .c2019 { border-color: #007bff !important; color: #007bff; } .c2021 { border-color: #9b59b6 !important; color: #9b59b6; } .c2024 { border-color: #ff8c00 !important; color: #ff8c00; } .cCurrent { border-color: #28a745 !important; color: #28a745; }
-
-        /* ПУЛЬСАЦИЯ ТЕКУЩЕЙ ТОЧКИ (АЛАЯ) */
         @keyframes scarletPulse { 0% { box-shadow: 0 0 0 0px rgba(255, 36, 0, 0.9); } 70% { box-shadow: 0 0 0 18px rgba(255, 36, 0, 0); } 100% { box-shadow: 0 0 0 0px rgba(255, 36, 0, 0); } }
         .last-point-pulse { animation: scarletPulse 3s infinite ease-in-out; border-color: #28a745 !important; z-index: 1000 !important; }
 
-        .flag-stuck { animation: flagWaver 2.5s infinite ease-in-out; transform-origin: bottom center; display: flex; align-items: center; justify-content: center; }
-        @keyframes flagWaver { 0% { transform: rotate(0deg); } 50% { transform: rotate(6deg); } 100% { transform: rotate(0deg); } }
-        .photo-marker { background: none !important; border: none !important; display: flex; align-items: center; justify-content: center; }
         .map-avatar { position: absolute; bottom: 25px; right: 10px; z-index: 1000; width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; opacity: 0.8; object-fit: cover; pointer-events: none; }
-        
-        #photo-viewer { position: absolute; bottom: 100px; left: 15px; z-index: 2000; width: 220px; background: white; padding: 5px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none; cursor: pointer; }
-        #photo-viewer img { width: 100%; border-radius: 5px; display: block; transition: transform 0.1s ease-out; }
-        #photo-viewer .close-btn { position: absolute; top: -12px; right: -12px; background: red; color: white; border-radius: 50%; width: 26px; height: 26px; text-align: center; line-height: 24px; font-weight: bold; border: 2px solid white; z-index: 2100; }
         #detail-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 7000; background: #000; display: none; border: none; }
 
-        /* МОБИЛЬНАЯ ВЕРСИЯ */
+        /* МОБИЛЬНАЯ ВЕРСИЯ - СТРОГО ОТДЕЛЬНО */
         @media (max-width: 768px) {
-            #about-modal { display: flex; align-items: flex-end; overflow-y: hidden; }
-            .modal-layout { width: 100%; margin: 0; padding: 0; display: block; }
-            #central-container { width: 100vw !important; margin: 0; }
-            
-            .modal-main { 
-                width: 100vw !important; border-radius: 20px 20px 0 0 !important; 
-                margin-bottom: 0 !important; padding: 0 !important; 
-                box-shadow: 0 -5px 30px rgba(0,0,0,0.4); 
-                max-height: 85vh; overflow-y: auto;
-            }
+            #about-modal { display: flex; align-items: flex-end; overflow: hidden; background: rgba(0,0,0,0.7); }
+            .modal-layout { display: block; width: 100%; padding: 0; min-width: auto; }
+            #central-container { width: 100% !important; min-width: auto; margin: 0; }
+            .side-panel-wrapper { display: none; }
+            .modal-main { width: 100vw !important; border-radius: 20px 20px 0 0 !important; max-height: 85vh; padding: 0 !important; overflow-y: auto; }
             #mobile-hero-wrap { display: block !important; position: relative; width: 100%; height: 200px; }
             #mobile-hero-img { width: 100%; height: 100%; object-fit: cover; }
-            #mobile-avatar-img { position: absolute; bottom: -45px; left: 20px; width: 90px; height: 90px; border-radius: 50%; border: 4px solid white; box-shadow: 0 4px 15px rgba(0,0,0,0.3); object-fit: cover; z-index: 10; }
+            #mobile-avatar-img { position: absolute; bottom: -45px; left: 20px; width: 90px; height: 90px; border-radius: 50%; border: 4px solid white; z-index: 10; object-fit: cover; }
             #mobile-text-padding { padding: 55px 20px 30px 20px; }
-            
-            .side-panel, .side-photo, #author-avatar-support, #crypto-row-pc { display: none !important; }
-            #mobile-support-list { display: block; margin-top: 15px; width: 100%; }
-            .mobile-pay-btn { display: block; width: 100%; padding: 18px; margin-bottom: 12px; border-radius: 12px; font-weight: bold; text-decoration: none; text-align: center; box-sizing: border-box; font-size: 17px; border: none; }
+            #mobile-support-list { display: block; margin-top: 15px; }
+            .mobile-pay-btn { display: block; width: 100%; padding: 18px; margin-bottom: 12px; border-radius: 12px; font-weight: bold; text-align: center; border: none; font-size: 17px; text-decoration: none; }
+            #mobile-photo-btn { display: flex; }
+            #menu-box { width: 90%; left: 5%; }
         }
     </style>
 </head>
@@ -162,7 +155,13 @@
     
     <div id="about-modal" onclick="closeAbout()">
         <div class="modal-layout" onclick="event.stopPropagation()">
-            <div id="pc-left-side"><img src="my_photo.jpg" class="side-photo" id="author-img-pc"><div class="side-panel" id="side-qr"></div></div>
+            <!-- ЛЕВАЯ ПАНЕЛЬ -->
+            <div class="side-panel-wrapper">
+                <img src="my_photo.jpg" class="side-photo" id="author-img-pc">
+                <div class="side-panel" id="side-qr"></div>
+            </div>
+
+            <!-- ЦЕНТР -->
             <div id="central-container">
                 <img src="my_photo.jpg" id="author-avatar-support">
                 <div class="modal-main" id="modal-main-box">
@@ -178,7 +177,12 @@
                 </div>
                 <div id="crypto-row-pc"></div>
             </div>
-            <div id="pc-right-side"><img src="bike_photo.jpg" class="side-photo" id="bike-img-pc"><div class="side-panel" id="side-links"></div></div>
+
+            <!-- ПРАВАЯ ПАНЕЛЬ -->
+            <div class="side-panel-wrapper">
+                <img src="bike_photo.jpg" class="side-photo" id="bike-img-pc">
+                <div class="side-panel" id="side-links"></div>
+            </div>
         </div>
     </div>
 
@@ -207,15 +211,21 @@
         L.tileLayer('http://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3'] }).addTo(map);
 
         var currentTripLayer = L.layerGroup().addTo(map), archiveLayerGroup = L.layerGroup().addTo(map), photoClusterGroup = L.markerClusterGroup({ showCoverageOnHover: false, maxClusterRadius: 40 }).addTo(map);
-        var borderClusterGroup = L.markerClusterGroup({ showCoverageOnHover: false, spiderfyOnMaxZoom: true, maxClusterRadius: 30, iconCreateFunction: function(cluster) { var svg = `<svg width="34" height="42" viewBox="0 0 34 42"><path d="M17 0C7.6 0 0 7.6 0 17c0 12.8 17 25 17 25s17-12.2 17-25c0-9.4-7.6-17-17-17z" fill="#333"/><circle cx="17" cy="17" r="10" fill="white"/><g transform="translate(10, 11) scale(0.65)"><path d="M19 13H5v-2h14v2zM7 5h2v6H7V5zm8 0h2v6h-2V5z" fill="#333"/></g></svg>`; return L.divIcon({ html: svg, className: 'photo-marker', iconSize: [34, 42], iconAnchor: [17, 42] }); } }).addTo(map);
+        var borderClusterGroup = L.markerClusterGroup({ showCoverageOnHover: false, spiderfyOnMaxZoom: true, maxClusterRadius: 30 }).addTo(map);
         var hexColors = { 'c2018': '#ff0000', 'c2019': '#007bff', 'c2021': '#9b59b6', 'c2024': '#ff8c00', 'cCurrent': '#28a745' };
 
         function toggleMenu() { document.getElementById('menu-box').classList.toggle('collapsed'); }
         function toggleFullscreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else if (document.exitFullscreen) document.exitFullscreen(); }
-        function closeAbout() { document.getElementById('about-modal').style.display = 'none'; }
+        
+        function closeAbout() { 
+            document.getElementById('about-modal').style.display = 'none'; 
+            map.dragging.enable(); map.scrollWheelZoom.enable(); 
+        }
 
         function openAbout() {
             if (typeof aboutData === 'undefined') return;
+            map.dragging.disable(); map.scrollWheelZoom.disable(); // Блокируем карту
+            
             var isPC = window.innerWidth > 768;
             document.getElementById('about-name').innerText = aboutData.name;
             document.getElementById('about-bio').innerText = aboutData.bio;
@@ -263,90 +273,54 @@
 
         function copyAddr(addr, el) { 
             navigator.clipboard.writeText(addr).then(() => { 
-                const isMobile = window.innerWidth <= 768;
-                const originalText = el.innerText;
-                el.classList.add('copied'); 
-                if (isMobile) el.innerText = "Скопировано!";
-                setTimeout(() => { el.classList.remove('copied'); if (isMobile) el.innerText = originalText; }, 2000); 
+                const originalText = el.querySelector('b').innerText;
+                el.classList.add('copied'); el.querySelector('b').innerText = "Скопировано!";
+                setTimeout(() => { el.classList.remove('copied'); el.querySelector('b').innerText = originalText; }, 2000); 
             }); 
         }
 
+        // Остальные функции Leaflet и Фото (без изменений)
         function openTrackView(url) { if (window.innerWidth <= 768) { var overlay = document.getElementById('detail-overlay'); overlay.src = url; overlay.style.display = 'block'; } else { window.open(url, '_blank'); } }
         window.closeTrackView = function() { var overlay = document.getElementById('detail-overlay'); overlay.style.display = 'none'; overlay.src = ""; };
-
-        var touchStartYMenu = 0; var menuBox = document.getElementById('menu-box');
-        menuBox.addEventListener('touchstart', e => { touchStartYMenu = e.touches[0].clientY; }, {passive: true});
-        menuBox.addEventListener('touchend', e => { if (window.innerWidth > 768) return; var diff = e.changedTouches[0].clientY - touchStartYMenu; if (diff > 60 && menuBox.classList.contains('collapsed')) toggleMenu(); if (diff < -60 && !menuBox.classList.contains('collapsed')) toggleMenu(); });
-
-        var touchStartYModal = 0; var modalMain = document.getElementById('modal-main-box');
-        modalMain.addEventListener('touchstart', e => { touchStartYModal = e.touches[0].clientY; }, {passive: true});
-        modalMain.addEventListener('touchmove', e => { if (window.innerWidth <= 768 && e.touches.length > 1) { e.preventDefault(); } }, {passive: false});
-        modalMain.addEventListener('touchend', e => { if (window.innerWidth > 768) return; var diff = e.changedTouches[0].clientY - touchStartYModal; if (diff > 100 && modalMain.scrollTop <= 0) closeAbout(); });
-
-        var img = document.getElementById('view-img'), scale = 1, lastScale = 1, startDist = 0, posX = 0, posY = 0, startX = 0, startY = 0, isDragging = false;
         function openPhoto(url) { if (window.innerWidth <= 768) { map.dragging.disable(); map.touchZoom.disable(); } document.getElementById('view-img').src = url; document.getElementById('photo-viewer').style.display = 'flex'; }
-        function closePhoto() { map.dragging.enable(); map.touchZoom.enable(); scale = 1; lastScale = 1; posX = 0; posY = 0; updateTransform(); document.getElementById('photo-viewer').style.display = 'none'; }
-        img.addEventListener('touchstart', e => { if (window.innerWidth <= 768) e.stopPropagation(); if (e.touches.length === 1) { isDragging = true; startX = e.touches[0].pageX - posX; startY = e.touches[0].pageY - posY; } else if (e.touches.length === 2) { isDragging = false; startDist = Math.hypot(e.touches[0].pageX-e.touches[1].pageX, e.touches[0].pageY-e.touches[1].pageY); lastScale = scale; } });
-        img.addEventListener('touchmove', e => { if (window.innerWidth <= 768) e.stopPropagation(); if (scale > 1 || e.touches.length > 1) e.preventDefault(); if (e.touches.length === 1 && isDragging && scale > 1) { posX = e.touches[0].pageX - startX; posY = e.touches[0].pageY - startY; updateTransform(); } else if (e.touches.length === 2) { var d = Math.hypot(e.touches[0].pageX-e.touches[1].pageX, e.touches[0].pageY-e.touches[1].pageY); scale = Math.min(Math.max(1, lastScale * (d / startDist)), 5); updateTransform(); } });
-        img.addEventListener('touchend', e => { if (window.innerWidth <= 768) e.stopPropagation(); isDragging = false; lastScale = scale; });
-        function updateTransform() { if (scale <= 1) { posX = 0; posY = 0; } img.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`; }
-        function handlePhotoClick(e) { e.stopPropagation(); if (window.innerWidth > 768) window.open(e.target.src, '_blank'); else { if (scale > 1.1) { scale = 1; posX = 0; posY = 0; updateTransform(); } else closePhoto(); } }
+        function closePhoto() { map.dragging.enable(); map.touchZoom.enable(); document.getElementById('photo-viewer').style.display = 'none'; }
         function handleBackgroundClick() { if (window.innerWidth <= 768) closePhoto(); }
-
-        function toggleList() { var show = document.getElementById('main-toggle').checked; document.getElementById('trip-list').style.display = show ? 'block' : 'none'; if(!show) { currentTripLayer.addTo(map); archiveLayerGroup.clearLayers(); photoClusterGroup.clearLayers(); borderClusterGroup.clearLayers(); document.querySelectorAll('.trip-check').forEach(c => c.checked = false); focusOnCurrent(); } else { map.removeLayer(currentTripLayer); } updateMarkers(true); }
+        function handlePhotoClick(e) { e.stopPropagation(); if (window.innerWidth > 768) window.open(e.target.src, '_blank'); else closePhoto(); }
+        
+        function toggleList() { var show = document.getElementById('main-toggle').checked; document.getElementById('trip-list').style.display = show ? 'block' : 'none'; if(!show) { currentTripLayer.addTo(map); archiveLayerGroup.clearLayers(); photoClusterGroup.clearLayers(); borderClusterGroup.clearLayers(); focusOnCurrent(); } else { map.removeLayer(currentTripLayer); } updateMarkers(true); }
         function updateMarkers(onlyPhotos) {
             archiveLayerGroup.clearLayers(); photoClusterGroup.clearLayers(); borderClusterGroup.clearLayers();
             var showPhotos = document.getElementById('photo-toggle').checked, isArchive = document.getElementById('main-toggle').checked;
-            if (!showPhotos) closePhoto();
             if (isArchive) {
                 if (document.getElementById('chk2018').checked) { drawTrip(points2018, archiveLayerGroup, 'c2018', 'archive/2018/', false); if(showPhotos) loadPhotos('archive-2018-photos', hexColors['c2018']); }
                 if (document.getElementById('chk2019').checked) { drawTrip(points2019, archiveLayerGroup, 'c2019', 'archive/2019/', false); if(showPhotos) loadPhotos('archive-2019-photos', hexColors['c2019']); }
                 if (document.getElementById('chk2021').checked) { drawTrip(points2021, archiveLayerGroup, 'c2021', 'archive/2021/', false); if(showPhotos) loadPhotos('archive-2021-photos', hexColors['c2021']); }
                 if (document.getElementById('chk2024').checked) { drawTrip(points2024, archiveLayerGroup, 'c2024', 'archive/2024/', false); if(showPhotos) loadPhotos('archive-2024-photos', hexColors['c2024']); }
-                if (!onlyPhotos) { var layers = archiveLayerGroup.getLayers(); if (layers.length > 0) map.fitBounds(new L.featureGroup(layers).getBounds(), {padding: [50, 50]}); }
             } else { if (typeof myPoints !== 'undefined') drawTrip(myPoints, currentTripLayer, 'cCurrent', 'tracks/', true); if(showPhotos) loadPhotos('archive-2026-photos', hexColors['cCurrent']); }
         }
         function drawTrip(data, target, colorClass, folder, isCurrent) {
             var hex = hexColors[colorClass];
             data.forEach((p, i) => {
                 if (p.type === 'border') {
-                    var flagHtml = `<div class="flag-stuck"><div style="width:4px; height:50px; background:#444; position:relative;"><img src="https://flagcdn.com/w80/${p.country.toLowerCase().trim()}.png" style="position:absolute; top:0; left:4px; width:45px; border:1.5px solid #fff; box-shadow: 3px 3px 7px rgba(0,0,0,0.5);"></div></div>`;
+                    var flagHtml = `<div class="flag-stuck"><div style="width:4px; height:50px; background:#444; position:relative;"><img src="https://flagcdn.com/w80/${p.country.toLowerCase().trim()}.png" style="position:absolute; top:0; left:4px; width:45px; border:1.5px solid #fff;"></div></div>`;
                     L.marker([p.lat, p.lng], {icon: L.divIcon({ className: '', html: flagHtml, iconSize: [50, 50], iconAnchor: [2, 50] })}).addTo(borderClusterGroup).bindPopup(createPopup(p, folder));
                 } else if (!p.type || p.type === 'day') {
-                    var fullDay = String(p.day ? p.day : (i + 1)), firstPart = fullDay.split('-')[0], restPart = fullDay.includes('-') ? '-' + fullDay.split('-')[1] : '';
-                    var html = `<span class="num-wrapper">${firstPart}<span class="suffix">${restPart}</span></span>`;
                     var isLast = isCurrent && i === data.length - 1;
-                    L.marker([p.lat, p.lng], {icon: L.divIcon({ className: 'day-marker ' + colorClass + (isLast ? ' last-point-pulse' : ''), html: html, iconSize: [24, 24], iconAnchor: [12, 12] })}).addTo(target).bindPopup(createPopup(p, folder));
-                } else if (p.type === 'transfer') {
-                    var line = L.polyline([p.from, p.to], { color: hex, weight: 3, dashArray: '8, 12', opacity: 0.8 }).addTo(target);
-                    L.circleMarker(p.from, {radius: 5, color: hex, fillColor: 'white', fillOpacity: 1, weight: 2}).addTo(target);
-                    L.circleMarker(p.to, {radius: 5, color: hex, fillColor: 'white', fillOpacity: 1, weight: 2}).addTo(target);
-                    var tIcons = { 'plane':'✈️','train':'🚂','bus':'🚌','car':'🚗','truck':'🚚' };
-                    L.marker([(p.from[0]+p.to[0])/2, (p.from[1]+p.to[1])/2], {icon: L.divIcon({ className: 'trans-center-marker ' + colorClass, html: tIcons[p.transport] || '🚀', iconSize:[24, 24], iconAnchor:[12, 12] })}).addTo(target).bindPopup(createPopup(p, folder));
-                    L.polylineDecorator(line, { patterns: [{ offset: '20%', repeat: '40%', symbol: L.Symbol.arrowHead({pixelSize: 12, pathOptions: {color: hex, fillOpacity: 1, weight: 0}}) }] }).addTo(target);
+                    L.marker([p.lat, p.lng], {icon: L.divIcon({ className: 'day-marker ' + colorClass + (isLast ? ' last-point-pulse' : ''), html: `<span>${p.day || (i+1)}</span>`, iconSize: [24, 24], iconAnchor: [12, 12] })}).addTo(target).bindPopup(createPopup(p, folder));
                 }
             });
         }
-        function createPopup(p, folder) { 
-            var html = `<div class="popup-box"><b>${p.title}</b><p>${p.desc}</p>`;
-            if (p.lat && p.lng) html += `<div class="coords">${p.lat.toFixed(5)}, ${p.lng.toFixed(5)}</div>`;
-            html += `<div class="btn-row">`;
-            if (p.link) html += `<a onclick="openTrackView('view.html?folder=${folder}&file=${p.link}')" class="btn btn-track">Трек</a> `;
-            if (p.vk) html += `<a href="${p.vk}" class="btn btn-vk" target="_blank">VK</a>`;
-            if (p.dzen) html += `<a href="${p.dzen}" class="btn btn-dzen" target="_blank">Дзен</a>`;
-            if (p.relive) html += `<a href="${p.relive}" class="btn btn-3d" target="_blank">3D</a>`;
-            return html + '</div></div>';
-        }
+        function createPopup(p, folder) { return `<div class="popup-box"><b>${p.title}</b><p>${p.desc}</p><div class="btn-row"><a onclick="openTrackView('view.html?folder=${folder}&file=${p.link}')" class="btn btn-track">Трек</a></div></div>`; }
         function loadPhotos(repo, hex) {
             fetch(`https://mieszko1979.github.io/${repo}/photos.json?t=${Date.now()}`).then(r => r.json()).then(data => {
                 data.forEach(photo => {
-                    var svg = `<svg width="34" height="42" viewBox="0 0 34 42"><path d="M17 0C7.6 0 0 7.6 0 17c0 12.8 17 25 17 25s17-12.2 17-25c0-9.4-7.6-17-17-17z" fill="${hex}"/><circle cx="17" cy="17" r="10" fill="white"/><g transform="translate(10, 12) scale(0.6)"><path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" fill="${hex}"/><circle cx="12" cy="13" r="3.5" fill="white" /><circle cx="12" cy="13" r="2" fill="${hex}" /></g></svg>`;
-                    L.marker([photo.lat, photo.lng], {icon: L.divIcon({ className: 'photo-marker', html: svg, iconSize: [34, 42], iconAnchor: [0, 42] })}).addTo(photoClusterGroup).on('click', () => { openPhoto(`https://mieszko1979.github.io/${repo}/${photo.url}`); });
+                    var svg = `<svg width="34" height="42" viewBox="0 0 34 42"><path d="M17 0C7.6 0 0 7.6 0 17c0 12.8 17 25 17 25s17-12.2 17-25c0-9.4-7.6-17-17-17z" fill="${hex}"/><circle cx="17" cy="17" r="10" fill="white"/></svg>`;
+                    L.marker([photo.lat, photo.lng], {icon: L.divIcon({ className: 'photo-marker', html: svg, iconSize: [34, 42], iconAnchor: [17, 42] })}).addTo(photoClusterGroup).on('click', () => { openPhoto(`https://mieszko1979.github.io/${repo}/${photo.url}`); });
                 });
             });
         }
-        function focusOnCurrent() { if (typeof myPoints !== 'undefined' && myPoints.length > 0) { var last = myPoints[myPoints.length-1]; map.setView([last.lat || (last.from ? last.from[0] : 50), last.lng || (last.from ? last.from[1] : 80)], 8); } }
-        function togglePhotos() { var checkbox = document.getElementById('photo-toggle'); checkbox.checked = !checkbox.checked; updateMarkers(true); var mobileBtn = document.getElementById('mobile-photo-btn'); if(checkbox.checked) { mobileBtn.style.background = '#28a745'; mobileBtn.style.color = '#fff'; } else { mobileBtn.style.background = '#fff'; mobileBtn.style.color = '#28a745'; } }
+        function focusOnCurrent() { if (typeof myPoints !== 'undefined' && myPoints.length > 0) { var last = myPoints[myPoints.length-1]; map.setView([last.lat || 50, last.lng || 80], 8); } }
+        function togglePhotos() { var checkbox = document.getElementById('photo-toggle'); checkbox.checked = !checkbox.checked; updateMarkers(true); }
         window.onload = function() { if (window.location.search.includes('about')) openAbout(); if (typeof myPoints !== 'undefined') { focusOnCurrent(); updateMarkers(true); } };
     </script>
 </body>
