@@ -304,7 +304,7 @@
         var currentGalleryIndex = 0;
         var activePhotoMarker = null;
 
-        /* Умная пространственная сортировка от начала маршрута к концу */
+        /* Умная пространственная сортировка (ИСПРАВЛЕНО: берем Math.min для старта с начала) */
         function sortPhotosSpatially(photos) {
             if (!photos || photos.length <= 1) return photos;
             
@@ -318,7 +318,8 @@
                 }
             }
             
-            var startIdx = Math.max(extA, extB); 
+            // Используем Math.min, чтобы начать с точки, которая была записана раньше (начало пути)
+            var startIdx = Math.min(extA, extB); 
             
             var sorted = [];
             var unvisited = photos.slice();
@@ -469,10 +470,10 @@
             });
             activePhotoMarker = photo.marker;
 
-            // Плавное панорамирование (без изменения масштаба, заданного пользователем)
+            // Плавное панорамирование (без изменения масштаба)
             map.panTo([photo.lat, photo.lng], {animate: true, duration: 0.8});
 
-            // Навешиваем класс на видимый объект (это может быть сам маркер, а может быть весь КЛАСТЕР)
+            // Навешиваем класс пульсации на видимый элемент (если масштаб мелкий - это будет сам кластер)
             setTimeout(() => {
                 if (activePhotoMarker) {
                     var visibleNode = photoClusterGroup.getVisibleParent(activePhotoMarker);
@@ -509,6 +510,7 @@
             activePhotoMarker = null;
         }
 
+        /* Управление с клавиатуры (ПК) */
         document.addEventListener('keydown', function(e) {
             if(document.getElementById('photo-viewer').style.display === 'flex') {
                 if(e.key === 'ArrowRight') nextPhoto();
@@ -589,13 +591,13 @@
             });
         }
 
-        /* Жесткое центрирование на последней точке без отдаления масштаба */
+        /* Исправлено: фокус жестко центрируется на последней точке без отдаления масштаба */
         function focusOnCurrent() { 
             if (typeof myPoints !== 'undefined' && myPoints.length > 0) {
                 var last = myPoints[myPoints.length - 1];
                 var targetLat = last.lat || (last.from ? last.from[0] : 50);
                 var targetLng = last.lng || (last.from ? last.from[1] : 80);
-                map.flyTo([targetLat, targetLng], 8, { duration: 2.5 });
+                map.setView([targetLat, targetLng], 8, { animate: true, duration: 1.5 });
             } 
         }
 
