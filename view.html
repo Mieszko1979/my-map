@@ -53,6 +53,51 @@
         .photo-marker { background: none !important; border: none !important; display: flex; align-items: center; justify-content: center; }
         .map-avatar { position: absolute; bottom: 25px; right: 10px; z-index: 500; width: 50px; height: 50px; border-radius: 50%; border: 2px solid white; opacity: 0.8; object-fit: cover; }
 
+        /* ========================================= */
+        /* ПК ВЕРСИЯ - АДАПТИВНОЕ МАСШТАБИРОВАНИЕ    */
+        /* (Плавное увеличение на 2K/4K/8K мониторах)*/
+        /* ========================================= */
+        @media (min-width: 769px) {
+            #pc-photo-menu {
+                font-size: clamp(14px, 1.2vw, 18px);
+                padding: clamp(10px, 1vw, 14px) clamp(15px, 1.5vw, 22px);
+            }
+            #info-panel {
+                width: clamp(200px, 15vw, 320px);
+                padding: clamp(18px, 1.5vw, 28px);
+            }
+            .divider {
+                font-size: clamp(18px, 1.4vw, 26px);
+                margin-bottom: clamp(12px, 1vw, 18px);
+            }
+            .stat-item { margin-bottom: clamp(12px, 1vw, 18px); }
+            .stat-label {
+                font-size: clamp(11px, 0.9vw, 15px);
+            }
+            .stat-val {
+                font-size: clamp(22px, 1.8vw, 36px);
+            }
+            #chart-box {
+                /* График сможет раздвинуться до 1800px на сверхшироких экранах */
+                max-width: clamp(900px, 60vw, 1800px);
+                height: clamp(180px, 22vh, 350px);
+            }
+            .panel-close {
+                font-size: clamp(18px, 1.5vw, 28px);
+            }
+            .restore-btn {
+                font-size: clamp(12px, 1vw, 16px);
+                padding: clamp(5px, 0.6vw, 10px) clamp(10px, 1.2vw, 18px);
+            }
+            .map-avatar {
+                width: clamp(50px, 4vw, 80px);
+                height: clamp(50px, 4vw, 80px);
+            }
+        }
+
+        /* ========================================= */
+        /* МОБИЛЬНАЯ ВЕРСИЯ (Остается абсолютно нетронутой) */
+        /* ========================================= */
         @media (max-width: 768px) {
             .ctrl-btn { display: flex; } 
             #pc-photo-menu { display: none; } 
