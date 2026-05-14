@@ -59,13 +59,13 @@
         .side-panel { display: none; flex-direction: column; gap: 15px; animation: slideIn 0.3s ease-out; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Карточки QR */
+        /* Базовые стили карточек QR (переопределяются в ПК версии) */
         .qr-card { background: white; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.2); }
         .qr-card img { width: 100%; object-fit: contain; border-radius: 10px; }
         .qr-card b { display: block; margin-top: 8px; color: #333; font-family: Arial, sans-serif; }
         
         /* Оранжевая кнопка QR */
-        .btn-show-qr { background: #ff8c00; color: #000; font-weight: bold; border: none; cursor: pointer; width: 100%; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: 0.2s; font-family: Arial, sans-serif; margin-top: 5px; }
+        .btn-show-qr { background: #ff8c00; color: #000; font-weight: bold; border: none; cursor: pointer; width: 100%; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: 0.2s; font-family: Arial, sans-serif; }
         .btn-show-qr:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.2); }
         
         #qr-modal-overlay { position: fixed; top: 5%; left: 5%; width: 90%; height: 90%; background: rgba(80, 80, 80, 0.95); z-index: 9000; border-radius: 20px; display: none; align-items: center; justify-content: center; box-shadow: 0 10px 50px rgba(0,0,0,0.6); }
@@ -76,8 +76,8 @@
         .qr-modal-inner-card img { width: 100%; border-radius: 10px; }
         .qr-modal-inner-card b { font-size: 15px; color: #333; display: block; margin-top: 8px; font-family: Arial, sans-serif; }
 
-        .pay-link-btn { display: block; width: 100%; text-decoration: none; font-weight: bold; text-align: center; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 10px; transition: 0.2s; font-family: Arial, sans-serif; }
-        .pay-link-btn:hover { transform: translateY(-2px); }
+        .pay-link-btn { display: block; width: 100%; text-decoration: none; font-weight: bold; text-align: center; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: 0.2s; font-family: Arial, sans-serif; }
+        .pay-link-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.2); }
 
         /* КРИПТО ПК */
         #crypto-row-pc { position: relative; display: none; width: 100%; justify-content: space-between; z-index: 7000; animation: slideIn 0.5s ease-out; margin-top: 20px; }
@@ -163,7 +163,13 @@
         @media (min-width: 769px) {
             #about-modal { align-items: center; padding: 4vh 20px; overflow-y: auto; }
             .modal-layout { gap: clamp(30px, 4vw, 60px); min-width: 900px; margin: auto; max-width: 95vw; }
-            #pc-left-side, #pc-right-side { width: clamp(260px, 22vw, 380px); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+            
+            /* Обе колонки (левая с QR и правая с банками) теперь симметричны и чуть у́же */
+            #pc-left-side, #pc-right-side { 
+                width: clamp(220px, 20vw, 280px); 
+                display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            }
+            
             #central-container { width: clamp(450px, 35vw, 680px); }
             .side-photo { width: 100%; aspect-ratio: 350 / 480; height: auto; border-radius: clamp(15px, 2vw, 25px); }
             .side-panel { width: 100%; }
@@ -175,11 +181,50 @@
             #crypto-row-pc { gap: clamp(10px, 1.5vw, 20px); }
             .crypto-card { padding: clamp(10px, 1vw, 14px) clamp(12px, 1.5vw, 20px); border-radius: clamp(10px, 1.2vw, 16px); }
             .crypto-card b { font-size: clamp(12px, 1vw, 15px); }
-            .pay-link-btn { font-size: clamp(12px, 1.1vw, 15px); padding: clamp(10px, 1.1vw, 14px); border-radius: clamp(10px, 1.2vw, 15px); }
-            .btn-show-qr { font-size: clamp(12px, 1.1vw, 15px); padding: clamp(10px, 1.1vw, 14px); border-radius: clamp(10px, 1.2vw, 15px); }
-            .qr-card { padding: clamp(10px, 1vw, 15px); border-radius: clamp(12px, 1.5vw, 18px); }
-            .qr-card img { max-height: clamp(100px, 15vh, 160px); } 
-            .qr-card b { font-size: clamp(12px, 1vw, 14px); }
+            
+            /* Кнопки банков справа */
+            .pay-link-btn { font-size: clamp(13px, 1.1vw, 16px); padding: clamp(12px, 1.1vw, 16px); border-radius: clamp(10px, 1.2vw, 15px); }
+            
+            /* Кнопка "Показать QR-код" (стилизована под кнопки банков справа) */
+            .btn-show-qr { 
+                font-size: clamp(13px, 1.1vw, 16px); 
+                padding: clamp(12px, 1.1vw, 16px); 
+                border-radius: clamp(10px, 1.2vw, 15px); 
+            }
+
+            /* --- СТИЛЬНЫЕ ВИДЖЕТЫ QR-КОДОВ (Вариант 1) --- */
+            .qr-card {
+                background: #f8f9fa; /* Дорогой светло-серый оттенок */
+                padding: clamp(12px, 1.2vw, 18px);
+                border-radius: clamp(15px, 2vw, 20px);
+                border: 1px solid #eaeaea; /* Тонкая рамка */
+                width: 100%;
+                box-sizing: border-box;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+            }
+            .qr-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            }
+            .qr-card img {
+                width: 100%;
+                max-width: clamp(110px, 12vw, 150px); /* Жестко ограничиваем максимальный размер квадрата */
+                aspect-ratio: 1 / 1; /* Квадрат */
+                background: white; /* Белая подложка */
+                padding: 8px; /* Внутренний отступ */
+                border-radius: 12px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.08); /* Легкая тень внутри */
+                object-fit: contain;
+            }
+            .qr-card b {
+                font-size: clamp(12px, 1.1vw, 15px);
+                margin-top: 12px;
+                color: #444;
+            }
+            /* ------------------------------------------- */
 
             /* Адаптивное превью фото для больших мониторов */
             #photo-viewer {
@@ -325,7 +370,7 @@
         var map = L.map('map', {zoomControl: false, attributionControl: true}).setView([50, 80], 4);
         map.attributionControl.setPrefix('Мое велопутешествие');
         
-        // --- ИСПРАВЛЕНИЕ 1: HTTPS протокол и Переключатель слоев ---
+        // --- HTTPS протокол и Переключатель слоев ---
         var googleHybrid = L.tileLayer('https://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3'] });
         var googleMap = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3'] });
         
@@ -499,7 +544,7 @@
             
             highlightActivePhoto(photo, g.hex);
 
-            // --- ИСПРАВЛЕНИЕ 3: Предзагрузка следующего фото для мгновенного перелистывания ---
+            // --- Предзагрузка следующего фото для мгновенного перелистывания ---
             var nextIdx = (index + 1) % g.photos.length;
             var imgPreload = new Image();
             imgPreload.src = `https://mieszko1979.github.io/${repo}/${g.photos[nextIdx].url}`;
