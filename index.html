@@ -68,7 +68,6 @@
         .btn-show-qr { background: #ff8c00; color: #000; font-weight: bold; border: none; cursor: pointer; width: 100%; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: 0.2s; font-family: Arial, sans-serif; margin-top: 5px; }
         .btn-show-qr:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.2); }
         
-        /* Новое окно со всеми QR кодами */
         #qr-modal-overlay { position: fixed; top: 5%; left: 5%; width: 90%; height: 90%; background: rgba(80, 80, 80, 0.95); z-index: 9000; border-radius: 20px; display: none; align-items: center; justify-content: center; box-shadow: 0 10px 50px rgba(0,0,0,0.6); }
         .close-qr-modal { position: absolute; top: 20px; right: 25px; font-size: 36px; color: #ff0000; cursor: pointer; font-weight: bold; transition: 0.2s; z-index: 9001; }
         .close-qr-modal:hover { color: #cc0000; transform: scale(1.2); }
@@ -112,6 +111,10 @@
         @keyframes scarletPulse { 0% { box-shadow: 0 0 0 0px rgba(255, 36, 0, 0.9); } 70% { box-shadow: 0 0 0 18px rgba(255, 36, 0, 0); } 100% { box-shadow: 0 0 0 0px rgba(255, 36, 0, 0); } }
         .last-point-pulse { animation: scarletPulse 3s infinite ease-in-out; border-color: #28a745 !important; z-index: 1000 !important; }
 
+        /* ПУЛЬСАЦИЯ АКТИВНОГО ФОТО */
+        @keyframes photoPulseAnim { 0% { box-shadow: 0 0 0 0 var(--pulse-color); } 70% { box-shadow: 0 0 0 20px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
+        .photo-pulse-dot { border-radius: 50%; animation: photoPulseAnim 2s infinite ease-in-out; width: 100%; height: 100%; box-sizing: border-box; }
+
         .flag-stuck { animation: flagWaver 2.5s infinite ease-in-out; transform-origin: bottom center; display: flex; align-items: center; justify-content: center; }
         @keyframes flagWaver { 0% { transform: rotate(0deg); } 50% { transform: rotate(6deg); } 100% { transform: rotate(0deg); } }
         
@@ -136,6 +139,11 @@
         #photo-viewer { position: absolute; bottom: 100px; left: 15px; z-index: 2000; width: 220px; background: white; padding: 5px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none; cursor: pointer; }
         #photo-viewer img { width: 100%; border-radius: 5px; display: block; transition: transform 0.1s ease-out; }
         #photo-viewer .close-btn { position: absolute; top: -12px; right: -12px; background: red; color: white; border-radius: 50%; width: 26px; height: 26px; text-align: center; line-height: 24px; font-weight: bold; border: 2px solid white; z-index: 2100; }
+        
+        .photo-nav-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.6); color: white; padding: 10px 15px; cursor: pointer; font-size: 18px; border-radius: 8px; user-select: none; z-index: 2100; transition: 0.2s; }
+        .photo-nav-btn:hover { background: rgba(0,0,0,0.9); scale: 1.1; }
+        #photo-prev { left: 5px; } #photo-next { right: 5px; }
+
         #detail-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 7000; background: #000; display: none; border: none; }
 
         /* ========================================= */
@@ -190,13 +198,20 @@
             #photo-viewer img { width: 100%; height: 100%; object-fit: contain; border-radius: 0; }
             #photo-viewer .close-btn { display: none !important; }
             #qr-modal-overlay { display: none !important; }
+            .photo-nav-btn { display: none !important; } /* Прячем стрелки галереи на мобильных */
         }
     </style>
 </head>
 <body>
     <button id="mobile-photo-btn" onclick="togglePhotos()"><i class="fa-solid fa-camera"></i></button>
     <iframe id="detail-overlay" src=""></iframe>
-    <div id="photo-viewer" onclick="handleBackgroundClick()"><div class="close-btn" onclick="closePhoto()">×</div><img id="view-img" src="" onclick="handlePhotoClick(event)"></div>
+    
+    <div id="photo-viewer" onclick="handleBackgroundClick()">
+        <div class="close-btn" onclick="closePhoto()">×</div>
+        <div id="photo-prev" class="photo-nav-btn" onclick="prevPhoto(event)">&#10094;</div>
+        <img id="view-img" src="" onclick="handlePhotoClick(event)">
+        <div id="photo-next" class="photo-nav-btn" onclick="nextPhoto(event)">&#10095;</div>
+    </div>
     
     <div id="about-modal" onclick="closeAbout()">
         <div class="modal-layout" onclick="event.stopPropagation()">
@@ -273,6 +288,12 @@
         var borderClusterGroup = L.markerClusterGroup({ showCoverageOnHover: false, spiderfyOnMaxZoom: true, maxClusterRadius: 30, iconCreateFunction: function(cluster) { var svg = `<svg width="34" height="42" viewBox="0 0 34 42"><path d="M17 0C7.6 0 0 7.6 0 17c0 12.8 17 25 17 25s17-12.2 17-25c0-9.4-7.6-17-17-17z" fill="#333"/><circle cx="17" cy="17" r="10" fill="white"/><g transform="translate(10, 11) scale(0.65)"><path d="M19 13H5v-2h14v2zM7 5h2v6H7V5zm8 0h2v6h-2V5z" fill="#333"/></g></svg>`; return L.divIcon({ html: svg, className: 'photo-marker', iconSize: [34, 42], iconAnchor: [17, 42] }); } }).addTo(map);
         var hexColors = { 'c2018': '#ff0000', 'c2019': '#007bff', 'c2021': '#9b59b6', 'c2024': '#ff8c00', 'cCurrent': '#28a745' };
 
+        /* Глобальные переменные для галереи */
+        var loadedPhotosMap = {};
+        var currentGalleryRepo = '';
+        var currentGalleryIndex = 0;
+        var activePulseMarker = null;
+
         function toggleMenu() { document.getElementById('menu-box').classList.toggle('collapsed'); }
         function toggleFullscreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else if (document.exitFullscreen) document.exitFullscreen(); }
         function closeAbout() { document.getElementById('about-modal').style.display = 'none'; }
@@ -288,7 +309,6 @@
                 var lowId = s.id.toLowerCase();
                 if(lowId === 'dzen') { sHtml += `<a href="${s.url}" target="_blank"><div class="dzen-icon"><svg viewBox="0 0 100 100"><rect width="100" height="100" rx="25" fill="black"/><path d="M50 15 C52 40 60 48 85 50 C60 52 52 60 50 85 C48 60 40 52 15 50 C40 48 48 40 50 15 Z" fill="white"/></svg></div></a>`; } 
                 else if (lowId === 'komoot') { 
-                    /* Точная отрисовка официального логотипа Komoot */
                     sHtml += `<a href="${s.url}" target="_blank">
                                 <div class="komoot-icon">
                                     <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -382,14 +402,80 @@
         }, {passive: false});
         modalMain.addEventListener('touchend', e => { if (window.innerWidth > 768) return; var diff = e.changedTouches[0].clientY - touchStartYModal; if (diff > 100 && modalMain.scrollTop <= 0) closeAbout(); });
 
+        /* ЛОГИКА ГАЛЕРЕИ И ЛАЙТБОКСА */
         var img = document.getElementById('view-img'), scale = 1, lastScale = 1, startDist = 0, posX = 0, posY = 0, startX = 0, startY = 0, isDragging = false;
-        function openPhoto(url) { if (window.innerWidth <= 768) { map.dragging.disable(); map.touchZoom.disable(); } document.getElementById('view-img').src = url; document.getElementById('photo-viewer').style.display = 'flex'; }
-        function closePhoto() { map.dragging.enable(); map.touchZoom.enable(); scale = 1; lastScale = 1; posX = 0; posY = 0; updateTransform(); document.getElementById('photo-viewer').style.display = 'none'; }
+        
+        function openPhotoByIndex(repo, index) {
+            var g = loadedPhotosMap[repo];
+            if(!g || !g.photos[index]) return;
+            currentGalleryRepo = repo;
+            currentGalleryIndex = index;
+            var photo = g.photos[index];
+            
+            if (window.innerWidth <= 768) { map.dragging.disable(); map.touchZoom.disable(); }
+            document.getElementById('view-img').src = `https://mieszko1979.github.io/${repo}/${photo.url}`;
+            document.getElementById('photo-viewer').style.display = 'flex';
+            
+            highlightActivePhoto(photo, g.hex);
+        }
+
+        function highlightActivePhoto(photo, hex) {
+            if(activePulseMarker) { map.removeLayer(activePulseMarker); }
+            var pulseHtml = `<div class="photo-pulse-dot" style="--pulse-color: ${hex}; background: ${hex}; border: 2px solid white;"></div>`;
+            activePulseMarker = L.marker([photo.lat, photo.lng], {
+                icon: L.divIcon({ className: '', html: pulseHtml, iconSize: [24, 24], iconAnchor: [12, 12] }),
+                zIndexOffset: 2000, interactive: false
+            });
+
+            if (photo.marker && typeof photoClusterGroup.zoomToShowLayer === 'function') {
+                photoClusterGroup.zoomToShowLayer(photo.marker, function() {
+                    activePulseMarker.addTo(map);
+                });
+            } else {
+                activePulseMarker.addTo(map);
+                map.flyTo([photo.lat, photo.lng], Math.max(map.getZoom(), 12), {animate: true, duration: 1.5});
+            }
+        }
+
+        function nextPhoto(e) {
+            if(e) e.stopPropagation();
+            var g = loadedPhotosMap[currentGalleryRepo];
+            if(!g || g.photos.length === 0) return;
+            openPhotoByIndex(currentGalleryRepo, (currentGalleryIndex + 1) % g.photos.length);
+        }
+
+        function prevPhoto(e) {
+            if(e) e.stopPropagation();
+            var g = loadedPhotosMap[currentGalleryRepo];
+            if(!g || g.photos.length === 0) return;
+            openPhotoByIndex(currentGalleryRepo, (currentGalleryIndex - 1 + g.photos.length) % g.photos.length);
+        }
+
+        function closePhoto() { 
+            map.dragging.enable(); map.touchZoom.enable(); scale = 1; lastScale = 1; posX = 0; posY = 0; updateTransform(); 
+            document.getElementById('photo-viewer').style.display = 'none'; 
+            if(activePulseMarker) { map.removeLayer(activePulseMarker); activePulseMarker = null; }
+        }
+
+        /* Управление с клавиатуры (ПК) */
+        document.addEventListener('keydown', function(e) {
+            if(document.getElementById('photo-viewer').style.display === 'flex') {
+                if(e.key === 'ArrowRight') nextPhoto();
+                else if(e.key === 'ArrowLeft') prevPhoto();
+                else if(e.key === 'Escape') closePhoto();
+            }
+        });
+
         img.addEventListener('touchstart', e => { if (window.innerWidth <= 768) e.stopPropagation(); if (e.touches.length === 1) { isDragging = true; startX = e.touches[0].pageX - posX; startY = e.touches[0].pageY - posY; } else if (e.touches.length === 2) { isDragging = false; startDist = Math.hypot(e.touches[0].pageX-e.touches[1].pageX, e.touches[0].pageY-e.touches[1].pageY); lastScale = scale; } });
         img.addEventListener('touchmove', e => { if (window.innerWidth <= 768) e.stopPropagation(); if (scale > 1 || e.touches.length > 1) e.preventDefault(); if (e.touches.length === 1 && isDragging && scale > 1) { posX = e.touches[0].pageX - startX; posY = e.touches[0].pageY - startY; updateTransform(); } else if (e.touches.length === 2) { var d = Math.hypot(e.touches[0].pageX-e.touches[1].pageX, e.touches[0].pageY-e.touches[1].pageY); scale = Math.min(Math.max(1, lastScale * (d / startDist)), 5); updateTransform(); } });
         img.addEventListener('touchend', e => { if (window.innerWidth <= 768) e.stopPropagation(); isDragging = false; lastScale = scale; });
         function updateTransform() { if (scale <= 1) { posX = 0; posY = 0; } img.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`; }
-        function handlePhotoClick(e) { e.stopPropagation(); if (window.innerWidth > 768) window.open(e.target.src, '_blank'); else { if (scale > 1.1) { scale = 1; posX = 0; posY = 0; updateTransform(); } else closePhoto(); } }
+        
+        function handlePhotoClick(e) { 
+            e.stopPropagation(); 
+            if (window.innerWidth > 768) window.open(e.target.src, '_blank'); 
+            else { if (scale > 1.1) { scale = 1; posX = 0; posY = 0; updateTransform(); } else closePhoto(); } 
+        }
         function handleBackgroundClick() { if (window.innerWidth <= 768) closePhoto(); }
 
         function toggleList() { var show = document.getElementById('main-toggle').checked; document.getElementById('trip-list').style.display = show ? 'block' : 'none'; if(!show) { currentTripLayer.addTo(map); archiveLayerGroup.clearLayers(); photoClusterGroup.clearLayers(); borderClusterGroup.clearLayers(); document.querySelectorAll('.trip-check').forEach(c => c.checked = false); focusOnCurrent(); } else { map.removeLayer(currentTripLayer); } updateMarkers(true); }
@@ -436,15 +522,31 @@
             if (p.relive) html += `<a href="${p.relive}" class="btn btn-3d" target="_blank">3D</a>`;
             return html + '</div></div>';
         }
+
         function loadPhotos(repo, hex) {
             fetch(`https://mieszko1979.github.io/${repo}/photos.json?t=${Date.now()}`).then(r => r.json()).then(data => {
-                data.forEach(photo => {
+                loadedPhotosMap[repo] = { hex: hex, photos: data };
+                data.forEach((photo, idx) => {
                     var svg = `<svg width="34" height="42" viewBox="0 0 34 42"><path d="M17 0C7.6 0 0 7.6 0 17c0 12.8 17 25 17 25s17-12.2 17-25c0-9.4-7.6-17-17-17z" fill="${hex}"/><circle cx="17" cy="17" r="10" fill="white"/><g transform="translate(10, 12) scale(0.6)"><path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" fill="${hex}"/><circle cx="12" cy="13" r="3.5" fill="white" /><circle cx="12" cy="13" r="2" fill="${hex}" /></g></svg>`;
-                    L.marker([photo.lat, photo.lng], {icon: L.divIcon({ className: 'photo-marker', html: svg, iconSize: [34, 42], iconAnchor: [0, 42] })}).addTo(photoClusterGroup).on('click', () => { openPhoto(`https://mieszko1979.github.io/${repo}/${photo.url}`); });
+                    var marker = L.marker([photo.lat, photo.lng], {icon: L.divIcon({ className: 'photo-marker', html: svg, iconSize: [34, 42], iconAnchor: [0, 42] })});
+                    photo.marker = marker; // Сохраняем ссылку для zoomToShowLayer
+                    marker.addTo(photoClusterGroup).on('click', () => { openPhotoByIndex(repo, idx); });
                 });
             });
         }
-        function focusOnCurrent() { if (typeof myPoints !== 'undefined' && myPoints.length > 0) { var last = myPoints[myPoints.length-1]; map.setView([last.lat || (last.from ? last.from[0] : 50), last.lng || (last.from ? last.from[1] : 80)], 8); } }
+
+        function focusOnCurrent() { 
+            if (typeof myPoints !== 'undefined' && myPoints.length > 0) {
+                // Кинематографичный flyToBounds только для текущего маршрута
+                var lats = myPoints.map(p => p.lat || (p.from ? p.from[0] : null)).filter(l => l);
+                var lngs = myPoints.map(p => p.lng || (p.from ? p.from[1] : null)).filter(l => l);
+                if (lats.length > 0) {
+                    var bounds = L.latLngBounds(lats.map((lat, i) => [lat, lngs[i]]));
+                    map.flyToBounds(bounds, { padding: [50, 50], duration: 3, easeLinearity: 0.25 });
+                }
+            } 
+        }
+
         function togglePhotos() { var checkbox = document.getElementById('photo-toggle'); checkbox.checked = !checkbox.checked; updateMarkers(true); var mobileBtn = document.getElementById('mobile-photo-btn'); if(checkbox.checked) { mobileBtn.style.background = '#28a745'; mobileBtn.style.color = '#fff'; } else { mobileBtn.style.background = '#fff'; mobileBtn.style.color = '#28a745'; } }
         window.onload = function() { if (window.location.search.includes('about')) openAbout(); if (typeof myPoints !== 'undefined') { focusOnCurrent(); updateMarkers(true); } };
     </script>
