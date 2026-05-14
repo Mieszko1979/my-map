@@ -490,14 +490,14 @@
             if(e) e.stopPropagation();
             var g = loadedPhotosMap[currentGalleryRepo];
             if(!g || g.photos.length === 0) return;
-            openPhotoByIndex(currentGalleryRepo, (currentGalleryIndex + 1) % g.photos.length);
+            openPhotoByIndex(currentGalleryRepo, (currentGalleryIndex - 1 + g.photos.length) % g.photos.length);
         }
 
         function prevPhoto(e) {
             if(e) e.stopPropagation();
             var g = loadedPhotosMap[currentGalleryRepo];
             if(!g || g.photos.length === 0) return;
-            openPhotoByIndex(currentGalleryRepo, (currentGalleryIndex - 1 + g.photos.length) % g.photos.length);
+            openPhotoByIndex(currentGalleryRepo, (currentGalleryIndex + 1) % g.photos.length);
         }
 
         function closePhoto() { 
@@ -591,13 +591,13 @@
             });
         }
 
-        /* Исправлено: фокус жестко центрируется на последней точке без отдаления масштаба */
+        /* Эффект полета как в Google Планета к последней точке текущего трека */
         function focusOnCurrent() { 
             if (typeof myPoints !== 'undefined' && myPoints.length > 0) {
                 var last = myPoints[myPoints.length - 1];
                 var targetLat = last.lat || (last.from ? last.from[0] : 50);
                 var targetLng = last.lng || (last.from ? last.from[1] : 80);
-                map.setView([targetLat, targetLng], 8, { animate: true, duration: 1.5 });
+                map.flyTo([targetLat, targetLng], 10, { animate: true, duration: 2.5 });
             } 
         }
 
