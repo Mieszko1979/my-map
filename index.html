@@ -145,7 +145,7 @@
         .c2018 { border-color: #ff0000 !important; color: #ff0000; } .c2019 { border-color: #007bff !important; color: #007bff; } .c2021 { border-color: #9b59b6 !important; color: #9b59b6; } .c2024 { border-color: #ff8c00 !important; color: #ff8c00; } .cCurrent { border-color: #28a745 !important; color: #28a745; }
 
         /* ОБНОВЛЕННЫЙ ЛАЙТБОКС С ПОЛУПРОЗРАЧНЫМИ СТРЕЛКАМИ */
-        #photo-viewer { position: absolute; bottom: 100px; left: 35px; z-index: 2000; width: 220px; background: white; padding: 6px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; cursor: pointer; border: 1px solid rgba(0,0,0,0.1); overflow: visible; }
+        #photo-viewer { position: absolute; bottom: 100px; left: 35px; z-index: 2000; width: 220px; background: white; padding: 6px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; cursor: pointer; border: 1px solid rgba(0,0,0,0.1); overflow: visible; transition: transform 0.2s ease, box-shadow 0.2s ease; }
         #photo-viewer img { width: 100%; border-radius: 8px; display: block; transition: transform 0.1s ease-out; }
         #photo-viewer .close-btn { position: absolute; top: -12px; right: -12px; background: #ff0000; color: white; border-radius: 50%; width: 26px; height: 26px; text-align: center; line-height: 22px; font-size: 18px; font-weight: bold; border: 2px solid white; z-index: 2100; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: 0.2s; }
         #photo-viewer .close-btn:hover { background: #cc0000; transform: scale(1.15); }
@@ -186,6 +186,12 @@
                 width: clamp(220px, 18vw, 450px);
                 padding: clamp(6px, 0.5vw, 12px);
                 bottom: clamp(100px, 10vh, 140px);
+            }
+            
+            /* Плавное увеличение при наведении на фото */
+            #photo-viewer:hover {
+                transform: scale(1.05);
+                box-shadow: 0 15px 45px rgba(0,0,0,0.6);
             }
             
             #photo-viewer .close-btn {
