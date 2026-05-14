@@ -140,29 +140,29 @@
 
         /* ========================================= */
         /* ПК ВЕРСИЯ - СКОРРЕКТИРОВАННЫЕ ПРОПОРЦИИ   */
-        /* (Оптимизировано для оконного режима 2560x1440) */
+        /* (Расширенный интерфейс для 2K/4K экранов) */
         /* ========================================= */
         @media (min-width: 769px) {
             #about-modal {
-                align-items: center; /* Центрируем по вертикали */
-                padding: 4vh 20px; /* Отступы зависят от высоты экрана */
-                overflow-y: auto; /* Скролл, если окно браузера сжали сверху вниз */
+                align-items: center; 
+                padding: 4vh 20px; 
+                overflow-y: auto; 
             }
             .modal-layout {
-                gap: clamp(20px, 3vw, 40px);
-                min-width: 850px; /* Минимальная ширина до появления горизонтального скролла */
+                gap: clamp(30px, 4vw, 60px); /* Увеличены отступы, чтобы блоки "дышали" */
+                min-width: 900px; 
                 margin: auto;
                 max-width: 95vw;
             }
             
-            /* Боковые блоки (сдерживаем их рост на 4K экранах) */
+            /* Боковые блоки (фото и кнопки) стали шире */
             #pc-left-side, #pc-right-side {
-                width: clamp(220px, 18vw, 320px); 
+                width: clamp(260px, 22vw, 380px); 
                 display: flex; flex-direction: column; align-items: center; justify-content: center;
             }
             
-            /* Центральный блок (сдерживаем ширину для лучшей читаемости) */
-            #central-container { width: clamp(400px, 32vw, 600px); }
+            /* Центральный блок стал шире, текст не будет так сильно вытягивать окно вниз */
+            #central-container { width: clamp(450px, 35vw, 680px); }
             
             .side-photo {
                 width: 100%;
@@ -172,13 +172,12 @@
             }
             .side-panel { width: 100%; }
             
-            /* Аватарка. Строго 130px. 35% перекрытия = 45.5px внутри. 84.5px снаружи (округляем до 85) */
+            /* Аватарка. Вернул 140px, чтобы она была солидной. Пересчитал 35%: 140 - 49 = 91px */
             #author-avatar-support {
-                width: 130px; height: 130px;
-                top: -85px; left: -30px;
+                width: 140px; height: 140px;
+                top: -91px; left: -30px;
             }
             
-            /* Слегка уменьшенные шрифты, чтобы имитировать масштаб 90% */
             #about-name { font-size: clamp(22px, 2vw, 28px); }
             #about-bio { font-size: clamp(14px, 1.1vw, 17px); }
             .btn-expand-support { font-size: clamp(15px, 1.2vw, 18px); padding: clamp(14px, 1.2vw, 20px); border-radius: clamp(12px, 1.5vw, 18px); }
@@ -186,7 +185,7 @@
             .modal-main {
                 padding: clamp(20px, 2vw, 35px);
                 border-radius: clamp(15px, 2vw, 25px);
-                max-height: 75vh; /* Ограничиваем высоту по видимой части экрана (оставит место для вкладок/панели задач) */
+                max-height: 80vh; 
             }
             
             #crypto-row-pc { gap: clamp(10px, 1.5vw, 20px); }
@@ -197,8 +196,8 @@
             .btn-show-qr { font-size: clamp(12px, 1.1vw, 15px); padding: clamp(10px, 1.1vw, 14px); border-radius: clamp(10px, 1.2vw, 15px); }
             
             .qr-card { padding: clamp(10px, 1vw, 15px); border-radius: clamp(12px, 1.5vw, 18px); }
-            .qr-card img { max-height: clamp(90px, 12vh, 130px); } /* Сдерживаем рост QR по высоте */
-            .qr-card b { font-size: clamp(11px, 1vw, 14px); }
+            .qr-card img { max-height: clamp(100px, 15vh, 160px); } /* QR коды тоже будут покрупнее */
+            .qr-card b { font-size: clamp(12px, 1vw, 14px); }
         }
 
         /* ========================================= */
