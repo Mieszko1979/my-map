@@ -36,29 +36,68 @@
         .restore-btn { position: absolute; z-index: 999; background: rgba(255,255,255,0.8); border: 1px solid #ccc; padding: 5px 10px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; display: none; color: #333; }
         #res-stats { top: 15px; right: 15px; } #res-chart { bottom: 20px; left: 50%; transform: translateX(-50%); }
         
+        /* ЛАЙТБОКС ФОТО */
         #photo-viewer { position: absolute; bottom: 100px; left: 15px; z-index: 2000; width: 220px; background: white; padding: 5px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none; cursor: pointer; touch-action: none; }
         #photo-viewer img { width: 100%; border-radius: 5px; display: block; transition: transform 0.1s ease-out; }
         
-        #photo-viewer .close-btn { position: absolute; top: -14px; right: -14px; background: #ff0000; color: white; border-radius: 50%; width: 28px; height: 28px; text-align: center; line-height: 26px; font-weight: bold; border: 2px solid white; z-index: 2100; box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+        /* КРАСНЫЙ КРЕСТИК ФОТО */
+        #photo-viewer .close-btn { 
+            position: absolute; top: -14px; right: -14px; background: #ff0000; color: white; 
+            border-radius: 50%; width: 28px; height: 28px; text-align: center; line-height: 26px; 
+            font-weight: bold; border: 2px solid white; z-index: 2100; box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        }
         #photo-viewer .close-btn:hover { background: #cc0000; transform: scale(1.1); }
 
-        .hover-dot { background: transparent; }
+        .marker-ab { background: #ff0000; border: 2px solid white; border-radius: 50%; color: white; font-weight: bold; text-align: center; line-height: 24px; font-size: 14px; }
+        .hover-dot { background: #fff; border: 3px solid #ff0000; border-radius: 50%; box-shadow: 0 0 10px rgba(255,255,255,0.8); }
         .photo-marker { background: none !important; border: none !important; display: flex; align-items: center; justify-content: center; }
         .map-avatar { position: absolute; bottom: 25px; right: 10px; z-index: 500; width: 50px; height: 50px; border-radius: 50%; border: 2px solid white; opacity: 0.8; object-fit: cover; }
 
+        /* ========================================= */
+        /* ПК ВЕРСИЯ - АДАПТИВНОЕ МАСШТАБИРОВАНИЕ    */
+        /* (Плавное увеличение на 2K/4K/8K мониторах)*/
+        /* ========================================= */
         @media (min-width: 769px) {
-            #pc-photo-menu { font-size: clamp(14px, 1.2vw, 18px); padding: clamp(10px, 1vw, 14px) clamp(15px, 1.5vw, 22px); }
-            #info-panel { width: clamp(200px, 15vw, 320px); padding: clamp(18px, 1.5vw, 28px); }
-            .divider { font-size: clamp(18px, 1.4vw, 26px); margin-bottom: clamp(12px, 1vw, 18px); }
+            #pc-photo-menu {
+                font-size: clamp(14px, 1.2vw, 18px);
+                padding: clamp(10px, 1vw, 14px) clamp(15px, 1.5vw, 22px);
+            }
+            #info-panel {
+                width: clamp(200px, 15vw, 320px);
+                padding: clamp(18px, 1.5vw, 28px);
+            }
+            .divider {
+                font-size: clamp(18px, 1.4vw, 26px);
+                margin-bottom: clamp(12px, 1vw, 18px);
+            }
             .stat-item { margin-bottom: clamp(12px, 1vw, 18px); }
-            .stat-label { font-size: clamp(11px, 0.9vw, 15px); }
-            .stat-val { font-size: clamp(22px, 1.8vw, 36px); }
-            #chart-box { max-width: clamp(900px, 60vw, 1800px); height: clamp(180px, 22vh, 350px); }
-            .panel-close { font-size: clamp(18px, 1.5vw, 28px); }
-            .restore-btn { font-size: clamp(12px, 1vw, 16px); padding: clamp(5px, 0.6vw, 10px) clamp(10px, 1.2vw, 18px); }
-            .map-avatar { width: clamp(50px, 4vw, 80px); height: clamp(50px, 4vw, 80px); }
+            .stat-label {
+                font-size: clamp(11px, 0.9vw, 15px);
+            }
+            .stat-val {
+                font-size: clamp(22px, 1.8vw, 36px);
+            }
+            #chart-box {
+                /* График сможет раздвинуться до 1800px на сверхшироких экранах */
+                max-width: clamp(900px, 60vw, 1800px);
+                height: clamp(180px, 22vh, 350px);
+            }
+            .panel-close {
+                font-size: clamp(18px, 1.5vw, 28px);
+            }
+            .restore-btn {
+                font-size: clamp(12px, 1vw, 16px);
+                padding: clamp(5px, 0.6vw, 10px) clamp(10px, 1.2vw, 18px);
+            }
+            .map-avatar {
+                width: clamp(50px, 4vw, 80px);
+                height: clamp(50px, 4vw, 80px);
+            }
         }
 
+        /* ========================================= */
+        /* МОБИЛЬНАЯ ВЕРСИЯ (Остается абсолютно нетронутой) */
+        /* ========================================= */
         @media (max-width: 768px) {
             .ctrl-btn { display: flex; } 
             #pc-photo-menu { display: none; } 
@@ -107,24 +146,11 @@
 
     <script>
         var params = new URLSearchParams(window.location.search), file = params.get('file'), folder = params.get('folder') || 'tracks/';
-        
-        var routeColor = params.get('color'); 
-        if (routeColor) routeColor = decodeURIComponent(routeColor);
-        else routeColor = '#ffea00'; 
-        
-        function hexToRgba(hex, alpha) {
-            hex = hex.replace('#', '');
-            if(hex.length === 3) hex = hex.split('').map(c => c+c).join('');
-            var r = parseInt(hex.substring(0, 2), 16), g = parseInt(hex.substring(2, 4), 16), b = parseInt(hex.substring(4, 6), 16);
-            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-        }
-        var chartBgColor = hexToRgba(routeColor, 0.1);
-
         var map = L.map('map', {attributionControl: true, zoomControl: false}).setView([50, 80], 4);
         map.attributionControl.setPrefix('Мое велопутешествие');
         L.tileLayer('http://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',{ maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3'] }).addTo(map);
         
-        var trackPoints = [], photoLayer = L.layerGroup(), hoverMarker = L.marker([0,0], { icon: L.divIcon({className: 'hover-dot', html: `<div style="background:#fff; width:100%; height:100%; border-radius:50%; border:3px solid ${routeColor}; box-sizing:border-box; box-shadow:0 0 10px rgba(255,255,255,0.8);"></div>`, iconSize: [14, 14], iconAnchor: [7, 7]}) });
+        var trackPoints = [], photoLayer = L.layerGroup(), hoverMarker = L.marker([0,0], { icon: L.divIcon({className: 'hover-dot', iconSize: [14, 14], iconAnchor: [7, 7]}) });
 
         function goBack() { if(window.parent && window.parent.closeTrackView) window.parent.closeTrackView(); else window.history.back(); }
         
@@ -147,11 +173,8 @@
         }
 
         if (file) {
-            new L.GPX(folder + file, { async: true, marker_options: { startIconUrl: null, endIconUrl: null }, polyline_options: { color: routeColor, weight: 6, opacity: 0.9 } }).on('loaded', function(e) {
-                var g = e.target; 
-                // Кинематографичный полет к маршруту
-                map.flyToBounds(g.getBounds(), {padding: [50, 50], duration: 1.5});
-                
+            new L.GPX(folder + file, { async: true, marker_options: { startIconUrl: null, endIconUrl: null }, polyline_options: { color: '#ffea00', weight: 6, opacity: 0.9 } }).on('loaded', function(e) {
+                var g = e.target; map.fitBounds(g.getBounds(), {padding: [50, 50]});
                 document.getElementById('dist').innerText = (g.get_distance()/1000).toFixed(1) + " км"; 
                 document.getElementById('gain').innerText = g.get_elevation_gain().toFixed(0) + " м"; 
                 document.getElementById('max-alt').innerText = g.get_elevation_max().toFixed(0) + " м";
@@ -165,9 +188,8 @@
                 }
                 
                 trackPoints = g.getLayers()[0].getLatLngs(); if (Array.isArray(trackPoints[0])) trackPoints = trackPoints[0];
-                L.marker(trackPoints[0], {icon: L.divIcon({className: 'marker-ab', html: `<div style="background:${routeColor}; width:100%; height:100%; border-radius:50%; border:2px solid white; color:white; font-weight:bold; text-align:center; line-height:20px; font-size:14px; box-sizing:border-box;">A</div>`, iconSize: [24, 24], iconAnchor: [12, 12]})}).addTo(map);
-                L.marker(trackPoints[trackPoints.length - 1], {icon: L.divIcon({className: 'marker-ab', html: `<div style="background:${routeColor}; width:100%; height:100%; border-radius:50%; border:2px solid white; color:white; font-weight:bold; text-align:center; line-height:20px; font-size:14px; box-sizing:border-box;">B</div>`, iconSize: [24, 24], iconAnchor: [12, 12]})}).addTo(map);
-                
+                L.marker(trackPoints[0], {icon: L.divIcon({className: 'marker-ab', html: 'A', iconSize: [24, 24], iconAnchor: [12, 12]})}).addTo(map);
+                L.marker(trackPoints[trackPoints.length - 1], {icon: L.divIcon({className: 'marker-ab', html: 'B', iconSize: [24, 24], iconAnchor: [12, 12]})}).addTo(map);
                 buildChart(g.get_elevation_data()); 
                 loadPhotos(folder);
             }).addTo(map);
@@ -175,14 +197,18 @@
 
         function buildChart(elevationData) {
             var ctx = document.getElementById('elevationChart').getContext('2d');
-            new Chart(ctx, { type: 'line', data: { labels: elevationData.map(d => d[0].toFixed(1)), datasets: [{ data: elevationData.map(d => d[1].toFixed(0)), fill: true, backgroundColor: chartBgColor, borderColor: routeColor, borderWidth: 2, pointRadius: 0, tension: 0.1 }] }, options: { responsive: true, maintainAspectRatio: false, interaction: { intersect: false, mode: 'index' }, plugins: { legend: { display: false }, tooltip: { enabled: false } }, scales: { x: { display: true, ticks: { font: { size: 8 } }, title: { display: true, text: 'км', font: { size: 8, weight: 'bold' } } }, y: { display: true, ticks: { font: { size: 8 } }, title: { display: true, text: 'м', font: { size: 8, weight: 'bold' } } } }, onHover: (event, el) => { if (el.length > 0) { var idx = Math.floor((el[0].index / elevationData.length) * trackPoints.length); hoverMarker.setLatLng(trackPoints[idx]).addTo(map); } else map.removeLayer(hoverMarker); } } });
+            new Chart(ctx, { type: 'line', data: { labels: elevationData.map(d => d[0].toFixed(1)), datasets: [{ data: elevationData.map(d => d[1].toFixed(0)), fill: true, backgroundColor: 'rgba(35, 138, 255, 0.1)', borderColor: '#238aff', borderWidth: 2, pointRadius: 0, tension: 0.1 }] }, options: { responsive: true, maintainAspectRatio: false, interaction: { intersect: false, mode: 'index' }, plugins: { legend: { display: false }, tooltip: { enabled: false } }, scales: { x: { display: true, ticks: { font: { size: 8 } }, title: { display: true, text: 'км', font: { size: 8, weight: 'bold' } } }, y: { display: true, ticks: { font: { size: 8 } }, title: { display: true, text: 'м', font: { size: 8, weight: 'bold' } } } }, onHover: (event, el) => { if (el.length > 0) { var idx = Math.floor((el[0].index / elevationData.length) * trackPoints.length); hoverMarker.setLatLng(trackPoints[idx]).addTo(map); } else map.removeLayer(hoverMarker); } } });
         }
 
+        /* LIGHTBOX ЛОГИКА С ЗАЩИТОЙ КАРТЫ */
         var img = document.getElementById('view-img'), scale = 1, lastScale = 1, startDist = 0, posX = 0, posY = 0, startX = 0, startY = 0, isDragging = false;
         
         function openPhoto(url) {
-            if (window.innerWidth <= 768) { map.dragging.disable(); map.touchZoom.disable(); map.doubleClickZoom.disable(); }
-            document.getElementById('view-img').src = url; document.getElementById('photo-viewer').style.display = 'flex';
+            if (window.innerWidth <= 768) {
+                map.dragging.disable(); map.touchZoom.disable(); map.doubleClickZoom.disable();
+            }
+            document.getElementById('view-img').src = url;
+            document.getElementById('photo-viewer').style.display = 'flex';
         }
 
         function closePhoto() {
@@ -191,18 +217,34 @@
             document.getElementById('photo-viewer').style.display = 'none';
         }
 
-        img.addEventListener('touchstart', e => { if (window.innerWidth <= 768) e.stopPropagation(); if (e.touches.length === 1) { isDragging = true; startX = e.touches[0].pageX - posX; startY = e.touches[0].pageY - posY; } else if (e.touches.length === 2) { isDragging = false; startDist = Math.hypot(e.touches[0].pageX-e.touches[1].pageX, e.touches[0].pageY-e.touches[1].pageY); lastScale = scale; } });
-        img.addEventListener('touchmove', e => { if (window.innerWidth <= 768) e.stopPropagation(); if (scale > 1 || e.touches.length > 1) e.preventDefault(); if (e.touches.length === 1 && isDragging && scale > 1) { posX = e.touches[0].pageX - startX; posY = e.touches[0].pageY - startY; updateTransform(); } else if (e.touches.length === 2) { var d = Math.hypot(e.touches[0].pageX-e.touches[1].pageX, e.touches[0].pageY-e.touches[1].pageY); scale = Math.min(Math.max(1, lastScale * (d / startDist)), 5); updateTransform(); } });
-        img.addEventListener('touchend', e => { if (window.innerWidth <= 768) e.stopPropagation(); isDragging = false; lastScale = scale; });
+        img.addEventListener('touchstart', e => { 
+            if (window.innerWidth <= 768) e.stopPropagation();
+            if (e.touches.length === 1) { isDragging = true; startX = e.touches[0].pageX - posX; startY = e.touches[0].pageY - posY; } 
+            else if (e.touches.length === 2) { isDragging = false; startDist = Math.hypot(e.touches[0].pageX-e.touches[1].pageX, e.touches[0].pageY-e.touches[1].pageY); lastScale = scale; } 
+        });
+        
+        img.addEventListener('touchmove', e => { 
+            if (window.innerWidth <= 768) e.stopPropagation();
+            if (scale > 1 || e.touches.length > 1) e.preventDefault(); 
+            if (e.touches.length === 1 && isDragging && scale > 1) { posX = e.touches[0].pageX - startX; posY = e.touches[0].pageY - startY; updateTransform(); } 
+            else if (e.touches.length === 2) { var d = Math.hypot(e.touches[0].pageX-e.touches[1].pageX, e.touches[0].pageY-e.touches[1].pageY); scale = Math.min(Math.max(1, lastScale * (d / startDist)), 5); updateTransform(); } 
+        });
+        
+        img.addEventListener('touchend', e => { 
+            if (window.innerWidth <= 768) e.stopPropagation();
+            isDragging = false; lastScale = scale; 
+        });
+        
         function updateTransform() { if (scale <= 1) { posX = 0; posY = 0; } img.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`; }
         function handlePhotoClick(e) { e.stopPropagation(); if (window.innerWidth > 768) window.open(e.target.src, '_blank'); else { if (scale > 1.1) { scale = 1; posX = 0; posY = 0; updateTransform(); } else closePhoto(); } }
         function handleBackgroundClick() { if (window.innerWidth <= 768) closePhoto(); }
 
         function loadPhotos(folderPath) {
             var repo = folderPath.includes("2018") ? "archive-2018-photos" : folderPath.includes("2019") ? "archive-2019-photos" : folderPath.includes("2021") ? "archive-2021-photos" : folderPath.includes("2024") ? "archive-2024-photos" : "archive-2026-photos";
+            var hex = folderPath.includes("2018") ? "#ff0000" : folderPath.includes("2019") ? "#007bff" : folderPath.includes("2021") ? "#9b59b6" : folderPath.includes("2024") ? "#ff8c00" : "#28a745";
             fetch(`https://mieszko1979.github.io/${repo}/photos.json?t=${Date.now()}`).then(r => r.json()).then(data => {
                 data.forEach(photo => {
-                    var svg = `<svg width="34" height="42" viewBox="0 0 34 42"><path d="M17 0C7.6 0 0 7.6 0 17c0 12.8 17 25 17 25s17-12.2 17-25c0-9.4-7.6-17-17-17z" fill="${routeColor}"/><circle cx="17" cy="17" r="10" fill="white"/><g transform="translate(10, 12) scale(0.6)"><path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" fill="${routeColor}"/><circle cx="12" cy="13" r="3.5" fill="white" /><circle cx="12" cy="13" r="2" fill="${routeColor}" /></g></svg>`;
+                    var svg = `<svg width="34" height="42" viewBox="0 0 34 42"><path d="M17 0C7.6 0 0 7.6 0 17c0 12.8 17 25 17 25s17-12.2 17-25c0-9.4-7.6-17-17-17z" fill="${hex}"/><circle cx="17" cy="17" r="10" fill="white"/><g transform="translate(10, 12) scale(0.6)"><path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" fill="${hex}"/><circle cx="12" cy="13" r="3.5" fill="white" /><circle cx="12" cy="13" r="2" fill="${hex}" /></g></svg>`;
                     L.marker([photo.lat, photo.lng], {icon: L.divIcon({ className: 'photo-marker', html: svg, iconSize: [34, 42], iconAnchor: [17, 42] })}).addTo(photoLayer).on('click', () => { 
                         openPhoto(`https://mieszko1979.github.io/${repo}/${photo.url}`); 
                     });
