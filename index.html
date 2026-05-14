@@ -44,28 +44,29 @@
         #hint-box:hover { transform: translateX(-50%) scale(1.08); background: #fff; }
         .hint-text { color: #ff0000; font-weight: 900; font-size: 17px; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* МОДАЛЬНОЕ ОКНО ПК */
+        /* БАЗА МОДАЛЬНОГО ОКНА */
         #about-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 6000; justify-content: center; align-items: center; }
-        .modal-layout { display: flex; align-items: center; justify-content: center; gap: 40px; width: 100%; max-width: 1600px; padding: 20px; box-sizing: border-box; }
+        .modal-layout { display: flex; align-items: center; justify-content: center; width: 100%; padding: 20px; box-sizing: border-box; }
+        #central-container { position: relative; display: flex; flex-direction: column; align-items: center; }
         
-        #central-container { position: relative; width: 550px; display: flex; flex-direction: column; align-items: center; }
-        .modal-main { background: white; width: 100%; border-radius: 25px; padding: 30px; text-align: center; position: relative; box-shadow: 0 15px 50px rgba(0,0,0,0.6); z-index: 5; box-sizing: border-box; overflow-y: auto; max-height: 80vh; font-family: Arial, sans-serif !important; }
-        
-        .side-photo { width: 350px; height: 480px; object-fit: cover; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        
-        /* Смещаем аватарку, чтобы ровно 35% площади перекрывало основное окно */
-        #author-avatar-support { position: absolute; top: -100px; left: -30px; width: 140px; height: 140px; border-radius: 50%; border: 7px solid white; box-shadow: 0 8px 30px rgba(0,0,0,0.4); z-index: 10; display: none; object-fit: cover; }
+        /* Шрифты и оформление текста вынесены в CSS для масштабирования */
+        #about-name { display: block; margin-bottom: 12px; font-weight: bold; font-family: Arial, sans-serif !important; }
+        #about-bio { margin: 15px 0; line-height: 1.35; color: #333; text-align: left; white-space: pre-wrap; font-family: Arial, sans-serif !important; }
 
-        .side-panel { width: 250px; display: none; flex-direction: column; gap: 15px; animation: slideIn 0.3s ease-out; }
+        .modal-main { background: white; width: 100%; text-align: center; position: relative; box-shadow: 0 15px 50px rgba(0,0,0,0.6); z-index: 5; box-sizing: border-box; overflow-y: auto; font-family: Arial, sans-serif !important; }
+        .side-photo { object-fit: cover; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        
+        #author-avatar-support { position: absolute; border-radius: 50%; border: 7px solid white; box-shadow: 0 8px 30px rgba(0,0,0,0.4); z-index: 10; display: none; object-fit: cover; }
+        .side-panel { display: none; flex-direction: column; gap: 15px; animation: slideIn 0.3s ease-out; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Карточки QR (ограничена высота img, чтобы не занимали всё место) */
-        .qr-card { background: white; padding: 12px; border-radius: 20px; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.2); }
-        .qr-card img { width: 100%; max-height: 130px; object-fit: contain; border-radius: 10px; }
-        .qr-card b { font-size: 14px; display: block; margin-top: 8px; color: #333; font-family: Arial, sans-serif; }
+        /* Карточки QR */
+        .qr-card { background: white; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.2); }
+        .qr-card img { width: 100%; object-fit: contain; border-radius: 10px; }
+        .qr-card b { display: block; margin-top: 8px; color: #333; font-family: Arial, sans-serif; }
         
-        /* Оранжевая кнопка вызова полного списка QR */
-        .btn-show-qr { background: #ff8c00; color: #000; font-weight: bold; font-size: 15px; padding: 14px; border-radius: 18px; border: none; cursor: pointer; width: 100%; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: 0.2s; font-family: Arial, sans-serif; margin-top: 5px; }
+        /* Оранжевая кнопка QR */
+        .btn-show-qr { background: #ff8c00; color: #000; font-weight: bold; border: none; cursor: pointer; width: 100%; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: 0.2s; font-family: Arial, sans-serif; margin-top: 5px; }
         .btn-show-qr:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.2); }
         
         /* Новое окно со всеми QR кодами */
@@ -77,13 +78,13 @@
         .qr-modal-inner-card img { width: 100%; border-radius: 10px; }
         .qr-modal-inner-card b { font-size: 15px; color: #333; display: block; margin-top: 8px; font-family: Arial, sans-serif; }
 
-        .pay-link-btn { display: block; width: 100%; text-decoration: none; padding: 14px; border-radius: 15px; font-weight: bold; font-size: 15px; text-align: center; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 10px; transition: 0.2s; font-family: Arial, sans-serif; }
+        .pay-link-btn { display: block; width: 100%; text-decoration: none; font-weight: bold; text-align: center; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 10px; transition: 0.2s; font-family: Arial, sans-serif; }
         .pay-link-btn:hover { transform: translateY(-2px); }
 
-        /* КРИПТО ПК (Теперь привязаны к основному окну и масштабируются вместе с ним) */
-        #crypto-row-pc { position: relative; bottom: auto; left: auto; transform: none; display: none; width: 100%; justify-content: space-between; gap: 20px; z-index: 7000; animation: slideIn 0.5s ease-out; margin-top: 20px; }
-        .crypto-card { background: white; padding: 14px 22px; border-radius: 18px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: space-between; width: 48%; cursor: pointer; position: relative; transition: 0.3s; border: 1px solid transparent; box-sizing: border-box; }
-        .crypto-card b { font-size: 15px; color: #333; font-family: Arial, sans-serif; }
+        /* КРИПТО ПК */
+        #crypto-row-pc { position: relative; display: none; width: 100%; justify-content: space-between; z-index: 7000; animation: slideIn 0.5s ease-out; margin-top: 20px; }
+        .crypto-card { background: white; display: flex; align-items: center; justify-content: space-between; width: 48%; cursor: pointer; position: relative; transition: 0.3s; border: 1px solid transparent; box-sizing: border-box; box-shadow: 0 10px 25px rgba(0,0,0,0.4); }
+        .crypto-card b { color: #333; font-family: Arial, sans-serif; }
         .crypto-card i.fa-copy { color: #000; font-size: 18px; }
         .crypto-card i.fa-check { position: absolute; right: 20px; opacity: 0; color: #ffdb00; font-size: 18px; }
         
@@ -100,20 +101,25 @@
         .social-icons i { font-size: 34px; } 
         .fa-vk { color: #0077FF; } .fa-telegram { color: #26A5E4; } .fa-youtube { color: #FF0000; } 
         .fa-instagram { color: #E1306C; } .fa-odnoklassniki { color: #ee8208; } .fa-strava { color: #FC6100; }
-        
-        /* Иконка Дзена */
         .dzen-icon { width: 34px; height: 34px; background: black; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .dzen-icon svg { width: 34px; height: 34px; }
-        
-        /* Иконка Komoot */
+        .dzen-icon svg, .komoot-icon svg { width: 34px; height: 34px; }
         .komoot-icon { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; }
-        .komoot-icon svg { width: 34px; height: 34px; }
 
         /* КНОПКА ПОДДЕРЖКИ */
         @keyframes actionPulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.5); } 50% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(40, 167, 69, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); } }
-        .btn-expand-support { width: 100%; padding: 22px; background: #28a745; color: white; border: none; border-radius: 18px; font-weight: bold; font-size: 19px; cursor: pointer; animation: actionPulse 2.5s infinite ease-in-out; margin-top: 15px; font-family: Arial, sans-serif; }
+        .btn-expand-support { width: 100%; background: #28a745; color: white; border: none; font-weight: bold; cursor: pointer; animation: actionPulse 2.5s infinite ease-in-out; margin-top: 15px; font-family: Arial, sans-serif; }
 
-        /* ПОПАПЫ */
+        /* ПУЛЬСАЦИЯ ТЕКУЩЕЙ ТОЧКИ */
+        @keyframes scarletPulse { 0% { box-shadow: 0 0 0 0px rgba(255, 36, 0, 0.9); } 70% { box-shadow: 0 0 0 18px rgba(255, 36, 0, 0); } 100% { box-shadow: 0 0 0 0px rgba(255, 36, 0, 0); } }
+        .last-point-pulse { animation: scarletPulse 3s infinite ease-in-out; border-color: #28a745 !important; z-index: 1000 !important; }
+
+        .flag-stuck { animation: flagWaver 2.5s infinite ease-in-out; transform-origin: bottom center; display: flex; align-items: center; justify-content: center; }
+        @keyframes flagWaver { 0% { transform: rotate(0deg); } 50% { transform: rotate(6deg); } 100% { transform: rotate(0deg); } }
+        
+        .photo-marker { background: none !important; border: none !important; display: flex; align-items: center; justify-content: center; }
+        .map-avatar { position: absolute; bottom: 25px; right: 10px; z-index: 1000; width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; opacity: 0.8; object-fit: cover; pointer-events: none; }
+        
+        /* ПОПАПЫ И ЛАЙТБОКС */
         .popup-box { text-align: center; min-width: 180px; padding: 5px; font-family: Arial, sans-serif; }
         .popup-box b { font-size: 21px; display: block; margin-bottom: 8px; color: #333; }
         .popup-box p { font-size: 18px; margin: 5px 0; color: #555; line-height: 1.4; }
@@ -122,29 +128,84 @@
         .btn { text-decoration: none !important; font-weight: bold; font-size: 13px; padding: 8px 18px; border-radius: 20px; cursor: pointer; display: inline-block; color: white !important; font-family: Arial, sans-serif; }
         .btn-track { background: #28a745; } .btn-vk { background: #0077FF; } .btn-dzen { background: #111111; } .btn-3d { background: #ffdb00; color: #000 !important; }
 
-        /* МАРКЕРЫ */
         .day-marker, .trans-center-marker { background: #fff; border-radius: 50%; border: 2.5px solid; color: #000; font-weight: bold; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.5); font-size: 11px; width: 24px !important; height: 24px !important; overflow: hidden; white-space: nowrap; }
         .num-wrapper { position: relative; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; }
         .suffix { position: absolute; left: 85%; opacity: 0.7; } 
         .trans-center-marker { font-size: 18px !important; }
         .c2018 { border-color: #ff0000 !important; color: #ff0000; } .c2019 { border-color: #007bff !important; color: #007bff; } .c2021 { border-color: #9b59b6 !important; color: #9b59b6; } .c2024 { border-color: #ff8c00 !important; color: #ff8c00; } .cCurrent { border-color: #28a745 !important; color: #28a745; }
 
-        /* ПУЛЬСАЦИЯ ТЕКУЩЕЙ ТОЧКИ */
-        @keyframes scarletPulse { 0% { box-shadow: 0 0 0 0px rgba(255, 36, 0, 0.9); } 70% { box-shadow: 0 0 0 18px rgba(255, 36, 0, 0); } 100% { box-shadow: 0 0 0 0px rgba(255, 36, 0, 0); } }
-        .last-point-pulse { animation: scarletPulse 3s infinite ease-in-out; border-color: #28a745 !important; z-index: 1000 !important; }
-
-        .flag-stuck { animation: flagWaver 2.5s infinite ease-in-out; transform-origin: bottom center; display: flex; align-items: center; justify-content: center; }
-        @keyframes flagWaver { 0% { transform: rotate(0deg); } 50% { transform: rotate(6deg); } 100% { transform: rotate(0deg); } }
-        .photo-marker { background: none !important; border: none !important; display: flex; align-items: center; justify-content: center; }
-        .map-avatar { position: absolute; bottom: 25px; right: 10px; z-index: 1000; width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; opacity: 0.8; object-fit: cover; pointer-events: none; }
-        
         #photo-viewer { position: absolute; bottom: 100px; left: 15px; z-index: 2000; width: 220px; background: white; padding: 5px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none; cursor: pointer; }
         #photo-viewer img { width: 100%; border-radius: 5px; display: block; transition: transform 0.1s ease-out; }
         #photo-viewer .close-btn { position: absolute; top: -12px; right: -12px; background: red; color: white; border-radius: 50%; width: 26px; height: 26px; text-align: center; line-height: 24px; font-weight: bold; border: 2px solid white; z-index: 2100; }
         #detail-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 7000; background: #000; display: none; border: none; }
 
-        /* МОБИЛЬНАЯ ВЕРСИЯ */
+        /* ========================================= */
+        /* ПК ВЕРСИЯ - АДАПТИВНОЕ МАСШТАБИРОВАНИЕ    */
+        /* ========================================= */
+        @media (min-width: 769px) {
+            #about-modal {
+                align-items: flex-start; /* Для корректного скролла */
+                padding: 40px 20px;
+                overflow: auto; /* Появление скроллов при сильном сжатии окна */
+            }
+            .modal-layout {
+                gap: clamp(20px, 3vw, 50px);
+                min-width: 950px; /* Защита от каши на 11" экранах - появится скролл */
+                margin: auto;
+                min-height: 100%;
+                max-width: 90vw;
+            }
+            #pc-left-side, #pc-right-side {
+                width: clamp(250px, 22vw, 400px);
+                display: flex; flex-direction: column; align-items: center; justify-content: center;
+            }
+            #central-container { width: clamp(450px, 38vw, 750px); }
+            
+            .side-photo {
+                width: 100%;
+                aspect-ratio: 350 / 480; /* Сохраняет идеальные пропорции прямоугольника */
+                height: auto;
+                border-radius: clamp(15px, 2vw, 25px);
+            }
+            .side-panel { width: 100%; }
+            
+            /* Аватарка. Перекрывает ровно 35% от 140px (то есть 49px внутри, 91px снаружи) */
+            #author-avatar-support {
+                width: 140px; height: 140px;
+                top: -91px; left: -35px;
+            }
+            
+            /* Динамические шрифты */
+            #about-name { font-size: clamp(24px, 2.5vw, 32px); }
+            #about-bio { font-size: clamp(15px, 1.3vw, 19px); }
+            .btn-expand-support { font-size: clamp(16px, 1.5vw, 20px); padding: clamp(16px, 1.5vw, 24px); border-radius: clamp(12px, 1.5vw, 18px); }
+            
+            .modal-main {
+                padding: clamp(25px, 3vw, 40px);
+                border-radius: clamp(15px, 2vw, 25px);
+                max-height: 80vh; /* Текст прокручивается внутри панели, фото стоят на месте */
+            }
+            
+            /* Масштабирование элементов поддержки */
+            #crypto-row-pc { gap: clamp(10px, 2vw, 25px); }
+            .crypto-card { padding: clamp(10px, 1vw, 16px) clamp(15px, 2vw, 25px); border-radius: clamp(12px, 1.5vw, 18px); }
+            .crypto-card b { font-size: clamp(13px, 1.2vw, 16px); }
+            
+            .pay-link-btn { font-size: clamp(13px, 1.2vw, 16px); padding: clamp(12px, 1.2vw, 16px); border-radius: clamp(10px, 1.2vw, 15px); }
+            .btn-show-qr { font-size: clamp(13px, 1.2vw, 16px); padding: clamp(12px, 1.2vw, 16px); border-radius: clamp(12px, 1.5vw, 18px); }
+            
+            .qr-card { padding: clamp(10px, 1.5vw, 15px); border-radius: clamp(12px, 1.5vw, 20px); }
+            .qr-card img { max-height: clamp(100px, 15vh, 150px); }
+            .qr-card b { font-size: clamp(12px, 1.1vw, 15px); }
+        }
+
+        /* ========================================= */
+        /* МОБИЛЬНАЯ ВЕРСИЯ (Остается абсолютно нетронутой) */
+        /* ========================================= */
         @media (max-width: 768px) {
+            #about-name { font-size: 28px; }
+            #about-bio { font-size: 17px; }
+            
             #menu-box { left: 5%; width: 90% !important; top: 10px; box-sizing: border-box; }
             #photo-toggle-wrap { display: none !important; }
             #mobile-photo-btn { display: flex; }
@@ -154,7 +215,7 @@
             .modal-layout { padding: 0; width: 100%; }
             #central-container { width: 100%; margin: 0; }
             
-            .btn-expand-support { pointer-events: none !important; margin-bottom: 20px !important; display: block !important; }
+            .btn-expand-support { pointer-events: none !important; margin-bottom: 20px !important; display: block !important; padding: 22px; border-radius: 18px; font-size: 19px; }
 
             .modal-main { 
                 width: 100vw !important; border-radius: 20px 20px 0 0 !important; 
@@ -205,8 +266,8 @@
 
                     <div id="mobile-text-padding">
                         <span class="close-modal" onclick="closeAbout()">&times;</span>
-                        <b id="about-name" style="font-size:28px; display:block; margin-bottom:12px; font-family: Arial, sans-serif !important;"></b>
-                        <div id="about-bio" style="margin: 15px 0; line-height:1.35; color:#333; font-size:17px; text-align: left; white-space: pre-wrap; font-family: Arial, sans-serif !important;"></div>
+                        <b id="about-name"></b>
+                        <div id="about-bio"></div>
                         <div class="social-icons" id="about-socials"></div>
                         <button class="btn-expand-support" id="btn-support-pc" onclick="expandSupportPC()">Поддержать проект</button>
                         <div id="mobile-support-list" style="display:none;"></div>
@@ -295,7 +356,6 @@
                 document.getElementById('author-avatar-support').style.display = 'none'; document.getElementById('crypto-row-pc').style.display = 'none';
                 document.getElementById('btn-support-pc').style.display = 'block';
                 
-                // Логика отображения QR кодов
                 var qHtml = ""; 
                 var qrs = aboutData.support.qrCodes || [];
                 if (qrs.length > 2) {
