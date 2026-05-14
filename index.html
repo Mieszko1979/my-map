@@ -286,6 +286,12 @@
             #photo-viewer .close-btn { display: none !important; }
             #qr-modal-overlay { display: none !important; }
             .photo-nav-btn { display: none !important; } 
+            /* Немного отодвигаем переключатель слоев от краев на мобилках */
+            .leaflet-bottom.leaflet-left {
+                margin-bottom: 20px;
+                margin-left: 10px;
+                z-index: 999;
+            }
         }
     </style>
 </head>
@@ -375,7 +381,12 @@
         var googleMap = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3'] });
         
         googleHybrid.addTo(map); // Слой по умолчанию
-        L.control.layers({ "Спутник": googleHybrid, "Схема": googleMap }, null, {position: 'topright'}).addTo(map);
+        // Определяем позицию: если ширина меньше 768px — левый низ, иначе — правый верх
+var layerPosition = window.innerWidth <= 768 ? 'bottomleft' : 'topright';
+
+L.control.layers({ "Спутник": googleHybrid, "Схема": googleMap }, null, {
+    position: layerPosition
+}).addTo(map);
         // -------------------------------------------------------------
 
         var currentTripLayer = L.layerGroup().addTo(map), archiveLayerGroup = L.layerGroup().addTo(map), photoClusterGroup = L.markerClusterGroup({ showCoverageOnHover: false, maxClusterRadius: 40 }).addTo(map);
