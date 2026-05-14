@@ -185,7 +185,7 @@
             /* Кнопки банков справа */
             .pay-link-btn { font-size: clamp(13px, 1.1vw, 16px); padding: clamp(12px, 1.1vw, 16px); border-radius: clamp(10px, 1.2vw, 15px); }
             
-            /* Кнопка "Показать QR-код" (стилизована под кнопки банков справа) */
+            /* Кнопка "Еще QR-коды" (стилизована под кнопки банков справа) */
             .btn-show-qr { 
                 font-size: clamp(13px, 1.1vw, 16px); 
                 padding: clamp(12px, 1.1vw, 16px); 
@@ -463,7 +463,7 @@
                     for(var i = 0; i < 2; i++) {
                         qHtml += `<div class="qr-card"><b>${qrs[i].name}</b><img src="${qrs[i].img}"></div>`;
                     }
-                    qHtml += `<button class="btn-show-qr" onclick="openQrModal(event)">Показать QR-код</button>`;
+                    qHtml += `<button class="btn-show-qr" onclick="openQrModal(event)">Еще QR-коды</button>`;
                 } else {
                     qrs.forEach(q => { qHtml += `<div class="qr-card"><b>${q.name}</b><img src="${q.img}"></div>`; });
                 }
