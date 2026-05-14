@@ -49,7 +49,6 @@
         .modal-layout { display: flex; align-items: center; justify-content: center; width: 100%; padding: 20px; box-sizing: border-box; }
         #central-container { position: relative; display: flex; flex-direction: column; align-items: center; }
         
-        /* Шрифты и оформление текста вынесены в CSS для масштабирования */
         #about-name { display: block; margin-bottom: 12px; font-weight: bold; font-family: Arial, sans-serif !important; }
         #about-bio { margin: 15px 0; line-height: 1.35; color: #333; text-align: left; white-space: pre-wrap; font-family: Arial, sans-serif !important; }
 
@@ -140,63 +139,66 @@
         #detail-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 7000; background: #000; display: none; border: none; }
 
         /* ========================================= */
-        /* ПК ВЕРСИЯ - АДАПТИВНОЕ МАСШТАБИРОВАНИЕ    */
+        /* ПК ВЕРСИЯ - СКОРРЕКТИРОВАННЫЕ ПРОПОРЦИИ   */
+        /* (Оптимизировано для оконного режима 2560x1440) */
         /* ========================================= */
         @media (min-width: 769px) {
             #about-modal {
-                align-items: flex-start; /* Для корректного скролла */
-                padding: 40px 20px;
-                overflow: auto; /* Появление скроллов при сильном сжатии окна */
+                align-items: center; /* Центрируем по вертикали */
+                padding: 4vh 20px; /* Отступы зависят от высоты экрана */
+                overflow-y: auto; /* Скролл, если окно браузера сжали сверху вниз */
             }
             .modal-layout {
-                gap: clamp(20px, 3vw, 50px);
-                min-width: 950px; /* Защита от каши на 11" экранах - появится скролл */
+                gap: clamp(20px, 3vw, 40px);
+                min-width: 850px; /* Минимальная ширина до появления горизонтального скролла */
                 margin: auto;
-                min-height: 100%;
-                max-width: 90vw;
+                max-width: 95vw;
             }
+            
+            /* Боковые блоки (сдерживаем их рост на 4K экранах) */
             #pc-left-side, #pc-right-side {
-                width: clamp(250px, 22vw, 400px);
+                width: clamp(220px, 18vw, 320px); 
                 display: flex; flex-direction: column; align-items: center; justify-content: center;
             }
-            #central-container { width: clamp(450px, 38vw, 750px); }
+            
+            /* Центральный блок (сдерживаем ширину для лучшей читаемости) */
+            #central-container { width: clamp(400px, 32vw, 600px); }
             
             .side-photo {
                 width: 100%;
-                aspect-ratio: 350 / 480; /* Сохраняет идеальные пропорции прямоугольника */
+                aspect-ratio: 350 / 480; 
                 height: auto;
                 border-radius: clamp(15px, 2vw, 25px);
             }
             .side-panel { width: 100%; }
             
-            /* Аватарка. Перекрывает ровно 35% от 140px (то есть 49px внутри, 91px снаружи) */
+            /* Аватарка. Строго 130px. 35% перекрытия = 45.5px внутри. 84.5px снаружи (округляем до 85) */
             #author-avatar-support {
-                width: 140px; height: 140px;
-                top: -91px; left: -35px;
+                width: 130px; height: 130px;
+                top: -85px; left: -30px;
             }
             
-            /* Динамические шрифты */
-            #about-name { font-size: clamp(24px, 2.5vw, 32px); }
-            #about-bio { font-size: clamp(15px, 1.3vw, 19px); }
-            .btn-expand-support { font-size: clamp(16px, 1.5vw, 20px); padding: clamp(16px, 1.5vw, 24px); border-radius: clamp(12px, 1.5vw, 18px); }
+            /* Слегка уменьшенные шрифты, чтобы имитировать масштаб 90% */
+            #about-name { font-size: clamp(22px, 2vw, 28px); }
+            #about-bio { font-size: clamp(14px, 1.1vw, 17px); }
+            .btn-expand-support { font-size: clamp(15px, 1.2vw, 18px); padding: clamp(14px, 1.2vw, 20px); border-radius: clamp(12px, 1.5vw, 18px); }
             
             .modal-main {
-                padding: clamp(25px, 3vw, 40px);
+                padding: clamp(20px, 2vw, 35px);
                 border-radius: clamp(15px, 2vw, 25px);
-                max-height: 80vh; /* Текст прокручивается внутри панели, фото стоят на месте */
+                max-height: 75vh; /* Ограничиваем высоту по видимой части экрана (оставит место для вкладок/панели задач) */
             }
             
-            /* Масштабирование элементов поддержки */
-            #crypto-row-pc { gap: clamp(10px, 2vw, 25px); }
-            .crypto-card { padding: clamp(10px, 1vw, 16px) clamp(15px, 2vw, 25px); border-radius: clamp(12px, 1.5vw, 18px); }
-            .crypto-card b { font-size: clamp(13px, 1.2vw, 16px); }
+            #crypto-row-pc { gap: clamp(10px, 1.5vw, 20px); }
+            .crypto-card { padding: clamp(10px, 1vw, 14px) clamp(12px, 1.5vw, 20px); border-radius: clamp(10px, 1.2vw, 16px); }
+            .crypto-card b { font-size: clamp(12px, 1vw, 15px); }
             
-            .pay-link-btn { font-size: clamp(13px, 1.2vw, 16px); padding: clamp(12px, 1.2vw, 16px); border-radius: clamp(10px, 1.2vw, 15px); }
-            .btn-show-qr { font-size: clamp(13px, 1.2vw, 16px); padding: clamp(12px, 1.2vw, 16px); border-radius: clamp(12px, 1.5vw, 18px); }
+            .pay-link-btn { font-size: clamp(12px, 1.1vw, 15px); padding: clamp(10px, 1.1vw, 14px); border-radius: clamp(10px, 1.2vw, 15px); }
+            .btn-show-qr { font-size: clamp(12px, 1.1vw, 15px); padding: clamp(10px, 1.1vw, 14px); border-radius: clamp(10px, 1.2vw, 15px); }
             
-            .qr-card { padding: clamp(10px, 1.5vw, 15px); border-radius: clamp(12px, 1.5vw, 20px); }
-            .qr-card img { max-height: clamp(100px, 15vh, 150px); }
-            .qr-card b { font-size: clamp(12px, 1.1vw, 15px); }
+            .qr-card { padding: clamp(10px, 1vw, 15px); border-radius: clamp(12px, 1.5vw, 18px); }
+            .qr-card img { max-height: clamp(90px, 12vh, 130px); } /* Сдерживаем рост QR по высоте */
+            .qr-card b { font-size: clamp(11px, 1vw, 14px); }
         }
 
         /* ========================================= */
