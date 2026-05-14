@@ -140,63 +140,26 @@
 
         /* ========================================= */
         /* ПК ВЕРСИЯ - СКОРРЕКТИРОВАННЫЕ ПРОПОРЦИИ   */
-        /* (Расширенный интерфейс для 2K/4K экранов) */
         /* ========================================= */
         @media (min-width: 769px) {
-            #about-modal {
-                align-items: center; 
-                padding: 4vh 20px; 
-                overflow-y: auto; 
-            }
-            .modal-layout {
-                gap: clamp(30px, 4vw, 60px); /* Увеличены отступы, чтобы блоки "дышали" */
-                min-width: 900px; 
-                margin: auto;
-                max-width: 95vw;
-            }
-            
-            /* Боковые блоки (фото и кнопки) стали шире */
-            #pc-left-side, #pc-right-side {
-                width: clamp(260px, 22vw, 380px); 
-                display: flex; flex-direction: column; align-items: center; justify-content: center;
-            }
-            
-            /* Центральный блок стал шире, текст не будет так сильно вытягивать окно вниз */
+            #about-modal { align-items: center; padding: 4vh 20px; overflow-y: auto; }
+            .modal-layout { gap: clamp(30px, 4vw, 60px); min-width: 900px; margin: auto; max-width: 95vw; }
+            #pc-left-side, #pc-right-side { width: clamp(260px, 22vw, 380px); display: flex; flex-direction: column; align-items: center; justify-content: center; }
             #central-container { width: clamp(450px, 35vw, 680px); }
-            
-            .side-photo {
-                width: 100%;
-                aspect-ratio: 350 / 480; 
-                height: auto;
-                border-radius: clamp(15px, 2vw, 25px);
-            }
+            .side-photo { width: 100%; aspect-ratio: 350 / 480; height: auto; border-radius: clamp(15px, 2vw, 25px); }
             .side-panel { width: 100%; }
-            
-            /* Аватарка. Вернул 140px, чтобы она была солидной. Пересчитал 35%: 140 - 49 = 91px */
-            #author-avatar-support {
-                width: 140px; height: 140px;
-                top: -91px; left: -30px;
-            }
-            
+            #author-avatar-support { width: 140px; height: 140px; top: -91px; left: -30px; }
             #about-name { font-size: clamp(22px, 2vw, 28px); }
             #about-bio { font-size: clamp(14px, 1.1vw, 17px); }
             .btn-expand-support { font-size: clamp(15px, 1.2vw, 18px); padding: clamp(14px, 1.2vw, 20px); border-radius: clamp(12px, 1.5vw, 18px); }
-            
-            .modal-main {
-                padding: clamp(20px, 2vw, 35px);
-                border-radius: clamp(15px, 2vw, 25px);
-                max-height: 80vh; 
-            }
-            
+            .modal-main { padding: clamp(20px, 2vw, 35px); border-radius: clamp(15px, 2vw, 25px); max-height: 80vh; }
             #crypto-row-pc { gap: clamp(10px, 1.5vw, 20px); }
             .crypto-card { padding: clamp(10px, 1vw, 14px) clamp(12px, 1.5vw, 20px); border-radius: clamp(10px, 1.2vw, 16px); }
             .crypto-card b { font-size: clamp(12px, 1vw, 15px); }
-            
             .pay-link-btn { font-size: clamp(12px, 1.1vw, 15px); padding: clamp(10px, 1.1vw, 14px); border-radius: clamp(10px, 1.2vw, 15px); }
             .btn-show-qr { font-size: clamp(12px, 1.1vw, 15px); padding: clamp(10px, 1.1vw, 14px); border-radius: clamp(10px, 1.2vw, 15px); }
-            
             .qr-card { padding: clamp(10px, 1vw, 15px); border-radius: clamp(12px, 1.5vw, 18px); }
-            .qr-card img { max-height: clamp(100px, 15vh, 160px); } /* QR коды тоже будут покрупнее */
+            .qr-card img { max-height: clamp(100px, 15vh, 160px); } 
             .qr-card b { font-size: clamp(12px, 1vw, 14px); }
         }
 
@@ -206,7 +169,6 @@
         @media (max-width: 768px) {
             #about-name { font-size: 28px; }
             #about-bio { font-size: 17px; }
-            
             #menu-box { left: 5%; width: 90% !important; top: 10px; box-sizing: border-box; }
             #photo-toggle-wrap { display: none !important; }
             #mobile-photo-btn { display: flex; }
@@ -215,30 +177,18 @@
             #about-modal { align-items: flex-end; }
             .modal-layout { padding: 0; width: 100%; }
             #central-container { width: 100%; margin: 0; }
-            
             .btn-expand-support { pointer-events: none !important; margin-bottom: 20px !important; display: block !important; padding: 22px; border-radius: 18px; font-size: 19px; }
-
-            .modal-main { 
-                width: 100vw !important; border-radius: 20px 20px 0 0 !important; 
-                margin-bottom: 0 !important; padding: 0 !important; 
-                box-shadow: 0 -5px 30px rgba(0,0,0,0.4); 
-                max-height: 85vh; overflow-y: auto; -webkit-overflow-scrolling: touch; 
-                box-sizing: border-box; touch-action: pan-y;
-            }
-
+            .modal-main { width: 100vw !important; border-radius: 20px 20px 0 0 !important; margin-bottom: 0 !important; padding: 0 !important; box-shadow: 0 -5px 30px rgba(0,0,0,0.4); max-height: 85vh; overflow-y: auto; -webkit-overflow-scrolling: touch; box-sizing: border-box; touch-action: pan-y; }
             #mobile-hero-wrap { display: block !important; position: relative; width: 100%; height: 200px; }
             #mobile-hero-img { width: 100%; height: 100%; object-fit: cover; }
             #mobile-avatar-img { position: absolute; bottom: -45px; left: 20px; width: 90px; height: 90px; border-radius: 50%; border: 4px solid white; box-shadow: 0 4px 15px rgba(0,0,0,0.3); object-fit: cover; z-index: 10; }
             #mobile-text-padding { padding: 55px 20px 30px 20px; }
-            
             .side-panel, .side-photo, #author-avatar-support, #crypto-row-pc { display: none !important; }
             #mobile-support-list { display: block; margin-top: 15px; width: 100%; }
             .mobile-pay-btn { display: block; width: 100%; padding: 18px; margin-bottom: 12px; border-radius: 12px; font-weight: bold; text-decoration: none; text-align: center; box-sizing: border-box; font-size: 17px; transition: 0.2s; border: none; }
-            
             #photo-viewer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: black; display: none; justify-content: center; align-items: center; bottom: auto; z-index: 9999; touch-action: none; }
             #photo-viewer img { width: 100%; height: 100%; object-fit: contain; border-radius: 0; }
             #photo-viewer .close-btn { display: none !important; }
-            
             #qr-modal-overlay { display: none !important; }
         }
     </style>
@@ -338,11 +288,13 @@
                 var lowId = s.id.toLowerCase();
                 if(lowId === 'dzen') { sHtml += `<a href="${s.url}" target="_blank"><div class="dzen-icon"><svg viewBox="0 0 100 100"><rect width="100" height="100" rx="25" fill="black"/><path d="M50 15 C52 40 60 48 85 50 C60 52 52 60 50 85 C48 60 40 52 15 50 C40 48 48 40 50 15 Z" fill="white"/></svg></div></a>`; } 
                 else if (lowId === 'komoot') { 
+                    /* Точная отрисовка официального логотипа Komoot */
                     sHtml += `<a href="${s.url}" target="_blank">
                                 <div class="komoot-icon">
                                     <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
                                         <circle cx="50" cy="50" r="50" fill="#469C36"/>
-                                        <path d="M50 22c-15.5 0-28 12.5-28 28 0 6.5 2.2 12.5 5.9 17.3L15 80h14l10.5-13.5c3.3 1 6.8 1.5 10.5 1.5s7.2-.5 10.5-1.5L71 80h14l-12.9-12.7c3.7-4.8 5.9-10.8 5.9-17.3 0-15.5-12.5-28-28-28zm0 10c9.9 0 18 8.1 18 18 0 4.5-1.6 8.6-4.3 11.8L50 44l-13.7 17.8C33.6 58.6 32 54.5 32 50c0-9.9 8.1-18 18-18z" fill="white"/>
+                                        <path d="M -5 95 L 50 40 L 105 95" fill="none" stroke="white" stroke-width="22" stroke-linejoin="miter" />
+                                        <circle cx="50" cy="38" r="17" fill="white" />
                                     </svg>
                                 </div>
                               </a>`; 
