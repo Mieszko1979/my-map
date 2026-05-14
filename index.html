@@ -107,13 +107,17 @@
         @keyframes actionPulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.5); } 50% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(40, 167, 69, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); } }
         .btn-expand-support { width: 100%; background: #28a745; color: white; border: none; font-weight: bold; cursor: pointer; animation: actionPulse 2.5s infinite ease-in-out; margin-top: 15px; font-family: Arial, sans-serif; }
 
-        /* ПУЛЬСАЦИЯ ТЕКУЩЕЙ ТОЧКИ */
+        /* ПУЛЬСАЦИЯ ТЕКУЩЕЙ ТОЧКИ И МАРКЕРА ФОТО */
         @keyframes scarletPulse { 0% { box-shadow: 0 0 0 0px rgba(255, 36, 0, 0.9); } 70% { box-shadow: 0 0 0 18px rgba(255, 36, 0, 0); } 100% { box-shadow: 0 0 0 0px rgba(255, 36, 0, 0); } }
         .last-point-pulse { animation: scarletPulse 3s infinite ease-in-out; border-color: #28a745 !important; z-index: 1000 !important; }
 
-        /* ПУЛЬСАЦИЯ АКТИВНОГО ФОТО */
-        @keyframes photoPulseAnim { 0% { box-shadow: 0 0 0 0 var(--pulse-color); } 70% { box-shadow: 0 0 0 20px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
-        .photo-pulse-dot { border-radius: 50%; animation: photoPulseAnim 2s infinite ease-in-out; width: 100%; height: 100%; box-sizing: border-box; }
+        @keyframes markerPulseAnim {
+            0% { filter: drop-shadow(0 0 2px var(--pulse-color)); transform: translateY(0) scale(1); }
+            50% { filter: drop-shadow(0 0 15px var(--pulse-color)); transform: translateY(-5px) scale(1.1); }
+            100% { filter: drop-shadow(0 0 2px var(--pulse-color)); transform: translateY(0) scale(1); }
+        }
+        .active-photo-marker { z-index: 1000 !important; }
+        .active-photo-marker svg { animation: markerPulseAnim 1.5s infinite ease-in-out; transform-origin: bottom center; overflow: visible; }
 
         .flag-stuck { animation: flagWaver 2.5s infinite ease-in-out; transform-origin: bottom center; display: flex; align-items: center; justify-content: center; }
         @keyframes flagWaver { 0% { transform: rotate(0deg); } 50% { transform: rotate(6deg); } 100% { transform: rotate(0deg); } }
@@ -136,13 +140,16 @@
         .trans-center-marker { font-size: 18px !important; }
         .c2018 { border-color: #ff0000 !important; color: #ff0000; } .c2019 { border-color: #007bff !important; color: #007bff; } .c2021 { border-color: #9b59b6 !important; color: #9b59b6; } .c2024 { border-color: #ff8c00 !important; color: #ff8c00; } .cCurrent { border-color: #28a745 !important; color: #28a745; }
 
-        #photo-viewer { position: absolute; bottom: 100px; left: 15px; z-index: 2000; width: 220px; background: white; padding: 5px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none; cursor: pointer; }
-        #photo-viewer img { width: 100%; border-radius: 5px; display: block; transition: transform 0.1s ease-out; }
-        #photo-viewer .close-btn { position: absolute; top: -12px; right: -12px; background: red; color: white; border-radius: 50%; width: 26px; height: 26px; text-align: center; line-height: 24px; font-weight: bold; border: 2px solid white; z-index: 2100; }
+        /* ОБНОВЛЕННЫЙ ЛАЙТБОКС С ВЫНЕСЕННЫМИ СТРЕЛКАМИ */
+        #photo-viewer { position: absolute; bottom: 100px; left: 35px; z-index: 2000; width: 220px; background: white; padding: 6px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; cursor: pointer; border: 1px solid rgba(0,0,0,0.1); overflow: visible; }
+        #photo-viewer img { width: 100%; border-radius: 8px; display: block; transition: transform 0.1s ease-out; }
+        #photo-viewer .close-btn { position: absolute; top: -12px; right: -12px; background: #ff0000; color: white; border-radius: 50%; width: 26px; height: 26px; text-align: center; line-height: 22px; font-size: 18px; font-weight: bold; border: 2px solid white; z-index: 2100; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: 0.2s; }
+        #photo-viewer .close-btn:hover { background: #cc0000; transform: scale(1.15); }
         
-        .photo-nav-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.6); color: white; padding: 10px 15px; cursor: pointer; font-size: 18px; border-radius: 8px; user-select: none; z-index: 2100; transition: 0.2s; }
-        .photo-nav-btn:hover { background: rgba(0,0,0,0.9); scale: 1.1; }
-        #photo-prev { left: 5px; } #photo-next { right: 5px; }
+        .photo-nav-btn { position: absolute; top: 50%; transform: translateY(-50%); background: white; color: #333; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.3); cursor: pointer; font-size: 16px; font-weight: bold; user-select: none; z-index: 2100; transition: 0.2s ease; border: 1px solid #eee; }
+        .photo-nav-btn:hover { background: #f8f8f8; color: #000; transform: translateY(-50%) scale(1.15); box-shadow: 0 6px 15px rgba(0,0,0,0.4); }
+        #photo-prev { left: -17px; } 
+        #photo-next { right: -17px; }
 
         #detail-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 7000; background: #000; display: none; border: none; }
 
@@ -194,11 +201,11 @@
             .side-panel, .side-photo, #author-avatar-support, #crypto-row-pc { display: none !important; }
             #mobile-support-list { display: block; margin-top: 15px; width: 100%; }
             .mobile-pay-btn { display: block; width: 100%; padding: 18px; margin-bottom: 12px; border-radius: 12px; font-weight: bold; text-decoration: none; text-align: center; box-sizing: border-box; font-size: 17px; transition: 0.2s; border: none; }
-            #photo-viewer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: black; display: none; justify-content: center; align-items: center; bottom: auto; z-index: 9999; touch-action: none; }
+            #photo-viewer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: black; display: none; justify-content: center; align-items: center; bottom: auto; z-index: 9999; touch-action: none; border-radius: 0; border: none; }
             #photo-viewer img { width: 100%; height: 100%; object-fit: contain; border-radius: 0; }
             #photo-viewer .close-btn { display: none !important; }
             #qr-modal-overlay { display: none !important; }
-            .photo-nav-btn { display: none !important; } /* Прячем стрелки галереи на мобильных */
+            .photo-nav-btn { display: none !important; } 
         }
     </style>
 </head>
@@ -208,9 +215,9 @@
     
     <div id="photo-viewer" onclick="handleBackgroundClick()">
         <div class="close-btn" onclick="closePhoto()">×</div>
-        <div id="photo-prev" class="photo-nav-btn" onclick="prevPhoto(event)">&#10094;</div>
+        <div id="photo-prev" class="photo-nav-btn" onclick="prevPhoto(event)"><i class="fa-solid fa-chevron-left"></i></div>
         <img id="view-img" src="" onclick="handlePhotoClick(event)">
-        <div id="photo-next" class="photo-nav-btn" onclick="nextPhoto(event)">&#10095;</div>
+        <div id="photo-next" class="photo-nav-btn" onclick="nextPhoto(event)"><i class="fa-solid fa-chevron-right"></i></div>
     </div>
     
     <div id="about-modal" onclick="closeAbout()">
@@ -288,11 +295,10 @@
         var borderClusterGroup = L.markerClusterGroup({ showCoverageOnHover: false, spiderfyOnMaxZoom: true, maxClusterRadius: 30, iconCreateFunction: function(cluster) { var svg = `<svg width="34" height="42" viewBox="0 0 34 42"><path d="M17 0C7.6 0 0 7.6 0 17c0 12.8 17 25 17 25s17-12.2 17-25c0-9.4-7.6-17-17-17z" fill="#333"/><circle cx="17" cy="17" r="10" fill="white"/><g transform="translate(10, 11) scale(0.65)"><path d="M19 13H5v-2h14v2zM7 5h2v6H7V5zm8 0h2v6h-2V5z" fill="#333"/></g></svg>`; return L.divIcon({ html: svg, className: 'photo-marker', iconSize: [34, 42], iconAnchor: [17, 42] }); } }).addTo(map);
         var hexColors = { 'c2018': '#ff0000', 'c2019': '#007bff', 'c2021': '#9b59b6', 'c2024': '#ff8c00', 'cCurrent': '#28a745' };
 
-        /* Глобальные переменные для галереи */
         var loadedPhotosMap = {};
         var currentGalleryRepo = '';
         var currentGalleryIndex = 0;
-        var activePulseMarker = null;
+        var activePhotoMarker = null;
 
         function toggleMenu() { document.getElementById('menu-box').classList.toggle('collapsed'); }
         function toggleFullscreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else if (document.exitFullscreen) document.exitFullscreen(); }
@@ -371,9 +377,7 @@
             document.getElementById('qr-modal-overlay').style.display = 'flex';
         }
 
-        function closeQrModal() {
-            document.getElementById('qr-modal-overlay').style.display = 'none';
-        }
+        function closeQrModal() { document.getElementById('qr-modal-overlay').style.display = 'none'; }
 
         function copyAddr(addr, el) { 
             navigator.clipboard.writeText(addr).then(() => { 
@@ -420,20 +424,27 @@
         }
 
         function highlightActivePhoto(photo, hex) {
-            if(activePulseMarker) { map.removeLayer(activePulseMarker); }
-            var pulseHtml = `<div class="photo-pulse-dot" style="--pulse-color: ${hex}; background: ${hex}; border: 2px solid white;"></div>`;
-            activePulseMarker = L.marker([photo.lat, photo.lng], {
-                icon: L.divIcon({ className: '', html: pulseHtml, iconSize: [24, 24], iconAnchor: [12, 12] }),
-                zIndexOffset: 2000, interactive: false
-            });
+            if(activePhotoMarker && activePhotoMarker.getElement()) {
+                L.DomUtil.removeClass(activePhotoMarker.getElement(), 'active-photo-marker');
+            }
+            activePhotoMarker = photo.marker;
+
+            var highlight = function() {
+                var el = activePhotoMarker.getElement();
+                if(el) {
+                    L.DomUtil.addClass(el, 'active-photo-marker');
+                    el.style.setProperty('--pulse-color', hex);
+                }
+            };
 
             if (photo.marker && typeof photoClusterGroup.zoomToShowLayer === 'function') {
                 photoClusterGroup.zoomToShowLayer(photo.marker, function() {
-                    activePulseMarker.addTo(map);
+                    highlight();
+                    map.flyTo([photo.lat, photo.lng], Math.max(map.getZoom(), 14), {animate: true, duration: 1.5});
                 });
             } else {
-                activePulseMarker.addTo(map);
-                map.flyTo([photo.lat, photo.lng], Math.max(map.getZoom(), 12), {animate: true, duration: 1.5});
+                highlight();
+                map.flyTo([photo.lat, photo.lng], Math.max(map.getZoom(), 14), {animate: true, duration: 1.5});
             }
         }
 
@@ -454,7 +465,10 @@
         function closePhoto() { 
             map.dragging.enable(); map.touchZoom.enable(); scale = 1; lastScale = 1; posX = 0; posY = 0; updateTransform(); 
             document.getElementById('photo-viewer').style.display = 'none'; 
-            if(activePulseMarker) { map.removeLayer(activePulseMarker); activePulseMarker = null; }
+            if(activePhotoMarker && activePhotoMarker.getElement()) {
+                L.DomUtil.removeClass(activePhotoMarker.getElement(), 'active-photo-marker');
+            }
+            activePhotoMarker = null;
         }
 
         /* Управление с клавиатуры (ПК) */
@@ -529,7 +543,7 @@
                 data.forEach((photo, idx) => {
                     var svg = `<svg width="34" height="42" viewBox="0 0 34 42"><path d="M17 0C7.6 0 0 7.6 0 17c0 12.8 17 25 17 25s17-12.2 17-25c0-9.4-7.6-17-17-17z" fill="${hex}"/><circle cx="17" cy="17" r="10" fill="white"/><g transform="translate(10, 12) scale(0.6)"><path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" fill="${hex}"/><circle cx="12" cy="13" r="3.5" fill="white" /><circle cx="12" cy="13" r="2" fill="${hex}" /></g></svg>`;
                     var marker = L.marker([photo.lat, photo.lng], {icon: L.divIcon({ className: 'photo-marker', html: svg, iconSize: [34, 42], iconAnchor: [0, 42] })});
-                    photo.marker = marker; // Сохраняем ссылку для zoomToShowLayer
+                    photo.marker = marker;
                     marker.addTo(photoClusterGroup).on('click', () => { openPhotoByIndex(repo, idx); });
                 });
             });
@@ -537,7 +551,6 @@
 
         function focusOnCurrent() { 
             if (typeof myPoints !== 'undefined' && myPoints.length > 0) {
-                // Кинематографичный flyToBounds только для текущего маршрута
                 var lats = myPoints.map(p => p.lat || (p.from ? p.from[0] : null)).filter(l => l);
                 var lngs = myPoints.map(p => p.lng || (p.from ? p.from[1] : null)).filter(l => l);
                 if (lats.length > 0) {
