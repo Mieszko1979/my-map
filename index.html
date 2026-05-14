@@ -107,17 +107,21 @@
         @keyframes actionPulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.5); } 50% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(40, 167, 69, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); } }
         .btn-expand-support { width: 100%; background: #28a745; color: white; border: none; font-weight: bold; cursor: pointer; animation: actionPulse 2.5s infinite ease-in-out; margin-top: 15px; font-family: Arial, sans-serif; }
 
-        /* ПУЛЬСАЦИЯ ТЕКУЩЕЙ ТОЧКИ И МАРКЕРА ФОТО */
+        /* ПУЛЬСАЦИЯ ТЕКУЩЕЙ ТОЧКИ */
         @keyframes scarletPulse { 0% { box-shadow: 0 0 0 0px rgba(255, 36, 0, 0.9); } 70% { box-shadow: 0 0 0 18px rgba(255, 36, 0, 0); } 100% { box-shadow: 0 0 0 0px rgba(255, 36, 0, 0); } }
         .last-point-pulse { animation: scarletPulse 3s infinite ease-in-out; border-color: #28a745 !important; z-index: 1000 !important; }
 
+        /* АБСОЛЮТНО НОВАЯ ПУЛЬСАЦИЯ ДЛЯ ФОТО И КЛАСТЕРОВ */
         @keyframes markerPulseAnim {
-            0% { filter: drop-shadow(0 0 2px var(--pulse-color)); transform: translateY(0) scale(1); }
-            50% { filter: drop-shadow(0 0 15px var(--pulse-color)); transform: translateY(-5px) scale(1.1); }
-            100% { filter: drop-shadow(0 0 2px var(--pulse-color)); transform: translateY(0) scale(1); }
+            0% { box-shadow: 0 0 0 0 var(--pulse-color); filter: drop-shadow(0 0 2px var(--pulse-color)); }
+            70% { box-shadow: 0 0 0 15px rgba(0,0,0,0); filter: drop-shadow(0 0 12px var(--pulse-color)); }
+            100% { box-shadow: 0 0 0 0 rgba(0,0,0,0); filter: drop-shadow(0 0 2px var(--pulse-color)); }
         }
-        .active-photo-marker { z-index: 1000 !important; }
-        .active-photo-marker svg { animation: markerPulseAnim 1.5s infinite ease-in-out; transform-origin: bottom center; overflow: visible; }
+        .active-photo-marker { 
+            border-radius: 50%;
+            z-index: 1000 !important; 
+            animation: markerPulseAnim 1.5s infinite ease-out !important; 
+        }
 
         .flag-stuck { animation: flagWaver 2.5s infinite ease-in-out; transform-origin: bottom center; display: flex; align-items: center; justify-content: center; }
         @keyframes flagWaver { 0% { transform: rotate(0deg); } 50% { transform: rotate(6deg); } 100% { transform: rotate(0deg); } }
@@ -300,25 +304,34 @@
         var currentGalleryIndex = 0;
         var activePhotoMarker = null;
 
-        /* Геометрическая сортировка (строит цепочку ближайших фото, решая проблему хаотичного перелистывания) */
+        /* Умная пространственная сортировка от начала маршрута к концу */
         function sortPhotosSpatially(photos) {
             if (!photos || photos.length <= 1) return photos;
+            
+            var maxDist = -1, extA = 0, extB = 0;
+            for (var i = 0; i < photos.length; i++) {
+                for (var j = i + 1; j < photos.length; j++) {
+                    var dLat = photos[i].lat - photos[j].lat;
+                    var dLng = photos[i].lng - photos[j].lng;
+                    var dist = dLat * dLat + dLng * dLng;
+                    if (dist > maxDist) { maxDist = dist; extA = i; extB = j; }
+                }
+            }
+            
+            var startIdx = Math.max(extA, extB); 
+            
             var sorted = [];
             var unvisited = photos.slice();
-            var current = unvisited.shift(); // Начинаем с первого попавшегося
+            var current = unvisited.splice(startIdx, 1)[0];
             sorted.push(current);
 
             while (unvisited.length > 0) {
-                var nearestIdx = 0;
-                var minDist = Infinity;
+                var nearestIdx = 0, minDist = Infinity;
                 for (var i = 0; i < unvisited.length; i++) {
                     var dLat = current.lat - unvisited[i].lat;
                     var dLng = current.lng - unvisited[i].lng;
-                    var dist = dLat * dLat + dLng * dLng; // Эвклидово расстояние (достаточно для построения маршрута)
-                    if (dist < minDist) {
-                        minDist = dist;
-                        nearestIdx = i;
-                    }
+                    var dist = dLat * dLat + dLng * dLng;
+                    if (dist < minDist) { minDist = dist; nearestIdx = i; }
                 }
                 current = unvisited.splice(nearestIdx, 1)[0];
                 sorted.push(current);
@@ -450,21 +463,26 @@
         }
 
         function highlightActivePhoto(photo, hex) {
-            if(activePhotoMarker && activePhotoMarker.getElement()) {
-                L.DomUtil.removeClass(activePhotoMarker.getElement(), 'active-photo-marker');
-            }
+            document.querySelectorAll('.active-photo-marker').forEach(el => {
+                L.DomUtil.removeClass(el, 'active-photo-marker');
+                el.style.removeProperty('--pulse-color');
+            });
             activePhotoMarker = photo.marker;
 
-            // Плавное панорамирование БЕЗ изменения зума
+            // Плавное панорамирование (без изменения масштаба, заданного пользователем)
             map.panTo([photo.lat, photo.lng], {animate: true, duration: 0.8});
 
+            // Навешиваем класс на видимый объект (это может быть сам маркер, а может быть весь КЛАСТЕР)
             setTimeout(() => {
-                if(activePhotoMarker && activePhotoMarker.getElement()) {
-                    var el = activePhotoMarker.getElement();
-                    L.DomUtil.addClass(el, 'active-photo-marker');
-                    el.style.setProperty('--pulse-color', hex);
+                if (activePhotoMarker) {
+                    var visibleNode = photoClusterGroup.getVisibleParent(activePhotoMarker);
+                    if (visibleNode && visibleNode.getElement()) {
+                        var el = visibleNode.getElement();
+                        L.DomUtil.addClass(el, 'active-photo-marker');
+                        el.style.setProperty('--pulse-color', hex);
+                    }
                 }
-            }, 300); // Даем время карте доехать
+            }, 850);
         }
 
         function nextPhoto(e) {
@@ -484,13 +502,13 @@
         function closePhoto() { 
             map.dragging.enable(); map.touchZoom.enable(); scale = 1; lastScale = 1; posX = 0; posY = 0; updateTransform(); 
             document.getElementById('photo-viewer').style.display = 'none'; 
-            if(activePhotoMarker && activePhotoMarker.getElement()) {
-                L.DomUtil.removeClass(activePhotoMarker.getElement(), 'active-photo-marker');
-            }
+            document.querySelectorAll('.active-photo-marker').forEach(el => {
+                L.DomUtil.removeClass(el, 'active-photo-marker');
+                el.style.removeProperty('--pulse-color');
+            });
             activePhotoMarker = null;
         }
 
-        /* Управление с клавиатуры (ПК) */
         document.addEventListener('keydown', function(e) {
             if(document.getElementById('photo-viewer').style.display === 'flex') {
                 if(e.key === 'ArrowRight') nextPhoto();
@@ -559,7 +577,6 @@
         function loadPhotos(repo, hex) {
             fetch(`https://mieszko1979.github.io/${repo}/photos.json?t=${Date.now()}`).then(r => r.json()).then(data => {
                 
-                // Применяем геометрическую сортировку
                 data = sortPhotosSpatially(data);
                 
                 loadedPhotosMap[repo] = { hex: hex, photos: data };
@@ -572,14 +589,13 @@
             });
         }
 
+        /* Жесткое центрирование на последней точке без отдаления масштаба */
         function focusOnCurrent() { 
             if (typeof myPoints !== 'undefined' && myPoints.length > 0) {
-                var lats = myPoints.map(p => p.lat || (p.from ? p.from[0] : null)).filter(l => l);
-                var lngs = myPoints.map(p => p.lng || (p.from ? p.from[1] : null)).filter(l => l);
-                if (lats.length > 0) {
-                    var bounds = L.latLngBounds(lats.map((lat, i) => [lat, lngs[i]]));
-                    map.flyToBounds(bounds, { padding: [50, 50], duration: 3, easeLinearity: 0.25 });
-                }
+                var last = myPoints[myPoints.length - 1];
+                var targetLat = last.lat || (last.from ? last.from[0] : 50);
+                var targetLng = last.lng || (last.from ? last.from[1] : 80);
+                map.flyTo([targetLat, targetLng], 8, { duration: 2.5 });
             } 
         }
 
