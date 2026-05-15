@@ -565,10 +565,13 @@
             
             highlightActivePhoto(photo, g.hex);
 
-            // --- Предзагрузка следующего фото для мгновенного перелистывания ---
-            var nextIdx = (index + 1) % g.photos.length;
-            var imgPreload = new Image();
-            imgPreload.src = `https://mieszko1979.github.io/${repo}/${g.photos[nextIdx].url}`;
+            // --- Двусторонняя предзагрузка фото для мгновенного перелистывания ---
+            if (g.photos.length > 1) {
+                var nextIdx = (index + 1) % g.photos.length;
+                var prevIdx = (index - 1 + g.photos.length) % g.photos.length;
+                new Image().src = `https://mieszko1979.github.io/${repo}/${g.photos[nextIdx].url}`;
+                new Image().src = `https://mieszko1979.github.io/${repo}/${g.photos[prevIdx].url}`;
+            }
             // -----------------------------------------------------------------------------------
         }
 
