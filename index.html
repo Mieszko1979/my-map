@@ -419,31 +419,21 @@
         var activePhotoMarker = null;
 
         /* Умная пространственная сортировка */
-        function sortPhotosSpatially(photos) {
+        function sortPhotosSpatially(photos, startLat, startLng) {
             if (!photos || photos.length <= 1) return photos;
-            
-            var maxDist = -1, extA = 0, extB = 0;
+            var startIdx = 0, minDistToStart = Infinity;
             for (var i = 0; i < photos.length; i++) {
-                for (var j = i + 1; j < photos.length; j++) {
-                    var dLat = photos[i].lat - photos[j].lat;
-                    var dLng = photos[i].lng - photos[j].lng;
-                    var dist = dLat * dLat + dLng * dLng;
-                    if (dist > maxDist) { maxDist = dist; extA = i; extB = j; }
-                }
+                var dLat = photos[i].lat - startLat, dLng = photos[i].lng - startLng;
+                var dist = dLat * dLat + dLng * dLng;
+                if (dist < minDistToStart) { minDistToStart = dist; startIdx = i; }
             }
-            
-            var startIdx = Math.min(extA, extB); 
-            
-            var sorted = [];
-            var unvisited = photos.slice();
+            var sorted = [], unvisited = photos.slice();
             var current = unvisited.splice(startIdx, 1)[0];
             sorted.push(current);
-
             while (unvisited.length > 0) {
                 var nearestIdx = 0, minDist = Infinity;
                 for (var i = 0; i < unvisited.length; i++) {
-                    var dLat = current.lat - unvisited[i].lat;
-                    var dLng = current.lng - unvisited[i].lng;
+                    var dLat = current.lat - unvisited[i].lat, dLng = current.lng - unvisited[i].lng;
                     var dist = dLat * dLat + dLng * dLng;
                     if (dist < minDist) { minDist = dist; nearestIdx = i; }
                 }
@@ -697,15 +687,19 @@
 
         function loadPhotos(repo, hex) {
             fetch(`https://mieszko1979.github.io/${repo}/photos.json?t=${Date.now()}`).then(r => r.json()).then(data => {
-                
-                data = sortPhotosSpatially(data);
-                
+                var routeStart = { lat: 50, lng: 80 };
+                if (repo.includes('2018') && typeof points2018 !== 'undefined') routeStart = points2018[0];
+                else if (repo.includes('2019') && typeof points2019 !== 'undefined') routeStart = points2019[0];
+                else if (repo.includes('2021') && typeof points2021 !== 'undefined') routeStart = points2021[0];
+                else if (repo.includes('2024') && typeof points2024 !== 'undefined') routeStart = points2024[0];
+                else if (repo.includes('2026') && typeof myPoints !== 'undefined') routeStart = myPoints[0];
+
+                data = sortPhotosSpatially(data, routeStart.lat, routeStart.lng);
                 loadedPhotosMap[repo] = { hex: hex, photos: data };
                 data.forEach((photo, idx) => {
                     var svg = `<svg width="34" height="42" viewBox="0 0 34 42"><path d="M17 0C7.6 0 0 7.6 0 17c0 12.8 17 25 17 25s17-12.2 17-25c0-9.4-7.6-17-17-17z" fill="${hex}"/><circle cx="17" cy="17" r="10" fill="white"/><g transform="translate(10, 12) scale(0.6)"><path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" fill="${hex}"/><circle cx="12" cy="13" r="3.5" fill="white" /><circle cx="12" cy="13" r="2" fill="${hex}" /></g></svg>`;
                     var marker = L.marker([photo.lat, photo.lng], {icon: L.divIcon({ className: 'photo-marker', html: svg, iconSize: [34, 42], iconAnchor: [17, 42] })});
-                    photo.marker = marker;
-                    marker.addTo(photoClusterGroup).on('click', () => { openPhotoByIndex(repo, idx); });
+                    photo.marker = marker; marker.addTo(photoClusterGroup).on('click', () => openPhotoByIndex(repo, idx));
                 });
             });
         }
