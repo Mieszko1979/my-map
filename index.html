@@ -574,27 +574,39 @@
             }
         }
 
-        function highlightActivePhoto(photo, hex) {
+        // --- Умная функция: всегда знает, на кого вешать пульсацию ---
+        function updateHighlightVisuals() {
+            if (!activePhotoMarker) return;
+            
+            // Счищаем старую пульсацию со всех элементов
             document.querySelectorAll('.active-photo-marker').forEach(el => {
                 L.DomUtil.removeClass(el, 'active-photo-marker');
                 el.style.removeProperty('--pulse-color');
             });
+            
+            // Ищем, как сейчас выглядит активное фото (кластер или отдельная иконка)
+            var visibleNode = photoClusterGroup.getVisibleParent(activePhotoMarker);
+            if (visibleNode && visibleNode.getElement()) {
+                var el = visibleNode.getElement();
+                L.DomUtil.addClass(el, 'active-photo-marker');
+                var g = loadedPhotosMap[currentGalleryRepo];
+                if (g) el.style.setProperty('--pulse-color', g.hex);
+            }
+        }
+
+        // Следим за картой: перевешиваем пульсацию при зуме или раскрытии кластера
+        map.on('zoomend', () => setTimeout(updateHighlightVisuals, 300));
+        photoClusterGroup.on('animationend', () => setTimeout(updateHighlightVisuals, 50));
+        photoClusterGroup.on('spiderfied unspiderfied', () => setTimeout(updateHighlightVisuals, 50));
+
+        function highlightActivePhoto(photo, hex) {
             activePhotoMarker = photo.marker;
 
             // Плавное панорамирование (без изменения масштаба)
             map.panTo([photo.lat, photo.lng], {animate: true, duration: 0.8});
 
-            // Навешиваем класс пульсации на видимый элемент (если масштаб мелкий - это будет сам кластер)
-            setTimeout(() => {
-                if (activePhotoMarker) {
-                    var visibleNode = photoClusterGroup.getVisibleParent(activePhotoMarker);
-                    if (visibleNode && visibleNode.getElement()) {
-                        var el = visibleNode.getElement();
-                        L.DomUtil.addClass(el, 'active-photo-marker');
-                        el.style.setProperty('--pulse-color', hex);
-                    }
-                }
-            }, 850);
+            // Ждем, пока карта доедет, и включаем пульсацию
+            setTimeout(updateHighlightVisuals, 850);
         }
 
         function nextPhoto(e) {
@@ -611,14 +623,16 @@
             openPhotoByIndex(currentGalleryRepo, (currentGalleryIndex - 1 + g.photos.length) % g.photos.length);
         }
 
-        function closePhoto() { 
-            map.dragging.enable(); map.touchZoom.enable(); scale = 1; lastScale = 1; posX = 0; posY = 0; updateTransform(); 
-            document.getElementById('photo-viewer').style.display = 'none'; 
+        function closePhoto() {
+            map.dragging.enable(); map.touchZoom.enable(); map.doubleClickZoom.enable();
+            scale = 1; lastScale = 1; posX = 0; posY = 0; updateTransform();
+            document.getElementById('photo-viewer').style.display = 'none';
+            activePhotoMarker = null; // Обязательно сначала обнуляем якорь
+            
             document.querySelectorAll('.active-photo-marker').forEach(el => {
                 L.DomUtil.removeClass(el, 'active-photo-marker');
                 el.style.removeProperty('--pulse-color');
             });
-            activePhotoMarker = null;
         }
 
         /* Управление с клавиатуры (ПК) */
