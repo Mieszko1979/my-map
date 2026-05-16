@@ -624,17 +624,20 @@
         }
 
         function closePhoto() {
-            map.dragging.enable(); map.touchZoom.enable(); map.doubleClickZoom.enable();
-            scale = 1; lastScale = 1; posX = 0; posY = 0; updateTransform();
-            document.getElementById('photo-viewer').style.display = 'none';
-            activePhotoMarker = null; // Обязательно сначала обнуляем якорь
-            
-            document.querySelectorAll('.active-photo-marker').forEach(el => {
-                L.DomUtil.removeClass(el, 'active-photo-marker');
-                el.style.removeProperty('--pulse-color');
-            });
-        }
-
+    map.dragging.enable(); map.touchZoom.enable(); map.doubleClickZoom.enable();
+    scale = 1; lastScale = 1; posX = 0; posY = 0; updateTransform();
+    document.getElementById('photo-viewer').style.display = 'none';
+    
+    // Очищаем картинку при закрытии, чтобы старое фото не мелькало при слабом интернете
+    document.getElementById('view-img').removeAttribute('src');
+    
+    activePhotoMarker = null; // Обязательно сначала обнуляем якорь
+    
+    document.querySelectorAll('.active-photo-marker').forEach(el => {
+        L.DomUtil.removeClass(el, 'active-photo-marker');
+        el.style.removeProperty('--pulse-color');
+    });
+}
         /* Управление с клавиатуры (ПК) */
         document.addEventListener('keydown', function(e) {
             if(document.getElementById('photo-viewer').style.display === 'flex') {
