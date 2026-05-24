@@ -23,8 +23,8 @@ const aboutData = {
         // КУАР-КОДЫ (ПК версия, левая панель)
         qrCodes: [
             { name: "CloudTips (Т-Банк)", img: "CloudTips.png" },
-            { name: "CloudTips (Т-Банк)", img: "CloudTips.png" },
-            { name: "OZON Банк", img: "Qrozon.png" }
+            { name: "OZON Банк", img: "Qrozon.png" },
+            { name: "DonationAlerts", img: "DA.png" }
         ],
         // КНОПКИ ОПЛАТЫ (ПК версия - справа, Мобайл - списком)
         buttons: [
