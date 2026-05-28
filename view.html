@@ -58,40 +58,16 @@
         /* (Плавное увеличение на 2K/4K/8K мониторах)*/
         /* ========================================= */
         @media (min-width: 769px) {
-            #pc-photo-menu {
-                font-size: clamp(14px, 1.2vw, 18px);
-                padding: clamp(10px, 1vw, 14px) clamp(15px, 1.5vw, 22px);
-            }
-            #info-panel {
-                width: clamp(200px, 15vw, 320px);
-                padding: clamp(18px, 1.5vw, 28px);
-            }
-            .divider {
-                font-size: clamp(18px, 1.4vw, 26px);
-                margin-bottom: clamp(12px, 1vw, 18px);
-            }
+            #pc-photo-menu { font-size: clamp(14px, 1.2vw, 18px); padding: clamp(10px, 1vw, 14px) clamp(15px, 1.5vw, 22px); }
+            #info-panel { width: clamp(200px, 15vw, 320px); padding: clamp(18px, 1.5vw, 28px); }
+            .divider { font-size: clamp(18px, 1.4vw, 26px); margin-bottom: clamp(12px, 1vw, 18px); }
             .stat-item { margin-bottom: clamp(12px, 1vw, 18px); }
-            .stat-label {
-                font-size: clamp(11px, 0.9vw, 15px);
-            }
-            .stat-val {
-                font-size: clamp(22px, 1.8vw, 36px);
-            }
-            #chart-box {
-                max-width: clamp(900px, 60vw, 1800px);
-                height: clamp(180px, 22vh, 350px);
-            }
-            .panel-close {
-                font-size: clamp(18px, 1.5vw, 28px);
-            }
-            .restore-btn {
-                font-size: clamp(12px, 1vw, 16px);
-                padding: clamp(5px, 0.6vw, 10px) clamp(10px, 1.2vw, 18px);
-            }
-            .map-avatar {
-                width: clamp(50px, 4vw, 80px);
-                height: clamp(50px, 4vw, 80px);
-            }
+            .stat-label { font-size: clamp(11px, 0.9vw, 15px); }
+            .stat-val { font-size: clamp(22px, 1.8vw, 36px); }
+            #chart-box { max-width: clamp(900px, 60vw, 1800px); height: clamp(180px, 22vh, 350px); }
+            .panel-close { font-size: clamp(18px, 1.5vw, 28px); }
+            .restore-btn { font-size: clamp(12px, 1vw, 16px); padding: clamp(5px, 0.6vw, 10px) clamp(10px, 1.2vw, 18px); }
+            .map-avatar { width: clamp(50px, 4vw, 80px); height: clamp(50px, 4vw, 80px); }
         }
 
         /* ========================================= */
@@ -131,7 +107,7 @@
         <div class="stat-item"><span class="stat-label">Макс. высота</span><span id="max-alt" class="stat-val">--</span></div>
         <div class="stat-item analytics-hide"><span class="stat-label">В движении</span><span id="time" class="stat-val">--</span></div>
         <div class="stat-item analytics-hide"><span class="stat-label">Ср. скорость</span><span id="avg-speed" class="stat-val">--</span></div>
-        <!-- Строка с температурой -->
+        <!-- Строка с температурой (по умолчанию скрыта) -->
         <div class="stat-item" id="temp-row" style="display: none;"><span class="stat-label"><i class="fa-solid fa-temperature-half"></i> t&deg; (min/max)</span><span id="temp-val" class="stat-val">--</span></div>
     </div>
     
@@ -182,7 +158,7 @@
             }).on('loaded', function(e) {
                 var g = e.target; map.fitBounds(g.getBounds(), {padding: [50, 50]});
                 
-                // 1. УМНЫЙ ФИЛЬТР ВЫСОТЫ (отсекаем прыжки из 0 в начале записи)
+                // 1. БЕЗОПАСНЫЙ РАСЧЕТ И ОТРИСОВКА КАРТЫ
                 var rawElevationData = g.get_elevation_data();
                 var cleanGain = 0;
                 var lastEle = null;
@@ -211,26 +187,42 @@
                     document.getElementById('avg-speed').innerText = speed.toFixed(1) + " км/ч"; 
                 }
 
-                // 2. ИЩЕМ ТЕМПЕРАТУРУ В GPX (Если она там есть)
-                var tags = g._gpx.getElementsByTagName('*');
-                var minT = Infinity, maxT = -Infinity, hasT = false;
-                for (var j = 0; j < tags.length; j++) {
-                    var tName = tags[j].tagName.toLowerCase();
-                    if (tName.includes('temp')) {
-                        var tVal = parseFloat(tags[j].textContent);
-                        if (!isNaN(tVal)) { 
-                            hasT = true; 
-                            if (tVal < minT) minT = tVal; 
-                            if (tVal > maxT) maxT = tVal; 
+                // Рисуем маркеры старта и финиша
+                trackPoints = g.getLayers()[0].getLatLngs(); if (Array.isArray(trackPoints[0])) trackPoints = trackPoints[0];
+                L.marker(trackPoints[0], {icon: L.divIcon({className: 'marker-ab', html: 'A', iconSize: [24, 24], iconAnchor: [12, 12]})}).addTo(map);
+                L.marker(trackPoints[trackPoints.length - 1], {icon: L.divIcon({className: 'marker-ab', html: 'B', iconSize: [24, 24], iconAnchor: [12, 12]})}).addTo(map);
+                
+                // Рисуем график
+                buildChart(rawElevationData); 
+                loadPhotos(folder);
+
+                // ==========================================
+                // 2. АСИНХРОННЫЕ ФУНКЦИИ (Работают на фоне, не ломая интерфейс)
+                // ==========================================
+
+                // А. Ищем температуру безопасно
+                fetch(folder + file).then(r => r.text()).then(str => {
+                    var xml = new DOMParser().parseFromString(str, "text/xml");
+                    var tags = xml.getElementsByTagName('*');
+                    var minT = Infinity, maxT = -Infinity, hasT = false;
+                    for (var j = 0; j < tags.length; j++) {
+                        var tName = tags[j].tagName.toLowerCase();
+                        if (tName.includes('temp') || tName === 'atemp') {
+                            var tVal = parseFloat(tags[j].textContent);
+                            if (!isNaN(tVal)) { 
+                                hasT = true; 
+                                if (tVal < minT) minT = tVal; 
+                                if (tVal > maxT) maxT = tVal; 
+                            }
                         }
                     }
-                }
-                if (hasT && minT !== Infinity) {
-                    document.getElementById('temp-row').style.display = 'block';
-                    document.getElementById('temp-val').innerHTML = minT.toFixed(0) + "&deg;C / " + maxT.toFixed(0) + "&deg;C";
-                }
+                    if (hasT && minT !== Infinity) {
+                        document.getElementById('temp-row').style.display = 'block';
+                        document.getElementById('temp-val').innerHTML = minT.toFixed(0) + "&deg;C / " + maxT.toFixed(0) + "&deg;C";
+                    }
+                }).catch(e => console.log('Температура не найдена.'));
 
-                // 3. АВТО-СИНХРОНИЗАЦИЯ СО 100% ТОЧНЫМ TCX ФАЙЛОМ
+                // Б. Подгружаем 100% точные данные из TCX-файла (если он загружен в папку)
                 var tcxFile = file.replace(/\.gpx$/i, '.tcx');
                 fetch(folder + tcxFile).then(r => {
                     if (r.ok) return r.text();
@@ -258,20 +250,16 @@
                         }
                     }
                 }).catch(e => console.log('TCX файл не найден, используем расчеты карты.'));
-                
-                trackPoints = g.getLayers()[0].getLatLngs(); if (Array.isArray(trackPoints[0])) trackPoints = trackPoints[0];
-                L.marker(trackPoints[0], {icon: L.divIcon({className: 'marker-ab', html: 'A', iconSize: [24, 24], iconAnchor: [12, 12]})}).addTo(map);
-                L.marker(trackPoints[trackPoints.length - 1], {icon: L.divIcon({className: 'marker-ab', html: 'B', iconSize: [24, 24], iconAnchor: [12, 12]})}).addTo(map);
-                buildChart(rawElevationData); 
-                loadPhotos(folder);
+
             }).addTo(map);
         }
 
         function buildChart(elevationData) {
             var ctx = document.getElementById('elevationChart').getContext('2d');
             
-            // Фильтруем данные для графика: убираем точки, где высота подозрительно близка к 0
+            // Фильтруем данные: убираем точки около 0
             var cleanChartData = elevationData.filter(d => d[1] > 10);
+            if (cleanChartData.length === 0) cleanChartData = elevationData; // Защита от пустых графиков (если едешь по равнине)
             
             new Chart(ctx, { 
                 type: 'line', 
@@ -280,7 +268,7 @@
                     datasets: [{ 
                         data: cleanChartData.map(d => d[1].toFixed(0)), 
                         fill: true, 
-                        backgroundColor: 'rgba(0, 168, 107, 0.1)', 
+                        backgroundColor: 'rgba(0, 168, 107, 0.1)', // Твой зеленый цвет
                         borderColor: '#00a86b', 
                         borderWidth: 2, 
                         pointRadius: 0, 
@@ -298,7 +286,9 @@
                     }, 
                     onHover: (event, el) => { 
                         if (el.length > 0) { 
-                            var idx = Math.floor((el[0].index / cleanChartData.length) * trackPoints.length); 
+                            var percentage = el[0].index / cleanChartData.length;
+                            var idx = Math.floor(percentage * trackPoints.length); 
+                            if(idx >= trackPoints.length) idx = trackPoints.length - 1;
                             hoverMarker.setLatLng(trackPoints[idx]).addTo(map); 
                         } else map.removeLayer(hoverMarker); 
                     } 
