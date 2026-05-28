@@ -148,35 +148,39 @@
             }).on('loaded', function(e) {
                 var g = e.target; map.fitBounds(g.getBounds(), {padding: [50, 50]});
                 
+                // --- НОВЫЙ "БАРОМЕТРИЧЕСКИЙ" ФИЛЬТР ВЫСОТЫ ---
                 var rawElevationData = g.get_elevation_data();
                 var cleanGain = 0;
-                var lastEle = null;
                 
-                rawElevationData.forEach(function(d) {
-                    var currEle = d[1];
-                    if (currEle > 10) { 
-                        if (lastEle !== null) {
-                            var diff = currEle - lastEle;
-                            if (diff > 0 && diff < 10) cleanGain += diff; 
+                if (rawElevationData.length > 0) {
+                    var currentTrough = rawElevationData[0][1]; // Точка отсчета
+                    var threshold = 2.5; // Игнорируем скачки меньше 2.5 метров (шум GPS)
+                    
+                    for (var i = 1; i < rawElevationData.length; i++) {
+                        var ele = rawElevationData[i][1];
+                        if (ele < currentTrough) {
+                            currentTrough = ele; // Обновляем нижнюю точку, если спустились
+                        } else if (ele - currentTrough >= threshold) {
+                            // Засчитываем набор, только если он превысил порог шума
+                            cleanGain += (ele - currentTrough);
+                            currentTrough = ele; // Сбрасываем отсчет от новой вершины
                         }
-                        lastEle = currEle;
                     }
-                });
+                }
 
                 document.getElementById('dist').innerText = (g.get_distance()/1000).toFixed(1) + " км"; 
-                document.getElementById('gain').innerText = cleanGain.toFixed(0) + " м"; 
+                document.getElementById('gain').innerText = cleanGain.toFixed(0) + " м"; // Выводим отфильтрованный набор
                 document.getElementById('max-alt').innerText = g.get_elevation_max().toFixed(0) + " м";
                 
                 var speed = g.get_moving_speed(); 
-                // Умное отображение полей
+                // Скрываем время и скорость для старых треков или откровенных трансферов
                 if (!(folder.includes('2018') || speed > 60 || g.get_distance() < 2000)) { 
                     var ms = g.get_moving_time(); 
                     document.getElementById('time').innerText = Math.floor(ms/3600000)+"ч "+Math.floor((ms%3600000)/60000)+"м"; 
                     document.getElementById('avg-speed').innerText = speed.toFixed(1) + " км/ч"; 
-                    document.querySelectorAll('.analytics-hide').forEach(el => el.style.display = 'block'); // Включаем строки
+                    document.querySelectorAll('.analytics-hide').forEach(el => el.style.display = 'block');
                 }
 
-                // ПОКАЗЫВАЕМ ПАНЕЛЬ ТОЛЬКО СЕЙЧАС (на ПК)
                 if (window.innerWidth > 768) {
                     document.getElementById('info-panel').style.display = 'block';
                 }
@@ -188,27 +192,7 @@
                 buildChart(rawElevationData); 
                 loadPhotos(folder);
 
-                fetch(folder + file).then(r => r.text()).then(str => {
-                    var xml = new DOMParser().parseFromString(str, "text/xml");
-                    var tags = xml.getElementsByTagName('*');
-                    var minT = Infinity, maxT = -Infinity, hasT = false;
-                    for (var j = 0; j < tags.length; j++) {
-                        var tName = tags[j].tagName.toLowerCase();
-                        if (tName.includes('temp') || tName === 'atemp') {
-                            var tVal = parseFloat(tags[j].textContent);
-                            if (!isNaN(tVal)) { 
-                                hasT = true; 
-                                if (tVal < minT) minT = tVal; 
-                                if (tVal > maxT) maxT = tVal; 
-                            }
-                        }
-                    }
-                    if (hasT && minT !== Infinity) {
-                        document.getElementById('temp-row').style.display = 'block';
-                        document.getElementById('temp-val').innerHTML = minT.toFixed(0) + "&deg;C / " + maxT.toFixed(0) + "&deg;C";
-                    }
-                }).catch(e => console.log('Температура не найдена.'));
-
+                // --- ЧТЕНИЕ ИДЕАЛЬНЫХ ДАННЫХ ИЗ TCX ---
                 var tcxFile = file.replace(/\.gpx$/i, '.tcx');
                 fetch(folder + tcxFile).then(r => {
                     if (r.ok) return r.text();
@@ -226,11 +210,16 @@
                     }
                     
                     if (exactDist > 0) {
+                        // Подменяем расстояние на точное из TCX
                         document.getElementById('dist').innerText = (exactDist / 1000).toFixed(1) + " км";
+                        
                         if (exactTime > 0 && !folder.includes('2018') && speed <= 60 && g.get_distance() >= 2000) {
                             var h = Math.floor(exactTime / 3600);
                             var m = Math.floor((exactTime % 3600) / 60);
+                            // Подменяем время
                             document.getElementById('time').innerText = h + "ч " + m + "м";
+                            
+                            // Подменяем среднюю скорость (Дистанция / Время)
                             var speedKmH = (exactDist / 1000) / (exactTime / 3600);
                             document.getElementById('avg-speed').innerText = speedKmH.toFixed(1) + " км/ч";
                         }
