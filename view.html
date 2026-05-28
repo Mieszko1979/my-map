@@ -198,37 +198,41 @@
                     }
                 });
 
-                document.getElementById('dist').innerText = (g.get_distance()/1000).toFixed(1) + " км"; 
-                document.getElementById('gain').innerText = cleanGain.toFixed(0) + " м"; 
+                // Читаем точные данные из URL (если ты передашь их из index.html)
+                var exactDist = params.get('dist'), exactGain = params.get('gain'), exactTime = params.get('time'), exactAvg = params.get('avg');
+
+                document.getElementById('dist').innerText = exactDist ? exactDist + " км" : (g.get_distance()/1000).toFixed(1) + " км"; 
+                document.getElementById('gain').innerText = exactGain ? exactGain + " м" : cleanGain.toFixed(0) + " м"; 
                 document.getElementById('max-alt').innerText = g.get_elevation_max().toFixed(0) + " м";
                 
                 var speed = g.get_moving_speed(); 
-                // Скрываем скорость для старых архивов, трансферов (>60км/ч) и коротких тестов (<2км)
                 if (folder.includes('2018') || speed > 60 || g.get_distance() < 2000) { 
                     document.querySelectorAll('.analytics-hide').forEach(el => el.style.display = 'none'); 
                 } else { 
-                    var ms = g.get_moving_time(); 
-                    document.getElementById('time').innerText = Math.floor(ms/3600000)+"ч "+Math.floor((ms%3600000)/60000)+"м"; 
-                    document.getElementById('avg-speed').innerText = speed.toFixed(1) + " км/ч"; 
+                    if (exactTime) document.getElementById('time').innerText = exactTime;
+                    else {
+                        var ms = g.get_moving_time(); 
+                        document.getElementById('time').innerText = Math.floor(ms/3600000)+"ч "+Math.floor((ms%3600000)/60000)+"м"; 
+                    }
+                    document.getElementById('avg-speed').innerText = exactAvg ? exactAvg + " км/ч" : speed.toFixed(1) + " км/ч"; 
                 }
 
-                // УМНЫЙ ПОИСК ТЕМПЕРАТУРЫ В GPX-ФАЙЛЕ
-                var tags = g._gpx.getElementsByTagName('*');
-                var minTemp = Infinity, maxTemp = -Infinity, hasTemp = false;
-                for (var j = 0; j < tags.length; j++) {
-                    if (tags[j].tagName.toLowerCase().includes('temp')) {
-                        var tVal = parseFloat(tags[j].textContent);
-                        if (!isNaN(tVal)) {
-                            hasTemp = true;
-                            if (tVal < minTemp) minTemp = tVal;
-                            if (tVal > maxTemp) maxTemp = tVal;
+                // БЕЗОПАСНЫЙ ПОИСК ТЕМПЕРАТУРЫ (чтобы не ломать график)
+                fetch(folder + file).then(r => r.text()).then(str => {
+                    var tags = new DOMParser().parseFromString(str, "text/xml").getElementsByTagName('*');
+                    var minT = Infinity, maxT = -Infinity, hasT = false;
+                    for (var j = 0; j < tags.length; j++) {
+                        var tName = tags[j].tagName.toLowerCase();
+                        if (tName.includes('temp') || tName === 'atemp') {
+                            var tVal = parseFloat(tags[j].textContent);
+                            if (!isNaN(tVal)) { hasT = true; if (tVal < minT) minT = tVal; if (tVal > maxT) maxT = tVal; }
                         }
                     }
-                }
-                if (hasTemp && minTemp !== Infinity) {
-                    document.getElementById('temp-row').style.display = 'block';
-                    document.getElementById('temp-val').innerHTML = minTemp.toFixed(0) + "&deg;C / " + maxTemp.toFixed(0) + "&deg;C";
-                }
+                    if (hasT && minT !== Infinity) {
+                        document.getElementById('temp-row').style.display = 'block';
+                        document.getElementById('temp-val').innerHTML = minT.toFixed(0) + "&deg;C / " + maxT.toFixed(0) + "&deg;C";
+                    }
+                }).catch(e => console.log(e));
                 
                 trackPoints = g.getLayers()[0].getLatLngs(); if (Array.isArray(trackPoints[0])) trackPoints = trackPoints[0];
                 L.marker(trackPoints[0], {icon: L.divIcon({className: 'marker-ab', html: 'A', iconSize: [24, 24], iconAnchor: [12, 12]})}).addTo(map);
