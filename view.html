@@ -131,6 +131,8 @@
         <div class="stat-item"><span class="stat-label">Макс. высота</span><span id="max-alt" class="stat-val">--</span></div>
         <div class="stat-item analytics-hide"><span class="stat-label">В движении</span><span id="time" class="stat-val">--</span></div>
         <div class="stat-item analytics-hide"><span class="stat-label">Ср. скорость</span><span id="avg-speed" class="stat-val">--</span></div>
+        <!-- Новая строка с температурой (по умолчанию скрыта) -->
+        <div class="stat-item" id="temp-row" style="display: none;"><span class="stat-label"><i class="fa-solid fa-temperature-half"></i> t&deg; (min/max)</span><span id="temp-val" class="stat-val">--</span></div>
     </div>
     
     <div id="chart-box">
@@ -208,6 +210,24 @@
                     var ms = g.get_moving_time(); 
                     document.getElementById('time').innerText = Math.floor(ms/3600000)+"ч "+Math.floor((ms%3600000)/60000)+"м"; 
                     document.getElementById('avg-speed').innerText = speed.toFixed(1) + " км/ч"; 
+                }
+
+                // УМНЫЙ ПОИСК ТЕМПЕРАТУРЫ В GPX-ФАЙЛЕ
+                var tags = g._gpx.getElementsByTagName('*');
+                var minTemp = Infinity, maxTemp = -Infinity, hasTemp = false;
+                for (var j = 0; j < tags.length; j++) {
+                    if (tags[j].tagName.toLowerCase().includes('temp')) {
+                        var tVal = parseFloat(tags[j].textContent);
+                        if (!isNaN(tVal)) {
+                            hasTemp = true;
+                            if (tVal < minTemp) minTemp = tVal;
+                            if (tVal > maxTemp) maxTemp = tVal;
+                        }
+                    }
+                }
+                if (hasTemp && minTemp !== Infinity) {
+                    document.getElementById('temp-row').style.display = 'block';
+                    document.getElementById('temp-val').innerHTML = minTemp.toFixed(0) + "&deg;C / " + maxTemp.toFixed(0) + "&deg;C";
                 }
                 
                 trackPoints = g.getLayers()[0].getLatLngs(); if (Array.isArray(trackPoints[0])) trackPoints = trackPoints[0];
