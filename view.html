@@ -148,28 +148,30 @@
             }).on('loaded', function(e) {
                 var g = e.target; map.fitBounds(g.getBounds(), {padding: [50, 50]});
                 
-                // --- НОВЫЙ "БАРОМЕТРИЧЕСКИЙ" ФИЛЬТР ВЫСОТЫ ---
+                // --- ИСПРАВЛЕННЫЙ "БАРОМЕТРИЧЕСКИЙ" ФИЛЬТР ВЫСОТЫ ---
                 var rawElevationData = g.get_elevation_data();
                 var cleanGain = 0;
                 
-                if (rawElevationData.length > 0) {
-                    var currentTrough = rawElevationData[0][1]; // Точка отсчета
-                    var threshold = 2.5; // Игнорируем скачки меньше 2.5 метров (шум GPS)
+                // 1. Отрезаем стартовые глюки GPS (когда высота 0)
+                var validEleData = rawElevationData.filter(d => d[1] > 10);
+
+                if (validEleData.length > 0) {
+                    var currentTrough = validEleData[0][1]; // Берем первую РЕАЛЬНУЮ высоту
+                    var threshold = 2.0; // Порог чувствительности (игнорируем ямы меньше 2 метров)
                     
-                    for (var i = 1; i < rawElevationData.length; i++) {
-                        var ele = rawElevationData[i][1];
+                    for (var i = 1; i < validEleData.length; i++) {
+                        var ele = validEleData[i][1];
                         if (ele < currentTrough) {
-                            currentTrough = ele; // Обновляем нижнюю точку, если спустились
+                            currentTrough = ele; // Идем вниз — обновляем "дно"
                         } else if (ele - currentTrough >= threshold) {
-                            // Засчитываем набор, только если он превысил порог шума
-                            cleanGain += (ele - currentTrough);
-                            currentTrough = ele; // Сбрасываем отсчет от новой вершины
+                            cleanGain += (ele - currentTrough); // Поднялись выше порога — засчитываем!
+                            currentTrough = ele; // Сброс
                         }
                     }
                 }
 
                 document.getElementById('dist').innerText = (g.get_distance()/1000).toFixed(1) + " км"; 
-                document.getElementById('gain').innerText = cleanGain.toFixed(0) + " м"; // Выводим отфильтрованный набор
+                document.getElementById('gain').innerText = cleanGain.toFixed(0) + " м"; // Выводим чистый результат
                 document.getElementById('max-alt').innerText = g.get_elevation_max().toFixed(0) + " м";
                 
                 var speed = g.get_moving_speed(); 
