@@ -131,7 +131,7 @@
         <div class="stat-item"><span class="stat-label">Макс. высота</span><span id="max-alt" class="stat-val">--</span></div>
         <div class="stat-item analytics-hide"><span class="stat-label">В движении</span><span id="time" class="stat-val">--</span></div>
         <div class="stat-item analytics-hide"><span class="stat-label">Ср. скорость</span><span id="avg-speed" class="stat-val">--</span></div>
-        <!-- Новая строка с температурой (по умолчанию скрыта) -->
+        <!-- Строка с температурой -->
         <div class="stat-item" id="temp-row" style="display: none;"><span class="stat-label"><i class="fa-solid fa-temperature-half"></i> t&deg; (min/max)</span><span id="temp-val" class="stat-val">--</span></div>
     </div>
     
@@ -178,11 +178,11 @@
                 async: true, 
                 marker_options: { startIconUrl: null, endIconUrl: null }, 
                 polyline_options: { color: '#ffea00', weight: 6, opacity: 0.9 },
-                max_point_interval: 30000 // игнорирует долгие стоянки для точности времени
+                max_point_interval: 30000 
             }).on('loaded', function(e) {
                 var g = e.target; map.fitBounds(g.getBounds(), {padding: [50, 50]});
                 
-                // УМНЫЙ ФИЛЬТР ВЫСОТЫ (отсекаем прыжки из 0 в начале записи)
+                // 1. УМНЫЙ ФИЛЬТР ВЫСОТЫ (отсекаем прыжки из 0 в начале записи)
                 var rawElevationData = g.get_elevation_data();
                 var cleanGain = 0;
                 var lastEle = null;
@@ -198,41 +198,66 @@
                     }
                 });
 
-                // Читаем точные данные из URL (если ты передашь их из index.html)
-                var exactDist = params.get('dist'), exactGain = params.get('gain'), exactTime = params.get('time'), exactAvg = params.get('avg');
-
-                document.getElementById('dist').innerText = exactDist ? exactDist + " км" : (g.get_distance()/1000).toFixed(1) + " км"; 
-                document.getElementById('gain').innerText = exactGain ? exactGain + " м" : cleanGain.toFixed(0) + " м"; 
+                document.getElementById('dist').innerText = (g.get_distance()/1000).toFixed(1) + " км"; 
+                document.getElementById('gain').innerText = cleanGain.toFixed(0) + " м"; 
                 document.getElementById('max-alt').innerText = g.get_elevation_max().toFixed(0) + " м";
                 
                 var speed = g.get_moving_speed(); 
                 if (folder.includes('2018') || speed > 60 || g.get_distance() < 2000) { 
                     document.querySelectorAll('.analytics-hide').forEach(el => el.style.display = 'none'); 
                 } else { 
-                    if (exactTime) document.getElementById('time').innerText = exactTime;
-                    else {
-                        var ms = g.get_moving_time(); 
-                        document.getElementById('time').innerText = Math.floor(ms/3600000)+"ч "+Math.floor((ms%3600000)/60000)+"м"; 
-                    }
-                    document.getElementById('avg-speed').innerText = exactAvg ? exactAvg + " км/ч" : speed.toFixed(1) + " км/ч"; 
+                    var ms = g.get_moving_time(); 
+                    document.getElementById('time').innerText = Math.floor(ms/3600000)+"ч "+Math.floor((ms%3600000)/60000)+"м"; 
+                    document.getElementById('avg-speed').innerText = speed.toFixed(1) + " км/ч"; 
                 }
 
-                // БЕЗОПАСНЫЙ ПОИСК ТЕМПЕРАТУРЫ (чтобы не ломать график)
-                fetch(folder + file).then(r => r.text()).then(str => {
-                    var tags = new DOMParser().parseFromString(str, "text/xml").getElementsByTagName('*');
-                    var minT = Infinity, maxT = -Infinity, hasT = false;
-                    for (var j = 0; j < tags.length; j++) {
-                        var tName = tags[j].tagName.toLowerCase();
-                        if (tName.includes('temp') || tName === 'atemp') {
-                            var tVal = parseFloat(tags[j].textContent);
-                            if (!isNaN(tVal)) { hasT = true; if (tVal < minT) minT = tVal; if (tVal > maxT) maxT = tVal; }
+                // 2. ИЩЕМ ТЕМПЕРАТУРУ В GPX (Если она там есть)
+                var tags = g._gpx.getElementsByTagName('*');
+                var minT = Infinity, maxT = -Infinity, hasT = false;
+                for (var j = 0; j < tags.length; j++) {
+                    var tName = tags[j].tagName.toLowerCase();
+                    if (tName.includes('temp')) {
+                        var tVal = parseFloat(tags[j].textContent);
+                        if (!isNaN(tVal)) { 
+                            hasT = true; 
+                            if (tVal < minT) minT = tVal; 
+                            if (tVal > maxT) maxT = tVal; 
                         }
                     }
-                    if (hasT && minT !== Infinity) {
-                        document.getElementById('temp-row').style.display = 'block';
-                        document.getElementById('temp-val').innerHTML = minT.toFixed(0) + "&deg;C / " + maxT.toFixed(0) + "&deg;C";
+                }
+                if (hasT && minT !== Infinity) {
+                    document.getElementById('temp-row').style.display = 'block';
+                    document.getElementById('temp-val').innerHTML = minT.toFixed(0) + "&deg;C / " + maxT.toFixed(0) + "&deg;C";
+                }
+
+                // 3. АВТО-СИНХРОНИЗАЦИЯ СО 100% ТОЧНЫМ TCX ФАЙЛОМ
+                var tcxFile = file.replace(/\.gpx$/i, '.tcx');
+                fetch(folder + tcxFile).then(r => {
+                    if (r.ok) return r.text();
+                    throw new Error('TCX не найден');
+                }).then(str => {
+                    var xml = new DOMParser().parseFromString(str, "text/xml");
+                    var laps = xml.getElementsByTagName('Lap');
+                    var exactDist = 0, exactTime = 0;
+                    
+                    for (var i = 0; i < laps.length; i++) {
+                        var dNode = laps[i].getElementsByTagName('DistanceMeters')[0];
+                        var tNode = laps[i].getElementsByTagName('TotalTimeSeconds')[0];
+                        if (dNode) exactDist += parseFloat(dNode.textContent);
+                        if (tNode) exactTime += parseFloat(tNode.textContent);
                     }
-                }).catch(e => console.log(e));
+                    
+                    if (exactDist > 0) {
+                        document.getElementById('dist').innerText = (exactDist / 1000).toFixed(1) + " км";
+                        if (exactTime > 0 && !folder.includes('2018') && speed <= 60 && g.get_distance() >= 2000) {
+                            var h = Math.floor(exactTime / 3600);
+                            var m = Math.floor((exactTime % 3600) / 60);
+                            document.getElementById('time').innerText = h + "ч " + m + "м";
+                            var speedKmH = (exactDist / 1000) / (exactTime / 3600);
+                            document.getElementById('avg-speed').innerText = speedKmH.toFixed(1) + " км/ч";
+                        }
+                    }
+                }).catch(e => console.log('TCX файл не найден, используем расчеты карты.'));
                 
                 trackPoints = g.getLayers()[0].getLatLngs(); if (Array.isArray(trackPoints[0])) trackPoints = trackPoints[0];
                 L.marker(trackPoints[0], {icon: L.divIcon({className: 'marker-ab', html: 'A', iconSize: [24, 24], iconAnchor: [12, 12]})}).addTo(map);
@@ -255,7 +280,7 @@
                     datasets: [{ 
                         data: cleanChartData.map(d => d[1].toFixed(0)), 
                         fill: true, 
-                        backgroundColor: 'rgba(0, 168, 107, 0.1)', // Твой зеленый цвет
+                        backgroundColor: 'rgba(0, 168, 107, 0.1)', 
                         borderColor: '#00a86b', 
                         borderWidth: 2, 
                         pointRadius: 0, 
@@ -273,7 +298,6 @@
                     }, 
                     onHover: (event, el) => { 
                         if (el.length > 0) { 
-                            // Синхронизация точки с картой по очищенному графику
                             var idx = Math.floor((el[0].index / cleanChartData.length) * trackPoints.length); 
                             hoverMarker.setLatLng(trackPoints[idx]).addTo(map); 
                         } else map.removeLayer(hoverMarker); 
