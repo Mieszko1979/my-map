@@ -78,7 +78,6 @@
                 font-size: clamp(22px, 1.8vw, 36px);
             }
             #chart-box {
-                /* График сможет раздвинуться до 1800px на сверхшироких экранах */
                 max-width: clamp(900px, 60vw, 1800px);
                 height: clamp(180px, 22vh, 350px);
             }
@@ -173,15 +172,39 @@
         }
 
         if (file) {
-            new L.GPX(folder + file, { async: true, marker_options: { startIconUrl: null, endIconUrl: null }, polyline_options: { color: '#ffea00', weight: 6, opacity: 0.9 } }).on('loaded', function(e) {
+            new L.GPX(folder + file, { 
+                async: true, 
+                marker_options: { startIconUrl: null, endIconUrl: null }, 
+                polyline_options: { color: '#ffea00', weight: 6, opacity: 0.9 },
+                max_point_interval: 30000 // игнорирует долгие стоянки для точности времени
+            }).on('loaded', function(e) {
                 var g = e.target; map.fitBounds(g.getBounds(), {padding: [50, 50]});
+                
+                // УМНЫЙ ФИЛЬТР ВЫСОТЫ (отсекаем прыжки из 0 в начале записи)
+                var rawElevationData = g.get_elevation_data();
+                var cleanGain = 0;
+                var lastEle = null;
+                
+                rawElevationData.forEach(function(d) {
+                    var currEle = d[1];
+                    if (currEle > 10) { 
+                        if (lastEle !== null) {
+                            var diff = currEle - lastEle;
+                            if (diff > 0 && diff < 10) cleanGain += diff; 
+                        }
+                        lastEle = currEle;
+                    }
+                });
+
                 document.getElementById('dist').innerText = (g.get_distance()/1000).toFixed(1) + " км"; 
-                document.getElementById('gain').innerText = g.get_elevation_gain().toFixed(0) + " м"; 
+                document.getElementById('gain').innerText = cleanGain.toFixed(0) + " м"; 
                 document.getElementById('max-alt').innerText = g.get_elevation_max().toFixed(0) + " м";
                 
                 var speed = g.get_moving_speed(); 
-                if (folder.includes('2018') || speed > 60) { document.querySelectorAll('.analytics-hide').forEach(el => el.style.display = 'none'); } 
-                else { 
+                // Скрываем скорость для старых архивов, трансферов (>60км/ч) и коротких тестов (<2км)
+                if (folder.includes('2018') || speed > 60 || g.get_distance() < 2000) { 
+                    document.querySelectorAll('.analytics-hide').forEach(el => el.style.display = 'none'); 
+                } else { 
                     var ms = g.get_moving_time(); 
                     document.getElementById('time').innerText = Math.floor(ms/3600000)+"ч "+Math.floor((ms%3600000)/60000)+"м"; 
                     document.getElementById('avg-speed').innerText = speed.toFixed(1) + " км/ч"; 
@@ -190,14 +213,49 @@
                 trackPoints = g.getLayers()[0].getLatLngs(); if (Array.isArray(trackPoints[0])) trackPoints = trackPoints[0];
                 L.marker(trackPoints[0], {icon: L.divIcon({className: 'marker-ab', html: 'A', iconSize: [24, 24], iconAnchor: [12, 12]})}).addTo(map);
                 L.marker(trackPoints[trackPoints.length - 1], {icon: L.divIcon({className: 'marker-ab', html: 'B', iconSize: [24, 24], iconAnchor: [12, 12]})}).addTo(map);
-                buildChart(g.get_elevation_data()); 
+                buildChart(rawElevationData); 
                 loadPhotos(folder);
             }).addTo(map);
         }
 
         function buildChart(elevationData) {
             var ctx = document.getElementById('elevationChart').getContext('2d');
-            new Chart(ctx, { type: 'line', data: { labels: elevationData.map(d => d[0].toFixed(1)), datasets: [{ data: elevationData.map(d => d[1].toFixed(0)), fill: true, backgroundColor: 'rgba(0, 168, 107, 0.1)', borderColor: '#00a86b', borderWidth: 2, pointRadius: 0, tension: 0.1 }] }, options: { responsive: true, maintainAspectRatio: false, interaction: { intersect: false, mode: 'index' }, plugins: { legend: { display: false }, tooltip: { enabled: false } }, scales: { x: { display: true, ticks: { font: { size: 8 } }, title: { display: true, text: 'км', font: { size: 8, weight: 'bold' } } }, y: { display: true, ticks: { font: { size: 8 } }, title: { display: true, text: 'м', font: { size: 8, weight: 'bold' } } } }, onHover: (event, el) => { if (el.length > 0) { var idx = Math.floor((el[0].index / elevationData.length) * trackPoints.length); hoverMarker.setLatLng(trackPoints[idx]).addTo(map); } else map.removeLayer(hoverMarker); } } });
+            
+            // Фильтруем данные для графика: убираем точки, где высота подозрительно близка к 0
+            var cleanChartData = elevationData.filter(d => d[1] > 10);
+            
+            new Chart(ctx, { 
+                type: 'line', 
+                data: { 
+                    labels: cleanChartData.map(d => d[0].toFixed(1)), 
+                    datasets: [{ 
+                        data: cleanChartData.map(d => d[1].toFixed(0)), 
+                        fill: true, 
+                        backgroundColor: 'rgba(0, 168, 107, 0.1)', // Твой зеленый цвет
+                        borderColor: '#00a86b', 
+                        borderWidth: 2, 
+                        pointRadius: 0, 
+                        tension: 0.1 
+                    }] 
+                }, 
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    interaction: { intersect: false, mode: 'index' }, 
+                    plugins: { legend: { display: false }, tooltip: { enabled: false } }, 
+                    scales: { 
+                        x: { display: true, ticks: { font: { size: 8 } }, title: { display: true, text: 'км', font: { size: 8, weight: 'bold' } } }, 
+                        y: { display: true, ticks: { font: { size: 8 } }, title: { display: true, text: 'м', font: { size: 8, weight: 'bold' } } } 
+                    }, 
+                    onHover: (event, el) => { 
+                        if (el.length > 0) { 
+                            // Синхронизация точки с картой по очищенному графику
+                            var idx = Math.floor((el[0].index / cleanChartData.length) * trackPoints.length); 
+                            hoverMarker.setLatLng(trackPoints[idx]).addTo(map); 
+                        } else map.removeLayer(hoverMarker); 
+                    } 
+                } 
+            });
         }
 
         /* LIGHTBOX ЛОГИКА С ЗАЩИТОЙ КАРТЫ */
