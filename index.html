@@ -47,10 +47,10 @@
         .hint-text { color: #ff0000; font-weight: 900; font-size: 17px; text-transform: uppercase; letter-spacing: 1px; }
 
         /* ВИДЖЕТ КИЛОМЕТРАЖА */
-        #distance-widget { position: absolute; top: 15px; right: 70px; z-index: 1000; background: rgba(255, 255, 255, 0.95); padding: 10px 20px; border-radius: 12px; font-size: 16px; font-weight: bold; color: #333; display: flex; align-items: center; gap: 8px; transition: all 0.4s ease; opacity: 1; transform: translateY(0); pointer-events: none; font-family: Arial, sans-serif; box-sizing: border-box; }
+        #distance-widget { position: absolute; top: 15px; right: 70px; z-index: 1000; background: rgba(255, 255, 255, 0.95); padding: 10px 20px; border-radius: 12px; border: 2.5px solid #28a745; font-size: 16px; font-weight: bold; color: #333; display: flex; align-items: center; gap: 8px; transition: all 0.4s ease; opacity: 1; transform: translateY(0); pointer-events: none; font-family: Arial, sans-serif; box-sizing: border-box; }
         #distance-widget.hidden { opacity: 0; transform: translateY(-20px); pointer-events: none; }
         #distance-widget .bike-icon { font-size: 22px; color: #28a745; }
-        @keyframes scarletPulseWidget { 0% { box-shadow: 0 4px 15px rgba(0,0,0,0.3), 0 0 0 0px rgba(255, 36, 0, 0.9); } 70% { box-shadow: 0 4px 15px rgba(0,0,0,0.3), 0 0 0 18px rgba(255, 36, 0, 0); } 100% { box-shadow: 0 4px 15px rgba(0,0,0,0.3), 0 0 0 0px rgba(255, 36, 0, 0); } }
+        @keyframes scarletPulseWidget { 0% { box-shadow: 0 4px 15px rgba(0,0,0,0.3), 0 0 0 0px rgba(40, 167, 69, 0.9); } 70% { box-shadow: 0 4px 15px rgba(0,0,0,0.3), 0 0 0 18px rgba(40, 167, 69, 0); } 100% { box-shadow: 0 4px 15px rgba(0,0,0,0.3), 0 0 0 0px rgba(40, 167, 69, 0); } }
         .pulsing-widget { animation: scarletPulseWidget 3s infinite ease-in-out !important; }
 
         /* БАЗА МОДАЛЬНОГО ОКНА */
@@ -805,4 +805,3 @@
     </script>
 </body>
 </html>
-
