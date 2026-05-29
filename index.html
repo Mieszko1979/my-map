@@ -817,7 +817,9 @@
                     L.circleMarker(p.from, {radius: 5, color: hex, fillColor: 'white', fillOpacity: 1, weight: 2}).addTo(target);
                     L.circleMarker(p.to, {radius: 5, color: hex, fillColor: 'white', fillOpacity: 1, weight: 2}).addTo(target);
                     var tIcons = { 'plane':'✈️','train':'🚂','bus':'🚌','car':'🚗','truck':'🚚' };
-                    L.marker([(p.from[0]+p.to[0])/2, (p.from[1]+p.to[1])/2], {icon: L.divIcon({ className: 'trans-center-marker ' + colorClass, html: tIcons[p.transport] || '🚀', iconSize:[24, 24], iconAnchor:[12, 12] })}).addTo(target).bindPopup(createPopup(p, folder));
+                    var p1 = map.project(p.from, 0), p2 = map.project(p.to, 0);
+                    var midLatLng = map.unproject([(p1.x + p2.x) / 2, (p1.y + p2.y) / 2], 0);
+                    L.marker(midLatLng, {icon: L.divIcon({ className: 'trans-center-marker ' + colorClass, html: tIcons[p.transport] || '🚀', iconSize:[24, 24], iconAnchor:[12, 12] })}).addTo(target).bindPopup(createPopup(p, folder));
                     L.polylineDecorator(line, { patterns: [{ offset: '20%', repeat: '40%', symbol: L.Symbol.arrowHead({pixelSize: 12, pathOptions: {color: hex, fillOpacity: 1, weight: 0}}) }] }).addTo(target);
                 }
             });
