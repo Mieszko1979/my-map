@@ -1,7 +1,7 @@
 <head>
     <title>Мой Велоархив</title>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <!-- Моментальная предзагрузка иконок соцсетей и интерфейса -->
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/webfonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
@@ -27,7 +27,7 @@
         html, body, #map { height: 100%; margin: 0; padding: 0; overflow: hidden; background: #000; font-family: Arial, sans-serif; }
         
         /* МЕНЮ УПРАВЛЕНИЯ */
-        #menu-box { position: absolute; top: 15px; left: 15px; z-index: 1000; background: rgba(255, 255, 255, 0.95); padding: 15px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); min-width: 320px; transition: all 0.3s ease; box-sizing: border-box; }
+        #menu-box { position: absolute; top: 15px; left: 15px; z-index: 1000; background: rgba(255, 255, 255, 0.95); padding: 15px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); min-width: 320px; transition: all 0.3s ease; box-sizing: border-box; touch-action: pan-y; }
         .menu-collapse-btn { display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 16px; cursor: pointer; color: #333; }
         #menu-content { max-height: 1000px; overflow: hidden; opacity: 1; transition: all 0.3s ease; margin-top: 15px; padding-top: 12px; border-top: 1px solid #ccc; }
         #menu-box.collapsed #menu-content { max-height: 0; opacity: 0; margin-top: 0; padding-top: 0; border-top: none; }
@@ -42,13 +42,12 @@
         #mobile-photo-btn { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); z-index: 1001; background: white; border: none; width: 45px; height: 45px; border-radius: 50%; box-shadow: 0 2px 10px rgba(0,0,0,0.3); display: none; align-items: center; justify-content: center; color: #28a745; font-size: 20px; }
 
         /* ЖМИ СЮДА */
-        #hint-box { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); z-index: 1000; background: rgba(255, 255, 255, 0.95); padding: 10px 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); cursor: pointer; text-align: center; transition: 0.2s ease; }
+        #hint-box { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); z-index: 1000; background: rgba(255, 255, 255, 0.95); padding: 10px 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); cursor: pointer; text-align: center; transition: 0.2s ease; touch-action: none; }
         #hint-box:hover { transform: translateX(-50%) scale(1.08); background: #fff; }
         .hint-text { color: #ff0000; font-weight: 900; font-size: 17px; text-transform: uppercase; letter-spacing: 1px; }
 
         /* ВИДЖЕТ КИЛОМЕТРАЖА */
-        #distance-widget { position: absolute; top: 15px; right: 70px; z-index: 1000; background: rgba(255, 255, 255, 0.95); padding: 8px 18px; border-radius: 12px; border: 2.5px solid #28a745; color: #333; display: flex; flex-direction: column; align-items: center; transition: all 0.4s ease; opacity: 1; transform: translateY(0); pointer-events: none; font-family: Arial, sans-serif; box-sizing: border-box; }
-        #distance-widget.hidden { opacity: 0; transform: translateY(-20px); pointer-events: none; }
+        #distance-widget { position: absolute; top: 15px; right: 70px; z-index: 1000; background: rgba(255, 255, 255, 0.95); padding: 8px 18px; border-radius: 12px; border: 2.5px solid #28a745; color: #333; display: flex; flex-direction: column; align-items: center; transition: all 0.4s ease; opacity: 1; transform: translateY(0); pointer-events: none; font-family: Arial, sans-serif; box-sizing: border-box; touch-action: none; }
         .main-dist-row { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: bold; }
         .main-dist-row .bike-icon { font-size: 24px; color: #28a745; }
         .transport-stats-row { display: flex; gap: 10px; margin-top: 4px; border-top: 1px solid #ddd; padding-top: 4px; font-size: 13px; color: #666; font-weight: bold; }
