@@ -1,3 +1,5 @@
+--- START OF FILE text/plain ---
+
 <head>
     <title>Мой Велоархив</title>
     <meta charset="utf-8" />
@@ -45,6 +47,13 @@
         #hint-box { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); z-index: 1000; background: rgba(255, 255, 255, 0.95); padding: 10px 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); cursor: pointer; text-align: center; transition: 0.2s ease; }
         #hint-box:hover { transform: translateX(-50%) scale(1.08); background: #fff; }
         .hint-text { color: #ff0000; font-weight: 900; font-size: 17px; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* ВИДЖЕТ КИЛОМЕТРАЖА */
+        #distance-widget { position: absolute; top: 15px; right: 70px; z-index: 1000; background: rgba(255, 255, 255, 0.95); padding: 10px 20px; border-radius: 12px; font-size: 16px; font-weight: bold; color: #333; display: flex; align-items: center; gap: 8px; transition: all 0.4s ease; opacity: 1; transform: translateY(0); pointer-events: none; font-family: Arial, sans-serif; box-sizing: border-box; }
+        #distance-widget.hidden { opacity: 0; transform: translateY(-20px); pointer-events: none; }
+        #distance-widget .bike-icon { font-size: 22px; color: #28a745; }
+        @keyframes scarletPulseWidget { 0% { box-shadow: 0 4px 15px rgba(0,0,0,0.3), 0 0 0 0px rgba(255, 36, 0, 0.9); } 70% { box-shadow: 0 4px 15px rgba(0,0,0,0.3), 0 0 0 18px rgba(255, 36, 0, 0); } 100% { box-shadow: 0 4px 15px rgba(0,0,0,0.3), 0 0 0 0px rgba(255, 36, 0, 0); } }
+        .pulsing-widget { animation: scarletPulseWidget 3s infinite ease-in-out !important; }
 
         /* БАЗА МОДАЛЬНОГО ОКНА */
         #about-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 6000; justify-content: center; align-items: center; }
@@ -270,6 +279,10 @@
             #photo-toggle-wrap { display: none !important; }
             #mobile-photo-btn { display: flex; }
             #hint-box { top: auto; bottom: 30px; left: 50%; transform: translateX(-50%); }
+            
+            #distance-widget { top: auto; bottom: 85px; left: 10px; right: auto; padding: 8px 15px; font-size: 15px; border-radius: 20px; }
+            #distance-widget.hidden { transform: translateY(20px) scale(0.9); }
+
             .map-avatar { bottom: 18px; right: 5px; width: 45px; height: 45px; }
             #about-modal { align-items: flex-end; }
             .modal-layout { padding: 0; width: 100%; }
@@ -373,6 +386,12 @@
     </div>
 
     <div id="hint-box" onclick="openAbout()"><span class="hint-text">ЖМИ СЮДА</span></div>
+    
+    <!-- Виджет пройденного километража -->
+    <div id="distance-widget" class="pulsing-widget">
+        <span class="bike-icon">🚴‍♂️</span> <span><span id="dist-val">0</span> км</span>
+    </div>
+
     <img src="avatar.jpg" class="map-avatar">
     
     <div id="menu-box">
@@ -626,20 +645,20 @@
         }
 
         function closePhoto() {
-    map.dragging.enable(); map.touchZoom.enable(); map.doubleClickZoom.enable();
-    scale = 1; lastScale = 1; posX = 0; posY = 0; updateTransform();
-    document.getElementById('photo-viewer').style.display = 'none';
-    
-    // Очищаем картинку при закрытии, чтобы старое фото не мелькало при слабом интернете
-    document.getElementById('view-img').removeAttribute('src');
-    
-    activePhotoMarker = null; // Обязательно сначала обнуляем якорь
-    
-    document.querySelectorAll('.active-photo-marker').forEach(el => {
-        L.DomUtil.removeClass(el, 'active-photo-marker');
-        el.style.removeProperty('--pulse-color');
-    });
-}
+            map.dragging.enable(); map.touchZoom.enable(); map.doubleClickZoom.enable();
+            scale = 1; lastScale = 1; posX = 0; posY = 0; updateTransform();
+            document.getElementById('photo-viewer').style.display = 'none';
+            
+            // Очищаем картинку при закрытии, чтобы старое фото не мелькало при слабом интернете
+            document.getElementById('view-img').removeAttribute('src');
+            
+            activePhotoMarker = null; // Обязательно сначала обнуляем якорь
+            
+            document.querySelectorAll('.active-photo-marker').forEach(el => {
+                L.DomUtil.removeClass(el, 'active-photo-marker');
+                el.style.removeProperty('--pulse-color');
+            });
+        }
         /* Управление с клавиатуры (ПК) */
         document.addEventListener('keydown', function(e) {
             if(document.getElementById('photo-viewer').style.display === 'flex') {
@@ -661,7 +680,46 @@
         }
         function handleBackgroundClick() { if (window.innerWidth <= 768) closePhoto(); }
 
-        function toggleList() { var show = document.getElementById('main-toggle').checked; document.getElementById('trip-list').style.display = show ? 'block' : 'none'; if(!show) { currentTripLayer.addTo(map); archiveLayerGroup.clearLayers(); photoClusterGroup.clearLayers(); borderClusterGroup.clearLayers(); document.querySelectorAll('.trip-check').forEach(c => c.checked = false); focusOnCurrent(); } else { map.removeLayer(currentTripLayer); } updateMarkers(true); }
+        /* ОБНОВЛЕНИЕ КИЛОМЕТРАЖА ТЕКУЩЕЙ ПОЕЗДКИ */
+        function updateDistanceWidget() {
+            var widget = document.getElementById('distance-widget');
+            var isArchive = document.getElementById('main-toggle').checked;
+            
+            if (isArchive || typeof myPoints === 'undefined') {
+                widget.classList.add('hidden');
+            } else {
+                var total = 0;
+                myPoints.forEach(function(p) {
+                    if (p.dist) total += parseFloat(p.dist);
+                });
+                
+                // Красивое форматирование с пробелами тысяч. Если ровно 0 десятых - выводим как целое.
+                var formatted = total % 1 === 0 
+                    ? total.toLocaleString('ru-RU') 
+                    : total.toLocaleString('ru-RU', {minimumFractionDigits: 1, maximumFractionDigits: 1});
+                
+                document.getElementById('dist-val').innerText = formatted;
+                widget.classList.remove('hidden');
+            }
+        }
+
+        function toggleList() { 
+            var show = document.getElementById('main-toggle').checked; 
+            document.getElementById('trip-list').style.display = show ? 'block' : 'none'; 
+            if(!show) { 
+                currentTripLayer.addTo(map); 
+                archiveLayerGroup.clearLayers(); 
+                photoClusterGroup.clearLayers(); 
+                borderClusterGroup.clearLayers(); 
+                document.querySelectorAll('.trip-check').forEach(c => c.checked = false); 
+                focusOnCurrent(); 
+            } else { 
+                map.removeLayer(currentTripLayer); 
+            } 
+            updateMarkers(true); 
+            updateDistanceWidget(); 
+        }
+
         function updateMarkers(onlyPhotos) {
             archiveLayerGroup.clearLayers(); photoClusterGroup.clearLayers(); borderClusterGroup.clearLayers();
             var showPhotos = document.getElementById('photo-toggle').checked, isArchive = document.getElementById('main-toggle').checked;
@@ -674,6 +732,7 @@
                 if (!onlyPhotos) { var layers = archiveLayerGroup.getLayers(); if (layers.length > 0) map.fitBounds(new L.featureGroup(layers).getBounds(), {padding: [50, 50]}); }
             } else { if (typeof myPoints !== 'undefined') drawTrip(myPoints, currentTripLayer, 'cCurrent', 'tracks/', true); if(showPhotos) loadPhotos('archive-2026-photos', hexColors['cCurrent']); }
         }
+
         function drawTrip(data, target, colorClass, folder, isCurrent) {
             var hex = hexColors[colorClass];
             data.forEach((p, i) => {
@@ -695,6 +754,7 @@
                 }
             });
         }
+
         function createPopup(p, folder) { 
             var html = `<div class="popup-box"><b>${p.title}</b><p>${p.desc}</p>`;
             if (p.lat && p.lng) html += `<div class="coords">${p.lat.toFixed(5)}, ${p.lng.toFixed(5)}</div>`;
@@ -736,7 +796,16 @@
         }
 
         function togglePhotos() { var checkbox = document.getElementById('photo-toggle'); checkbox.checked = !checkbox.checked; updateMarkers(true); var mobileBtn = document.getElementById('mobile-photo-btn'); if(checkbox.checked) { mobileBtn.style.background = '#28a745'; mobileBtn.style.color = '#fff'; } else { mobileBtn.style.background = '#fff'; mobileBtn.style.color = '#28a745'; } }
-        window.onload = function() { if (window.location.search.includes('about')) openAbout(); if (typeof myPoints !== 'undefined') { focusOnCurrent(); updateMarkers(true); } };
+        window.onload = function() { 
+            if (window.location.search.includes('about')) openAbout(); 
+            if (typeof myPoints !== 'undefined') { 
+                focusOnCurrent(); 
+                updateMarkers(true); 
+                updateDistanceWidget(); 
+            } 
+        };
     </script>
 </body>
 </html>
+
+--- END OF FILE text/plain ---
