@@ -46,49 +46,45 @@
         #hint-box:hover { transform: translateX(-50%) scale(1.08); background: #fff; }
         .hint-text { color: #ff0000; font-weight: 900; font-size: 17px; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* АДАПТИВНЫЙ ВИДЖЕТ (ПК и БОЛЬШИЕ МОНИТОРЫ) */
+        /* УМНЫЙ ВИДЖЕТ КИЛОМЕТРАЖА (ПК) */
         #distance-widget { 
             position: absolute; top: 15px; right: 70px; z-index: 1000; 
-            background: rgba(255, 255, 255, 0.95); padding: 12px 25px; 
-            border-radius: 18px; border: 2.5px solid #28a745; color: #333; 
+            background: rgba(255, 255, 255, 0.95); padding: 10px 20px; 
+            border-radius: 15px; border: 2.5px solid #28a745; color: #333; 
             display: flex; flex-direction: column; align-items: center; 
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-            opacity: 1; pointer-events: auto; 
+            opacity: 1; pointer-events: auto; /* Важно, чтобы работал наезд мышки */
             font-family: Arial, sans-serif; cursor: default; overflow: hidden;
-            max-height: 56px; 
-            min-width: 180px; /* Чтобы солидно смотрелся на 4К */
+            max-height: 48px; /* Свернутое состояние */
             box-sizing: border-box; touch-action: none;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
         }
 
-        /* Эффект раскрытия на ПК */
+        /* Раскрытие при наведении только на компьютерах */
         @media (min-width: 769px) {
             #distance-widget:hover { 
-                max-height: 180px; 
-                box-shadow: 0 12px 40px rgba(0,0,0,0.25); 
+                max-height: 140px; 
+                box-shadow: 0 8px 25px rgba(0,0,0,0.2); 
             }
         }
 
-        /* Главная строка - сбалансированный вес шрифта */
-        .main-dist-row { display: flex; align-items: center; gap: 12px; font-size: 21px; font-weight: 800; height: 32px; }
-        .main-dist-row .bike-icon { font-size: 30px; color: #28a745; }
+        .main-dist-row { display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 900; height: 28px; }
+        .main-dist-row .bike-icon { font-size: 26px; color: #28a745; }
 
-        /* Иконки транспорта - Крупные и понятные (22px) */
         .transport-stats-row { 
-            display: flex; gap: 18px; margin-top: 12px; padding-top: 12px; 
-            border-top: 1px solid #eee; font-size: 16px; color: #444; 
+            display: flex; gap: 12px; margin-top: 10px; padding-top: 8px; 
+            border-top: 1px solid #eee; font-size: 13px; color: #777; 
             opacity: 0; transition: opacity 0.3s ease; 
         }
         
+        /* Показываем транспорт при наведении */
         #distance-widget:hover .transport-stats-row { opacity: 1; }
-        .stat-item { display: flex; align-items: center; gap: 6px; font-weight: bold; }
-        .stat-item span:first-child { font-size: 22px; } 
+        .stat-item { display: flex; align-items: center; gap: 4px; }
 
-        /* СИНХРОННАЯ ПУЛЬСАЦИЯ */
+        /* ВАША ИДЕАЛЬНАЯ ПУЛЬСАЦИЯ (сохранена) */
         @keyframes scarletPulseWidget { 
-            0% { box-shadow: 0 4px 15px rgba(0,0,0,0.15), 0 0 0 0px rgba(255, 36, 0, 0.9); } 
-            70% { box-shadow: 0 4px 15px rgba(0,0,0,0.15), 0 0 0 18px rgba(255, 36, 0, 0); } 
-            100% { box-shadow: 0 4px 15px rgba(0,0,0,0.15), 0 0 0 0px rgba(255, 36, 0, 0); } 
+            0% { box-shadow: 0 4px 15px rgba(0,0,0,0.3), 0 0 0 0px rgba(255, 36, 0, 0.9); } 
+            70% { box-shadow: 0 4px 15px rgba(0,0,0,0.3), 0 0 0 18px rgba(255, 36, 0, 0); } 
+            100% { box-shadow: 0 4px 15px rgba(0,0,0,0.3), 0 0 0 0px rgba(255, 36, 0, 0); } 
         }
         .pulsing-widget { animation: scarletPulseWidget 3s infinite ease-in-out !important; }
 
@@ -750,7 +746,7 @@
                 // Формируем строчку велосипеда
                 var bikeHtml = `<div class="main-dist-row">
                     <span class="bike-icon">🚴‍♂️</span> 
-                    <span class="dist-text">${bikeSum.toLocaleString('ru-RU')} <span style="font-size:16px; font-weight:bold; color:#777; margin-left:2px;">км</span></span>
+                    <span class="dist-text">${bikeSum.toLocaleString('ru-RU')} <small style="font-size:14px; font-weight:bold;">км</small></span>
                 </div>`;
 
                 // Формируем строчку транспорта (только если там больше 0 км)
