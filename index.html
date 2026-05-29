@@ -768,7 +768,8 @@
             var hex = hexColors[colorClass];
             var runningTotal = 0; 
             data.forEach((p, i) => {
-                if (p.dist) runningTotal += parseFloat(p.dist);
+                // ПЛЮСУЕМ ТОЛЬКО ВЕЛОСИПЕДНЫЕ ДНИ (тип day или без типа)
+                if (p.dist && p.type !== 'transfer') runningTotal += parseFloat(p.dist);
                 p.computedTotal = runningTotal;
 
                 if (p.type === 'border') {
