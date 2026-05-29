@@ -365,8 +365,8 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.5);
             pointer-events: none;
             z-index: 5000;
-            /* Анимация: 6 секунд от начала до конца */
-            animation: fadeFlagInOut 6s ease-in-out forwards;
+            /* Анимация: 4 секунды от начала до конца */
+            animation: fadeFlagInOut 4s ease-in-out forwards;
         }
         }
         @keyframes fadeFlagInOut {
@@ -945,10 +945,10 @@
                         icon: L.divIcon({ className: '', html: flagHtml, iconSize: [0, 0] })
                     }).addTo(map);
 
-                    // 4. Ждем 6.5 секунд (пока пройдет анимация CSS) и удаляем невидимый маркер, чтобы не грузить карту
+                    // 4. Ждем 4.5 секунды (пока пройдет анимация CSS) и удаляем невидимый маркер, чтобы не грузить карту
                     setTimeout(function() {
                         if (map.hasLayer(flagMarker)) map.removeLayer(flagMarker);
-                    }, 6500);
+                    }, 4500);
 
                 }, 2500);
             } 
