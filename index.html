@@ -47,10 +47,12 @@
         .hint-text { color: #ff0000; font-weight: 900; font-size: 17px; text-transform: uppercase; letter-spacing: 1px; }
 
         /* ВИДЖЕТ КИЛОМЕТРАЖА */
-        #distance-widget { position: absolute; top: 15px; right: 70px; z-index: 1000; background: rgba(255, 255, 255, 0.95); padding: 10px 20px; border-radius: 12px; border: 2.5px solid #28a745; font-size: 16px; font-weight: bold; color: #333; display: flex; align-items: center; gap: 8px; transition: all 0.4s ease; opacity: 1; transform: translateY(0); pointer-events: none; font-family: Arial, sans-serif; box-sizing: border-box; }
+        #distance-widget { position: absolute; top: 15px; right: 70px; z-index: 1000; background: rgba(255, 255, 255, 0.95); padding: 8px 18px; border-radius: 12px; border: 2.5px solid #28a745; color: #333; display: flex; flex-direction: column; align-items: center; transition: all 0.4s ease; opacity: 1; transform: translateY(0); pointer-events: none; font-family: Arial, sans-serif; box-sizing: border-box; }
         #distance-widget.hidden { opacity: 0; transform: translateY(-20px); pointer-events: none; }
-        #distance-widget .bike-icon { font-size: 22px; color: #28a745; display: inline-block; vertical-align: middle; }
-        #distance-widget .dist-text { display: inline-block; vertical-align: middle; }
+        .main-dist-row { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: bold; }
+        .main-dist-row .bike-icon { font-size: 24px; color: #28a745; }
+        .transport-stats-row { display: flex; gap: 10px; margin-top: 4px; border-top: 1px solid #ddd; padding-top: 4px; font-size: 13px; color: #666; font-weight: bold; }
+        .stat-item { display: flex; align-items: center; gap: 3px; }
         @keyframes scarletPulseWidget { 0% { box-shadow: 0 4px 15px rgba(0,0,0,0.3), 0 0 0 0px rgba(255, 36, 0, 0.9); } 70% { box-shadow: 0 4px 15px rgba(0,0,0,0.3), 0 0 0 18px rgba(255, 36, 0, 0); } 100% { box-shadow: 0 4px 15px rgba(0,0,0,0.3), 0 0 0 0px rgba(255, 36, 0, 0); } }
         .pulsing-widget { animation: scarletPulseWidget 3s infinite ease-in-out !important; }
 
@@ -279,10 +281,12 @@
             #mobile-photo-btn { display: flex; }
             #hint-box { top: auto; bottom: 30px; left: 50%; transform: translateX(-50%); }
             
-            #distance-widget { top: auto; bottom: 85px; left: 10px; right: auto; padding: 0; font-size: 15px; border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; pointer-events: auto !important; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; }
-            #distance-widget .dist-text { max-width: 0; opacity: 0; overflow: hidden; display: inline-block; white-space: nowrap; transition: max-width 0.3s ease, opacity 0.2s ease, margin-left 0.3s ease; margin-left: 0; vertical-align: middle; }
-            #distance-widget.expanded { width: auto; height: 44px; padding: 0 16px; border-radius: 22px; }
-            #distance-widget.expanded .dist-text { max-width: 150px; opacity: 1; margin-left: 8px; }
+            #distance-widget { top: auto; bottom: 85px; left: 10px; right: auto; padding: 0; width: 46px; height: 46px; border-radius: 50%; justify-content: center; pointer-events: auto !important; cursor: pointer; overflow: hidden; }
+            #distance-widget .main-dist-row { gap: 0; }
+            #distance-widget .dist-text, #distance-widget .transport-stats-row { max-width: 0; opacity: 0; overflow: hidden; white-space: nowrap; transition: all 0.3s ease; }
+            #distance-widget.expanded { width: auto; height: auto; min-height: 46px; padding: 8px 16px; border-radius: 20px; align-items: flex-start; }
+            #distance-widget.expanded .dist-text { max-width: 200px; opacity: 1; margin-left: 8px; }
+            #distance-widget.expanded .transport-stats-row { max-width: 500px; opacity: 1; display: flex; }
             #distance-widget.hidden { opacity: 0; transform: translateY(20px) scale(0.9); pointer-events: none !important; }
 
             .map-avatar { bottom: 18px; right: 5px; width: 45px; height: 45px; }
@@ -690,17 +694,42 @@
             if (isArchive || typeof myPoints === 'undefined') {
                 widget.classList.add('hidden');
             } else {
-                var total = 0;
+                var bikeSum = 0;
+                var transportSums = { plane: 0, train: 0, bus: 0, car: 0, truck: 0 };
+                var tIcons = { plane: '✈️', train: '🚂', bus: '🚌', car: '🚗', truck: '🚚' };
+
                 myPoints.forEach(function(p) {
-                    if (p.dist) total += parseFloat(p.dist);
+                    if (p.dist) {
+                        var d = parseFloat(p.dist);
+                        if (p.type === 'transfer') {
+                            // Если это транспорт, прибавляем к его счетчику
+                            if (transportSums[p.transport] !== undefined) transportSums[p.transport] += d;
+                        } else {
+                            // Если обычный день, прибавляем к велосипеду
+                            bikeSum += d;
+                        }
+                    }
                 });
-                
-                // Красивое форматирование с пробелами тысяч. Если ровно 0 десятых - выводим как целое.
-                var formatted = total % 1 === 0 
-                    ? total.toLocaleString('ru-RU') 
-                    : total.toLocaleString('ru-RU', {minimumFractionDigits: 1, maximumFractionDigits: 1});
-                
-                document.getElementById('dist-val').innerText = formatted;
+
+                // Формируем строчку велосипеда
+                var bikeHtml = `<div class="main-dist-row">
+                    <span class="bike-icon">🚴‍♂️</span> 
+                    <span class="dist-text">${bikeSum.toLocaleString('ru-RU')} км</span>
+                </div>`;
+
+                // Формируем строчку транспорта (только если там больше 0 км)
+                var transportHtml = '<div class="transport-stats-row">';
+                var hasTransport = false;
+                for (var key in transportSums) {
+                    if (transportSums[key] > 0) {
+                        transportHtml += `<div class="stat-item"><span>${tIcons[key]}</span><span>${transportSums[key].toLocaleString('ru-RU')}</span></div>`;
+                        hasTransport = true;
+                    }
+                }
+                transportHtml += '</div>';
+
+                // Собираем всё вместе и показываем
+                widget.innerHTML = bikeHtml + (hasTransport ? transportHtml : '');
                 widget.classList.remove('hidden');
             }
         }
