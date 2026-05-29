@@ -353,6 +353,27 @@
                 z-index: 999;
             }
         }
+        /* ПЛАВНОЕ ПОЯВЛЕНИЕ И ИСЧЕЗНОВЕНИЕ ФЛАГА НАД ТОЧКОЙ */
+        .simple-flag-anim {
+            position: absolute;
+            bottom: 25px; /* Появляется чуть выше зеленой точки */
+            left: -20px;  /* Центрируем флаг */
+            width: 40px;
+            height: auto;
+            border: 2px solid white;
+            border-radius: 4px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+            pointer-events: none;
+            z-index: 5000;
+            /* Анимация: 6 секунд от начала до конца */
+            animation: fadeFlagInOut 6s ease-in-out forwards;
+        }
+        @keyframes fadeFlagInOut {
+            0% { opacity: 0; transform: translateY(15px); }
+            15% { opacity: 1; transform: translateY(0); }
+            85% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-15px); }
+        }
     </style>
 
     <!-- Yandex.Metrika counter -->
@@ -902,7 +923,33 @@
                 var last = myPoints[myPoints.length - 1];
                 var targetLat = last.lat || (last.from ? last.from[0] : 50);
                 var targetLng = last.lng || (last.from ? last.from[1] : 80);
+                
+                // 1. Летим к точке (занимает 2.5 секунды)
                 map.flyTo([targetLat, targetLng], 10, { animate: true, duration: 2.5 });
+
+                // 2. Вычисляем текущую страну (по умолчанию Россия)
+                var currentCode = 'ru';
+                myPoints.forEach(function(p) {
+                    if (p.type === 'border' && p.country) {
+                        currentCode = p.country.toLowerCase().trim();
+                    }
+                });
+
+                // 3. Ждем 2.5 сек, чтобы карта долетела, и выводим флаг
+                setTimeout(function() {
+                    var flagUrl = `https://flagcdn.com/w40/${currentCode}.png`;
+                    var flagHtml = `<img src="${flagUrl}" class="simple-flag-anim">`;
+
+                    var flagMarker = L.marker([targetLat, targetLng], {
+                        icon: L.divIcon({ className: '', html: flagHtml, iconSize: [0, 0] })
+                    }).addTo(map);
+
+                    // 4. Ждем 6.5 секунд (пока пройдет анимация CSS) и удаляем невидимый маркер, чтобы не грузить карту
+                    setTimeout(function() {
+                        if (map.hasLayer(flagMarker)) map.removeLayer(flagMarker);
+                    }, 6500);
+
+                }, 2500);
             } 
         }
 
