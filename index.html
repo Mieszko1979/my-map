@@ -63,6 +63,7 @@
         
         #distance-widget.expanded { max-height: 500px; }
         #distance-widget.expanded #dist-chevron { transform: rotate(180deg); }
+        #distance-widget.hidden { opacity: 0; transform: translateY(20px) scale(0.9); pointer-events: none !important; }
 
         .transport-stats-row { 
             display: flex; flex-direction: column; gap: 12px; margin-top: 15px; 
@@ -313,7 +314,8 @@
             #hint-box { top: auto; bottom: 30px; left: 50%; transform: translateX(-50%); }
             
             #distance-widget { top: auto; bottom: 85px; left: 10px; right: auto; padding: 0; width: 46px; height: 46px; border-radius: 50%; justify-content: center; pointer-events: auto !important; cursor: pointer; overflow: hidden; }
-            #distance-widget .main-dist-row { gap: 0; }
+            #distance-widget .main-dist-row { gap: 0; justify-content: center; }
+            #distance-widget.expanded .main-dist-row { justify-content: flex-start; }
             #distance-widget .dist-text, #distance-widget .transport-stats-row { max-width: 0; opacity: 0; overflow: hidden; white-space: nowrap; transition: all 0.3s ease; }
             #distance-widget.expanded { width: auto; height: auto; min-height: 46px; padding: 8px 16px; border-radius: 20px; align-items: flex-start; }
             #distance-widget.expanded .dist-text { max-width: 200px; opacity: 1; margin-left: 8px; }
@@ -885,11 +887,9 @@
         }
 
         function toggleDistanceWidget(event) {
-            if (window.innerWidth <= 768) {
-                event.stopPropagation(); // Чтобы клик не передавался на карту
-                var widget = document.getElementById('distance-widget');
-                widget.classList.toggle('expanded');
-            }
+            event.stopPropagation(); // Чтобы клик не передавался на карту
+            var widget = document.getElementById('distance-widget');
+            widget.classList.toggle('expanded');
         }
         function togglePhotos() { var checkbox = document.getElementById('photo-toggle'); checkbox.checked = !checkbox.checked; updateMarkers(true); var mobileBtn = document.getElementById('mobile-photo-btn'); if(checkbox.checked) { mobileBtn.style.background = '#28a745'; mobileBtn.style.color = '#fff'; } else { mobileBtn.style.background = '#fff'; mobileBtn.style.color = '#28a745'; } }
         window.onload = function() { 
