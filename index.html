@@ -356,17 +356,18 @@
         /* ПЛАВНОЕ ПОЯВЛЕНИЕ И ИСЧЕЗНОВЕНИЕ ФЛАГА НАД ТОЧКОЙ */
         .simple-flag-anim {
             position: absolute;
-            bottom: 25px; /* Появляется чуть выше зеленой точки */
-            left: -20px;  /* Центрируем флаг */
-            width: 40px;
+            bottom: 35px; /* Сделали чуть выше, чтобы не перекрывать саму точку */
+            left: -40px;  /* Центрируем флаг (ровно половина новой ширины) */
+            width: 80px;  /* Увеличили флаг в 2 раза! */
             height: auto;
-            border: 2px solid white;
-            border-radius: 4px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+            border: 3px solid white; /* Рамочка тоже стала чуть толще для пропорции */
+            border-radius: 6px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
             pointer-events: none;
             z-index: 5000;
             /* Анимация: 6 секунд от начала до конца */
             animation: fadeFlagInOut 6s ease-in-out forwards;
+        }
         }
         @keyframes fadeFlagInOut {
             0% { opacity: 0; transform: translateY(15px); }
@@ -937,7 +938,7 @@
 
                 // 3. Ждем 2.5 сек, чтобы карта долетела, и выводим флаг
                 setTimeout(function() {
-                    var flagUrl = `https://flagcdn.com/w40/${currentCode}.png`;
+                    var flagUrl = `https://flagcdn.com/w80/${currentCode}.png`; // Скачиваем картинку w80 (в 2 раза четче)
                     var flagHtml = `<img src="${flagUrl}" class="simple-flag-anim">`;
 
                     var flagMarker = L.marker([targetLat, targetLng], {
