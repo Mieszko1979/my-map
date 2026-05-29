@@ -194,7 +194,8 @@
 
         /* ОБНОВЛЕННЫЙ ЛАЙТБОКС С ПОЛУПРОЗРАЧНЫМИ СТРЕЛКАМИ */
         #photo-viewer { position: absolute; bottom: 100px; left: 35px; z-index: 2000; width: 220px; background: white; padding: 6px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; cursor: pointer; border: 1px solid rgba(0,0,0,0.1); overflow: visible; transition: transform 0.2s ease, box-shadow 0.2s ease; }
-        #photo-viewer img { width: 100%; border-radius: 8px; display: block; transition: transform 0.1s ease-out; }
+        #photo-spinner { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 34px; color: #888; display: none; z-index: 2050; pointer-events: none; }
+        #photo-viewer img { width: 100%; border-radius: 8px; display: block; transition: transform 0.1s ease-out, opacity 0.3s ease; opacity: 0; }
         #photo-viewer .close-btn { position: absolute; top: -12px; right: -12px; background: #ff0000; color: white; border-radius: 50%; width: 26px; height: 26px; text-align: center; line-height: 22px; font-size: 18px; font-weight: bold; border: 2px solid white; z-index: 2100; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: 0.2s; }
         #photo-viewer .close-btn:hover { background: #cc0000; transform: scale(1.15); }
         
@@ -625,7 +626,21 @@
             var photo = g.photos[index];
             
             if (window.innerWidth <= 768) { map.dragging.disable(); map.touchZoom.disable(); }
-            document.getElementById('view-img').src = `https://mieszko1979.github.io/${repo}/${photo.url}`;
+            
+            var imgEl = document.getElementById('view-img');
+            var spinner = document.getElementById('photo-spinner');
+            
+            // Включаем спиннер и прячем старое фото
+            spinner.style.display = 'block';
+            imgEl.style.opacity = '0';
+            
+            // Как только новое фото загрузится — убираем спиннер и показываем фото
+            imgEl.onload = function() {
+                spinner.style.display = 'none';
+                imgEl.style.opacity = '1';
+            };
+            
+            imgEl.src = `https://mieszko1979.github.io/${repo}/${photo.url}`;
             document.getElementById('photo-viewer').style.display = 'flex';
             
             highlightActivePhoto(photo, g.hex);
