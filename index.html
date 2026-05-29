@@ -737,7 +737,11 @@
 
         function drawTrip(data, target, colorClass, folder, isCurrent) {
             var hex = hexColors[colorClass];
+            var runningTotal = 0; 
             data.forEach((p, i) => {
+                if (p.dist) runningTotal += parseFloat(p.dist);
+                p.computedTotal = runningTotal;
+
                 if (p.type === 'border') {
                     var flagHtml = `<div class="flag-stuck"><div style="width:4px; height:50px; background:#444; position:relative;"><img src="https://flagcdn.com/w80/${p.country.toLowerCase().trim()}.png" style="position:absolute; top:0; left:4px; width:45px; border:1.5px solid #fff; box-shadow: 3px 3px 7px rgba(0,0,0,0.5);"></div></div>`;
                     L.marker([p.lat, p.lng], {icon: L.divIcon({ className: '', html: flagHtml, iconSize: [50, 50], iconAnchor: [2, 50] })}).addTo(borderClusterGroup).bindPopup(createPopup(p, folder));
@@ -759,19 +763,26 @@
 
         function createPopup(p, folder) { 
             var html = `<div class="popup-box"><b>${p.title}</b><p>${p.desc}</p>`;
+            
+            if (p.dist) {
+                var dDist = p.dist.toLocaleString('ru-RU');
+                var tDist = p.computedTotal.toLocaleString('ru-RU');
+                html += `<div style="font-size: 14px; font-weight: bold; margin-bottom: 8.5px; color: #333;">Проехал сегодня ${dDist} км (${tDist} км)</div>`;
+            }
+
             if (p.lat && p.lng) html += `<div class="coords">${p.lat.toFixed(5)}, ${p.lng.toFixed(5)}</div>`;
             html += `<div class="btn-row">`;
+            
             if (p.link) {
-    if (Array.isArray(p.link)) {
-        // Если треков несколько (массив)
-        p.link.forEach((file, idx) => {
-            html += `<a onclick="openTrackView('view.html?folder=${folder}&file=${file}')" class="btn btn-track">Трек ${idx + 1}</a> `;
-        });
-    } else {
-        // Если трек один (строка)
-        html += `<a onclick="openTrackView('view.html?folder=${folder}&file=${p.link}')" class="btn btn-track">Трек</a> `;
-    }
-}
+                if (Array.isArray(p.link)) {
+                    p.link.forEach((file, idx) => {
+                        html += `<a onclick="openTrackView('view.html?folder=${folder}&file=${file}')" class="btn btn-track">Трек ${idx + 1}</a> `;
+                    });
+                } else {
+                    html += `<a onclick="openTrackView('view.html?folder=${folder}&file=${p.link}')" class="btn btn-track">Трек</a> `;
+                }
+            }
+
             if (p.vk) html += `<a href="${p.vk}" class="btn btn-vk" target="_blank">VK</a>`;
             if (p.dzen) html += `<a href="${p.dzen}" class="btn btn-dzen" target="_blank">Дзен</a>`;
             if (p.relive) html += `<a href="${p.relive}" class="btn btn-3d" target="_blank">3D</a>`;
