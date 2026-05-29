@@ -761,7 +761,17 @@
             var html = `<div class="popup-box"><b>${p.title}</b><p>${p.desc}</p>`;
             if (p.lat && p.lng) html += `<div class="coords">${p.lat.toFixed(5)}, ${p.lng.toFixed(5)}</div>`;
             html += `<div class="btn-row">`;
-            if (p.link) html += `<a onclick="openTrackView('view.html?folder=${folder}&file=${p.link}')" class="btn btn-track">Трек</a> `;
+            if (p.link) {
+    if (Array.isArray(p.link)) {
+        // Если треков несколько (массив)
+        p.link.forEach((file, idx) => {
+            html += `<a onclick="openTrackView('view.html?folder=${folder}&file=${file}')" class="btn btn-track">Трек ${idx + 1}</a> `;
+        });
+    } else {
+        // Если трек один (строка)
+        html += `<a onclick="openTrackView('view.html?folder=${folder}&file=${p.link}')" class="btn btn-track">Трек</a> `;
+    }
+}
             if (p.vk) html += `<a href="${p.vk}" class="btn btn-vk" target="_blank">VK</a>`;
             if (p.dzen) html += `<a href="${p.dzen}" class="btn btn-dzen" target="_blank">Дзен</a>`;
             if (p.relive) html += `<a href="${p.relive}" class="btn btn-3d" target="_blank">3D</a>`;
