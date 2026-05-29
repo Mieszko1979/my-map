@@ -828,8 +828,14 @@
             
             if (p.dist) {
                 var dDist = p.dist.toLocaleString('ru-RU');
-                var tDist = p.computedTotal.toLocaleString('ru-RU');
-                html += `<div style="font-size: 14px; font-weight: bold; margin-bottom: 8.5px; color: #333;">Проехал сегодня ${dDist} км (${tDist} км)</div>`;
+                if (p.type === 'transfer') {
+                    // Для транспорта: просто километры без лишних слов и общих итогов
+                    html += `<div style="font-size: 14px; font-weight: bold; margin-bottom: 8.5px; color: #333;">${dDist} км</div>`;
+                } else {
+                    // Для велосипеда: полная статистика с нарастающим итогом
+                    var tDist = p.computedTotal.toLocaleString('ru-RU');
+                    html += `<div style="font-size: 14px; font-weight: bold; margin-bottom: 8.5px; color: #333;">Проехал сегодня ${dDist} км (${tDist} км)</div>`;
+                }
             }
 
             if (p.lat && p.lng) html += `<div class="coords">${p.lat.toFixed(5)}, ${p.lng.toFixed(5)}</div>`;
