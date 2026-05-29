@@ -7,6 +7,7 @@ var myPoints = [
   { type: "transfer",   transport: "train", from: [42.58170501802926, 62.68008108974445], to: [39.83349834414147, 64.3763952590251], dist: 350, title: "", desc: "Подкинули на автовозе MAN", link: "", vk: "https://vk.com/wall-171082824_1373" },
   { type: "transfer",   transport: "plain", from: [41.58170501802926, 62.68008108974445], to: [39.83349834414147, 64.3763952590251], dist: 350, title: "", desc: "Подкинули на автовозе MAN", link: "", vk: "https://vk.com/wall-171082824_1373" },
   { type: "transfer",   transport: "bus", from: [44.58170501802926, 62.68008108974445], to: [39.83349834414147, 64.3763952590251], dist: 350, title: "", desc: "Подкинули на автовозе MAN", link: "", vk: "https://vk.com/wall-171082824_1373" },
+  { day: "4", lat: 55.687145, lng: 50.407544, title: "03.07.2024", dist: 20, desc: "Палатка", link: ["ride-0-2026-05-28-17-34-36.gpx", "3.gpx"], vk: "https://vk.com/wall-171082824_1252" },
   
  
 ];
