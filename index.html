@@ -809,15 +809,20 @@
             var sleep = { tent: 0, hotel: 0, camp: 0, guest: 0, temple: 0, beach: 0, extreme: 0, other: 0 };
 
             data.forEach(p => {
-                // 1. Считаем километры
+                // Считаем километры
                 if (p.dist) {
+                    var d = parseFloat(p.dist);
                     if (p.type === 'transfer') {
-                        if (trans[p.transport] !== undefined) trans[p.transport] += parseFloat(p.dist);
+                        // Если это транспорт — добавляем ТОЛЬКО в список транспорта
+                        if (trans[p.transport] !== undefined) {
+                            trans[p.transport] += d;
+                        }
                     } else {
-                        bikeSum += parseFloat(p.dist);
+                        // Если это НЕ транспорт — добавляем в велосипедную сумму
+                        bikeSum += d;
                     }
                 }
-
+                
                 // 2. Считаем ночи (ТОЛЬКО если это НЕ трансфер, НЕ старт и НЕ граница)
                 // Считаем только точки, где есть номер дня p.day
                 if (p.day && p.type !== 'transfer' && p.type !== 'border' && p.type !== 'start') {
@@ -900,9 +905,11 @@
             var hex = hexColors[colorClass];
             var runningTotal = 0; 
             data.forEach((p, i) => {
-                if (p.dist && p.type !== 'transfer') runningTotal += parseFloat(p.dist);
-                p.computedTotal = runningTotal;
-
+                // Считаем общий итог только для велосипеда (не трансфер)
+                if (p.dist && p.type !== 'transfer') {
+                    runningTotal += parseFloat(p.dist);
+                }
+                p.computedTotal = runningTotal; // Привязываем сумму к точке
                 if (p.type === 'start') {
                     var startIcon = L.divIcon({ className: 'start-marker', html: '<i class="fa-solid fa-flag-checkered"></i>', iconSize: [30, 30], iconAnchor: [15, 15] });
                     L.marker([p.lat, p.lng], {icon: startIcon}).addTo(target).bindPopup(() => createPopup(p, folder));
@@ -947,7 +954,14 @@
             
             if (p.dist) {
                 var dDist = p.dist.toLocaleString('ru-RU');
-                html += `<div style="font-size: 16px; font-weight: bold; margin-bottom: 8.5px; color: #333;">${dDist} км</div>`;
+                if (p.type === 'transfer') {
+                    // Для такси/самолетов просто пишем КМ
+                    html += `<div style="font-size: 16px; font-weight: bold; margin-bottom: 8.5px; color: #333;">${dDist} км</div>`;
+                } else {
+                    // Для велосипеда — полная фраза с общим итогом
+                    var tDist = (p.computedTotal || 0).toLocaleString('ru-RU');
+                    html += `<div style="font-size: 14px; font-weight: bold; margin-bottom: 8.5px; color: #333;">Проехал сегодня ${dDist} км (${tDist} км)</div>`;
+                }
             }
 
             if (p.lat && p.lng) html += `<div class="coords">${p.lat.toFixed(5)}, ${p.lng.toFixed(5)}</div>`;
