@@ -375,6 +375,8 @@
             85% { opacity: 1; transform: translateY(0); }
             100% { opacity: 0; transform: translateY(-15px); }
         }
+        /* Иконка СТАРТА */
+        .start-marker { background: #28a745; border: 2px solid white; border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.5); font-weight: bold; font-size: 14px; }
     </style>
 
     <!-- Yandex.Metrika counter -->
@@ -840,6 +842,13 @@
             var hex = hexColors[colorClass];
             var runningTotal = 0; 
             data.forEach((p, i) => {
+                if (p.dist && p.type !== 'transfer') runningTotal += parseFloat(p.dist);
+                p.computedTotal = runningTotal;
+
+                if (p.type === 'start') {
+                    var startIcon = L.divIcon({ className: 'start-marker', html: '<i class="fa-solid fa-flag-checkered"></i>', iconSize: [30, 30], iconAnchor: [15, 15] });
+                    L.marker([p.lat, p.lng], {icon: startIcon}).addTo(target).bindPopup(createPopup(p, folder));
+                } else if (p.type === 'border') {
                 // ПЛЮСУЕМ ТОЛЬКО ВЕЛОСИПЕДНЫЕ ДНИ (тип day или без типа)
                 if (p.dist && p.type !== 'transfer') runningTotal += parseFloat(p.dist);
                 p.computedTotal = runningTotal;
@@ -920,7 +929,7 @@
 
         window.flagHasBeenShown = window.flagHasBeenShown || false;
 
-        /* Эффект полета + Умное автоматическое определение (база + файл) */
+        /* Эффект полета + Определение страны СТРОГО по файлу points.js */
         function focusOnCurrent() { 
             if (typeof myPoints !== 'undefined' && myPoints.length > 0) {
                 var last = myPoints[myPoints.length - 1];
@@ -930,54 +939,38 @@
                 // 1. Полетели!
                 map.flyTo([targetLat, targetLng], 10, { animate: true, duration: 2.5 });
 
+                // Если флаг уже показывали или это не текущий маршрут - выходим
                 if (window.flagHasBeenShown) return;
                 window.flagHasBeenShown = true; 
 
-                var countryCode = null;
-
-                // 2. ЗАПРОС В БАЗУ (BigDataCloud - самая быстрая для этого)
-                var apiPromise = fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${targetLat}&longitude=${targetLng}&localityLanguage=en`)
-                    .then(res => res.json())
-                    .then(data => {
-                        // Если база вернула Россию для координат в Лаосе (глюк IP) - игнорируем такой ответ
-                        if (data.countryCode === 'RU' && targetLng > 65) return null; 
-                        return data.countryCode ? data.countryCode.toLowerCase() : null;
-                    })
-                    .catch(() => null);
-
-                // 3. ПРОВЕРКА ТВОЕГО ФАЙЛА (Параллельно, на случай если база тупит)
-                var fileCode = null;
+                // 2. Ищем последнюю указанную страну в массиве myPoints
+                var currentCode = null;
                 for (var i = myPoints.length - 1; i >= 0; i--) {
-                    if (myPoints[i].country) {
-                        fileCode = myPoints[i].country.toLowerCase().trim();
-                        break;
+                    // Проверяем поле 'country' (у старта и границ) или 'newCountry' (у трансферов)
+                    var code = myPoints[i].country || myPoints[i].newCountry;
+                    if (code) {
+                        currentCode = code.toLowerCase().trim();
+                        break; 
                     }
                 }
 
-                // Таймер полета (2.5 сек)
-                var flightTimer = new Promise(resolve => setTimeout(resolve, 2500));
+                if (!currentCode) return; // Если нигде в файле не указали страну - флаг не выводим
 
-                // 4. ЖДЕМ ЗАВЕРШЕНИЯ
-                Promise.all([flightTimer, apiPromise]).then(values => {
-                    var apiCode = values[1];
-                    
-                    // Приоритет: 1. База (если не врет) | 2. Твой файл | 3. Россия (крайний случай)
-                    var finalCode = apiCode || fileCode || 'ru';
+                // 3. Предзагрузка
+                var flagUrl = `https://flagcdn.com/w80/${currentCode}.png`;
+                new Image().src = flagUrl; 
 
-                    // Предзагрузка и показ
-                    var flagUrl = `https://flagcdn.com/w80/${finalCode}.png`;
-                    new Image().src = flagUrl; // Подгружаем в память
-
+                // 4. Показ флага через 2.5 сек (ровно при приземлении)
+                setTimeout(function() {
                     var flagHtml = `<img src="${flagUrl}" class="simple-flag-anim">`;
                     var flagMarker = L.marker([targetLat, targetLng], {
                         icon: L.divIcon({ className: '', html: flagHtml, iconSize: [0, 0] })
                     }).addTo(map);
 
-                    // Удаляем флаг через 4.5 секунды
                     setTimeout(function() {
                         if (map.hasLayer(flagMarker)) map.removeLayer(flagMarker);
                     }, 4500);
-                });
+                }, 2500);
             } 
         }
         
