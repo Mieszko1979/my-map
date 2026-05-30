@@ -63,7 +63,7 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
-        .main-dist-row { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: bold; width: 100%; }
+        .main-dist-row { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 600; width: 100%; }
         .main-dist-row .bike-icon { font-size: 24px; color: #28a745; flex-shrink: 0; }
         .dist-chevron { margin-left: auto; font-size: 14px; color: #666; transition: transform 0.3s; padding-left: 5px; }
         
@@ -78,7 +78,7 @@
             max-height: 500px; opacity: 1; margin-top: 12px; padding-top: 10px; border-top-color: #ccc;
         }
         
-        .stat-item { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: bold; color: #333; white-space: nowrap; }
+        .stat-item { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 600; color: #333; white-space: nowrap; }
         .stat-item span:first-child { font-size: 20px; width: 25px; text-align: center; }
 
         /* МОБИЛЬНАЯ ВЕРСИЯ */
@@ -791,38 +791,40 @@
             var sWidget = document.getElementById('sleep-widget');
             var isArchive = document.getElementById('main-toggle').checked;
             
-            // Определяем, какой массив данных использовать
+            // Собираем данные в зависимости от того, архив это или текущий трек
             var data = [];
-            if (!isArchive) data = typeof myPoints !== 'undefined' ? myPoints : [];
-            else {
+            if (!isArchive) {
+                data = typeof myPoints !== 'undefined' ? myPoints : [];
+            } else {
                 if (document.getElementById('chk2018').checked) data = data.concat(points2018);
                 if (document.getElementById('chk2019').checked) data = data.concat(points2019);
                 if (document.getElementById('chk2021').checked) data = data.concat(points2021);
                 if (document.getElementById('chk2024').checked) data = data.concat(points2024);
             }
 
-            if (data.length === 0) {
-                dWidget.classList.add('hidden'); sWidget.classList.add('hidden');
-                return;
-            }
-
-            dWidget.classList.remove('hidden'); sWidget.classList.remove('hidden');
+            if (data.length === 0) { dWidget.classList.add('hidden'); sWidget.classList.add('hidden'); return; }
 
             var bikeSum = 0, nightsTotal = 0;
-            var trans = { plane:0, train:0, bus:0, car:0, truck:0 };
-            var sleep = { tent:0, hotel:0, camp:0, guest:0, temple:0, beach:0, extreme:0, other:0 };
+            var trans = { plane: 0, train: 0, bus: 0, car: 0, truck: 0 };
+            var sleep = { tent: 0, hotel: 0, camp: 0, guest: 0, temple: 0, beach: 0, extreme: 0, other: 0 };
 
             data.forEach(p => {
-                // Считаем километры
+                // 1. Считаем километры
                 if (p.dist) {
-                    if (p.type === 'transfer') { if(trans[p.transport]!==undefined) trans[p.transport] += p.dist; }
-                    else bikeSum += p.dist;
+                    if (p.type === 'transfer') {
+                        if (trans[p.transport] !== undefined) trans[p.transport] += parseFloat(p.dist);
+                    } else {
+                        bikeSum += parseFloat(p.dist);
+                    }
                 }
-                // Считаем ночи
-                if (!p.type || p.type === 'day' || p.type === 'start') {
+
+                // 2. Считаем ночи (ТОЛЬКО если это НЕ трансфер, НЕ старт и НЕ граница)
+                // Считаем только точки, где есть номер дня p.day
+                if (p.day && p.type !== 'transfer' && p.type !== 'border' && p.type !== 'start') {
                     var n = 1;
-                    if (p.day && p.day.toString().includes('-')) {
-                        var parts = p.day.split('-');
+                    var dayStr = p.day.toString();
+                    if (dayStr.includes('-')) {
+                        var parts = dayStr.split('-');
                         n = parseInt(parts[1]) - parseInt(parts[0]) + 1;
                     }
                     nightsTotal += n;
@@ -838,6 +840,14 @@
                     else sleep.other += n;
                 }
             });
+
+            // Прячем вело-виджет, если это архив (т.к. данных нет) ИЛИ если км = 0
+            if (isArchive || bikeSum === 0) dWidget.classList.add('hidden');
+            else dWidget.classList.remove('hidden');
+
+            // Палатку показываем всегда, если есть хоть одна ночь
+            if (nightsTotal > 0) sWidget.classList.remove('hidden');
+            else sWidget.classList.add('hidden');
 
             // Рендерим Вело-виджет
             var hasTrans = Object.values(trans).some(v => v > 0);
@@ -918,45 +928,42 @@
         }
 
         function createPopup(p, folder) {
-            // Словарь эмодзи
-            var dLow = (p.desc || "").toLowerCase();
-            var emoji = "🌑"; // По умолчанию Прочее
-            if (dLow.includes("палатка") || dLow.includes("лес") || dLow.includes("степь")) emoji = "⛺";
-            else if (dLow.includes("хостел") || dLow.includes("гостиница") || dLow.includes("отель") || dLow.includes("квартира") || dLow.includes("мотель") || dLow.includes("номер")) emoji = "🛏️";
-            else if (dLow.includes("кемпинг") || dLow.includes("база отдыха")) emoji = "🏕️";
-            else if (dLow.includes("в гостях") || dLow.includes("местные") || dLow.includes("друзья") || dLow.includes("вписка") || dLow.includes("вармшауэрс")) emoji = "🤝";
-            else if (dLow.includes("храм") || dLow.includes("церковь") || dLow.includes("мечеть") || dLow.includes("дацан") || dLow.includes("буддийский")) emoji = "🕌";
-            else if (dLow.includes("пляж") || dLow.includes("берег") || dLow.includes("море")) emoji = "🏖️";
-            else if (dLow.includes("полиция") || dLow.includes("остановка") || dLow.includes("труба") || dLow.includes("пост")) emoji = "🚨";
+            var emojiHtml = "";
+            // Эмодзи ставим ТОЛЬКО если это не трансфер
+            if (p.type !== 'transfer') {
+                var dLow = (p.desc || "").toLowerCase();
+                var emoji = "🌑"; 
+                if (dLow.includes("палатка") || dLow.includes("лес") || dLow.includes("степь")) emoji = "⛺";
+                else if (dLow.includes("хостел") || dLow.includes("гостиница") || dLow.includes("отель") || dLow.includes("квартира") || dLow.includes("мотель") || dLow.includes("номер")) emoji = "🛏️";
+                else if (dLow.includes("кемпинг") || dLow.includes("база отдыха")) emoji = "🏕️";
+                else if (dLow.includes("в гостях") || dLow.includes("местные") || dLow.includes("друзья") || dLow.includes("вписка") || dLow.includes("вармшауэрс")) emoji = "🤝";
+                else if (dLow.includes("храм") || dLow.includes("церковь") || dLow.includes("мечеть") || dLow.includes("дацан") || dLow.includes("буддийский")) emoji = "🕌";
+                else if (dLow.includes("пляж") || dLow.includes("берег") || dLow.includes("море")) emoji = "🏖️";
+                else if (dLow.includes("полиция") || dLow.includes("остановка") || dLow.includes("труба") || dLow.includes("пост")) emoji = "🚨";
+                emojiHtml = emoji + " ";
+            }
 
-            var html = `<div class="popup-box"><b>${p.title}</b><p>${emoji} ${p.desc}</p>`;
+            var html = `<div class="popup-box"><b>${p.title || (p.type === 'transfer' ? 'Трансфер' : '')}</b><p>${emojiHtml}${p.desc}</p>`;
             
             if (p.dist) {
                 var dDist = p.dist.toLocaleString('ru-RU');
-                if (p.type === 'transfer') {
-                    html += `<div style="font-size: 16px; font-weight: bold; margin-bottom: 8.5px; color: #333;">${dDist} км</div>`;
-                } else {
-                    var tDist = p.computedTotal.toLocaleString('ru-RU');
-                    html += `<div style="font-size: 14px; font-weight: bold; margin-bottom: 8.5px; color: #333;">Проехал сегодня ${dDist} км (${tDist} км)</div>`;
-                }
+                html += `<div style="font-size: 16px; font-weight: bold; margin-bottom: 8.5px; color: #333;">${dDist} км</div>`;
             }
 
             if (p.lat && p.lng) html += `<div class="coords">${p.lat.toFixed(5)}, ${p.lng.toFixed(5)}</div>`;
-            html += `<div class="btn-row">`;
             
+            html += `<div class="btn-row">`;
             if (p.link) {
                 if (Array.isArray(p.link)) {
-                    p.link.forEach((file, idx) => {
-                        html += `<a onclick="openTrackView('view.html?folder=${folder}&file=${file}')" class="btn btn-track">Трек ${idx + 1}</a> `;
-                    });
+                    p.link.forEach((file, idx) => { html += `<a onclick="openTrackView('view.html?folder=${folder}&file=${file}')" class="btn btn-track">Трек ${idx + 1}</a> `; });
                 } else {
                     html += `<a onclick="openTrackView('view.html?folder=${folder}&file=${p.link}')" class="btn btn-track">Трек</a> `;
                 }
             }
-
             if (p.vk) html += `<a href="${p.vk}" class="btn btn-vk" target="_blank">VK</a>`;
             if (p.dzen) html += `<a href="${p.dzen}" class="btn btn-dzen" target="_blank">Дзен</a>`;
             if (p.relive) html += `<a href="${p.relive}" class="btn btn-3d" target="_blank">3D</a>`;
+            
             return html + '</div></div>';
         }
 
