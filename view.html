@@ -114,7 +114,7 @@
         var params = new URLSearchParams(window.location.search), file = params.get('file'), folder = params.get('folder') || 'tracks/';
         var map = L.map('map', {attributionControl: true, zoomControl: false}).setView([50, 80], 4);
         map.attributionControl.setPrefix('Мое велопутешествие');
-        L.tileLayer('http://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',{ maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3'] }).addTo(map);
+        L.tileLayer('https://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',{ maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3'] }).addTo(map);
         
         var trackPoints = [], photoLayer = L.layerGroup(), hoverMarker = L.marker([0,0], { icon: L.divIcon({className: 'hover-dot', iconSize: [14, 14], iconAnchor: [7, 7]}) });
 
@@ -233,6 +233,14 @@
         function buildChart(elevationData) {
             var ctx = document.getElementById('elevationChart').getContext('2d');
             
+            // Настраиваем фирменный шрифт
+            Chart.defaults.font.family = "'Golos Text', sans-serif";
+            
+            // Создаем красивый градиент (сверху насыщенный, снизу прозрачный)
+            var gradient = ctx.createLinearGradient(0, 0, 0, 300);
+            gradient.addColorStop(0, 'rgba(0, 168, 107, 0.5)'); 
+            gradient.addColorStop(1, 'rgba(0, 168, 107, 0.0)'); 
+
             var cleanChartData = elevationData.filter(d => d[1] > 10);
             if (cleanChartData.length === 0) cleanChartData = elevationData; 
             
@@ -243,8 +251,8 @@
                     datasets: [{ 
                         data: cleanChartData.map(d => d[1].toFixed(0)), 
                         fill: true, 
-                        backgroundColor: 'rgba(0, 168, 107, 0.1)', // Нефритовая заливка
-                        borderColor: '#00a86b', // Нефритовая линия
+                        backgroundColor: gradient, // Применяем градиент
+                        borderColor: '#00a86b', 
                         borderWidth: 2, 
                         pointRadius: 0, 
                         tension: 0.1 
