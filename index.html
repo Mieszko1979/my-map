@@ -539,7 +539,7 @@
             if (typeof aboutData === 'undefined') return;
             var isPC = window.innerWidth > 768;
             document.getElementById('about-name').innerText = aboutData.name;
-            document.getElementById('about-bio').innerText = aboutData.bio;
+            document.getElementById('about-bio').innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + aboutData.bio.replace(/\n/g, "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
             
             var sHtml = ""; 
             aboutData.socials.forEach(s => { if(!s.url) return;
