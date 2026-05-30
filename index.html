@@ -920,9 +920,7 @@
 
         window.flagHasBeenShown = window.flagHasBeenShown || false;
 
-        window.flagHasBeenShown = window.flagHasBeenShown || false;
-
-        /* Эффект полета к последней точке + Безопасное автоопределение страны */
+        /* Эффект полета к последней точке + Надежное ожидание ответа базы OpenStreetMap */
         function focusOnCurrent() { 
             if (typeof myPoints !== 'undefined' && myPoints.length > 0) {
                 var last = myPoints[myPoints.length - 1];
@@ -932,39 +930,53 @@
                 // 1. Начинаем полет к точке
                 map.flyTo([targetLat, targetLng], 10, { animate: true, duration: 2.5 });
 
-                // Если флаг уже показывали при открытии сайта - просто выходим
+                // Не показываем флаг дважды
                 if (window.flagHasBeenShown) return;
                 window.flagHasBeenShown = true; 
 
-                // Россия по умолчанию (сработает, если интернет внезапно пропал)
-                var countryCode = 'ru'; 
+                // Переменные для синхронизации
+                var isMapReady = false;
+                var finalCountryCode = null;
 
-                // 2. В фоне спрашиваем страну строго по координатам (OpenStreetMap)
-                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${targetLat}&lon=${targetLng}&zoom=3`)
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data && data.address && data.address.country_code) {
-                            countryCode = data.address.country_code.toLowerCase();
-                            // Моментальная предзагрузка картинки
-                            new Image().src = `https://flagcdn.com/w80/${countryCode}.png`; 
-                        }
-                    })
-                    .catch(() => {}); // Если ошибка сети - молча игнорируем, останется 'ru'
+                // Функция отрисовки: сработает ТОЛЬКО когда и карта долетела, и ответ от базы получен!
+                function drawFlag() {
+                    if (isMapReady && finalCountryCode) {
+                        var flagHtml = `<img src="https://flagcdn.com/w80/${finalCountryCode}.png" class="simple-flag-anim">`;
+                        var flagMarker = L.marker([targetLat, targetLng], {
+                            icon: L.divIcon({ className: '', html: flagHtml, iconSize: [0, 0] })
+                        }).addTo(map);
 
-                // 3. Ждем ровно 2.5 секунды (пока летит карта) и рисуем флаг
+                        // Плавно удаляем флаг из памяти через 4.5 секунды
+                        setTimeout(function() {
+                            if (map.hasLayer(flagMarker)) map.removeLayer(flagMarker);
+                        }, 4500);
+                    }
+                }
+
+                // Процесс А: Таймер полета (ровно 2.5 секунды)
                 setTimeout(function() {
-                    var flagHtml = `<img src="https://flagcdn.com/w80/${countryCode}.png" class="simple-flag-anim">`;
-                    
-                    var flagMarker = L.marker([targetLat, targetLng], {
-                        icon: L.divIcon({ className: '', html: flagHtml, iconSize: [0, 0] })
-                    }).addTo(map);
-
-                    // 4. Плавно удаляем флаг из памяти через 4.5 секунды
-                    setTimeout(function() {
-                        if (map.hasLayer(flagMarker)) map.removeLayer(flagMarker);
-                    }, 4500);
-
+                    isMapReady = true;
+                    drawFlag();
                 }, 2500);
+
+                // Процесс Б: Запрос в точную базу (идет параллельно, ждем сколько нужно)
+                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${targetLat}&lon=${targetLng}`, {
+                    headers: { 'Accept-Language': 'en' }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data && data.address && data.address.country_code) {
+                        finalCountryCode = data.address.country_code.toLowerCase();
+                        new Image().src = `https://flagcdn.com/w80/${finalCountryCode}.png`; // Моментально качаем
+                    } else {
+                        finalCountryCode = 'ru'; // Подстраховка
+                    }
+                    drawFlag();
+                })
+                .catch(() => {
+                    finalCountryCode = 'ru'; // Если вообще нет интернета у зрителя
+                    drawFlag();
+                });
             } 
         }
         function toggleDistanceWidget(event) {
