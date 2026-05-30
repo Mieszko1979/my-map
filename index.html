@@ -48,37 +48,38 @@
         #hint-box:hover { transform: translateX(-50%) scale(1.08); background: #fff; }
         .hint-text { color: #ff0000; font-weight: 900; font-size: 17px; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* ВИДЖЕТЫ СТАТИСТИКИ (ВЕЛО И НОЧЕВКИ) */
+        /* НОВЫЙ КОНТЕЙНЕР ДЛЯ ВИДЖЕТОВ (ИСКЛЮЧАЕТ НАЛОЖЕНИЕ) */
+        #widgets-container { 
+            position: absolute; top: 15px; right: 70px; z-index: 1000; 
+            display: flex; gap: 10px; align-items: flex-start;
+        }
+
         #distance-widget, #sleep-widget { 
-            position: absolute; top: 15px; z-index: 1000; 
-            background: rgba(255, 255, 255, 0.95); padding: 10px 18px; 
+            background: rgba(255, 255, 255, 0.95); padding: 10px 15px; 
             border-radius: 12px; border: 2.5px solid #28a745; color: #333; 
             display: flex; flex-direction: column; align-items: flex-start; 
             transition: all 0.3s ease; pointer-events: auto; 
             font-family: 'Golos Text', sans-serif; cursor: pointer; box-sizing: border-box;
+            min-width: 60px;
         }
-        
-        /* Расположение на ПК */
-        #sleep-widget { right: 70px; } /* Палатка крайняя справа */
-        #distance-widget { right: 175px; } /* Велосипед левее */
 
-        .main-dist-row { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: bold; width: 100%; }
-        .main-dist-row .bike-icon { font-size: 24px; color: #28a745; }
+        .main-dist-row { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: bold; width: 100%; }
+        .main-dist-row .bike-icon { font-size: 22px; color: #28a745; }
         .dist-chevron { margin-left: auto; font-size: 14px; color: #666; transition: transform 0.3s; padding-left: 5px; }
         
-        #distance-widget.expanded .dist-chevron, #sleep-widget.expanded .dist-chevron { transform: rotate(180deg); }
-        #distance-widget.hidden, #sleep-widget.hidden { opacity: 0; transform: translateY(20px) scale(0.9); pointer-events: none !important; }
+        .expanded .dist-chevron { transform: rotate(180deg); }
+        .hidden { display: none !important; }
 
         .transport-stats-row { 
-            display: flex; flex-direction: column; gap: 10px; width: 100%;
+            display: flex; flex-direction: column; gap: 8px; width: 100%;
             max-height: 0; opacity: 0; margin-top: 0; padding-top: 0; border-top: 1px solid transparent; overflow: hidden; transition: all 0.3s ease;
         }
-        #distance-widget.expanded .transport-stats-row, #sleep-widget.expanded .transport-stats-row {
-            max-height: 500px; opacity: 1; margin-top: 12px; padding-top: 10px; border-top-color: #ccc;
+        .expanded .transport-stats-row {
+            max-height: 500px; opacity: 1; margin-top: 10px; padding-top: 8px; border-top-color: #ccc;
         }
         
-        .stat-item { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: bold; color: #333; white-space: nowrap; }
-        .stat-item span:first-child { font-size: 22px; width: 25px; text-align: center; }
+        .stat-item { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: bold; color: #333; white-space: nowrap; }
+        .stat-item span:first-child { font-size: 20px; width: 25px; text-align: center; }
 
         @keyframes scarletPulseWidget { 
             0% { box-shadow: 0 4px 15px rgba(0,0,0,0.3), 0 0 0 0px rgba(255, 36, 0, 0.9); } 
@@ -88,15 +89,11 @@
         .pulsing-widget { animation: scarletPulseWidget 3s infinite ease-in-out !important; }
 
         @media (max-width: 768px) {
-            #distance-widget, #sleep-widget { right: auto; left: 10px; padding: 0; width: 46px; height: 46px; border-radius: 50%; justify-content: center; align-items: center; }
-            #distance-widget { bottom: 85px; top: auto; }
-            #sleep-widget { bottom: 140px; top: auto; } /* Палатка НАД велосипедом */
-            
+            #widgets-container { right: auto; left: 10px; top: auto; bottom: 85px; flex-direction: column-reverse; gap: 10px; }
+            #distance-widget, #sleep-widget { padding: 0; width: 46px; height: 46px; border-radius: 50%; justify-content: center; align-items: center; }
             #distance-widget .dist-text, #sleep-widget .dist-text, .dist-chevron, .transport-stats-row { display: none; }
-            
-            #distance-widget.expanded, #sleep-widget.expanded { width: auto; height: auto; padding: 10px 18px; border-radius: 15px; align-items: flex-start; }
-            #distance-widget.expanded .dist-text, #sleep-widget.expanded .dist-text, #distance-widget.expanded .transport-stats-row, #sleep-widget.expanded .transport-stats-row { display: flex; }
-            #distance-widget.expanded .main-dist-row, #sleep-widget.expanded .main-dist-row { width: auto; justify-content: flex-start; }
+            .expanded { width: auto !important; height: auto !important; padding: 10px 15px !important; border-radius: 15px !important; align-items: flex-start !important; }
+            .expanded .dist-text, .expanded .transport-stats-row { display: flex; }
         }
 
         /* БАЗА МОДАЛЬНОГО ОКНА */
@@ -462,13 +459,10 @@
 
     <div id="hint-box" onclick="openAbout()"><span class="hint-text">ЖМИ СЮДА</span></div>
     
-    <!-- Виджеты статистики -->
-    <div id="distance-widget" class="pulsing-widget" onclick="toggleStatWidget(this, event)">
-        <!-- Заполнится скриптом -->
-    </div>
-
-    <div id="sleep-widget" onclick="toggleStatWidget(this, event)">
-        <!-- Заполнится скриптом -->
+    <!-- Контейнер для двух виджетов -->
+    <div id="widgets-container">
+        <div id="distance-widget" class="pulsing-widget" onclick="toggleStatWidget(this, event)"></div>
+        <div id="sleep-widget" onclick="toggleStatWidget(this, event)"></div>
     </div>
 
     <img src="avatar.jpg" class="map-avatar">
@@ -868,6 +862,8 @@
                 if (document.getElementById('chk2024').checked) { drawTrip(points2024, archiveLayerGroup, 'c2024', 'archive/2024/', false); if(showPhotos) loadPhotos('archive-2024-photos', hexColors['c2024']); }
                 if (!onlyPhotos) { var layers = archiveLayerGroup.getLayers(); if (layers.length > 0) map.fitBounds(new L.featureGroup(layers).getBounds(), {padding: [50, 50]}); }
             } else { if (typeof myPoints !== 'undefined') drawTrip(myPoints, currentTripLayer, 'cCurrent', 'tracks/', true); if(showPhotos) loadPhotos('archive-2026-photos', hexColors['cCurrent']); }
+            
+            updateDistanceWidget(); // <--- Добавь эту строку здесь!
         }
 
         function drawTrip(data, target, colorClass, folder, isCurrent) {
