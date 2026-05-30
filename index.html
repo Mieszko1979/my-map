@@ -179,9 +179,17 @@
         @keyframes actionPulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.5); } 50% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(40, 167, 69, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); } }
         .btn-expand-support { width: 100%; background: #28a745; color: white; border: none; font-weight: bold; cursor: pointer; animation: actionPulse 2.5s infinite ease-in-out; margin-top: 15px; font-family: Arial, sans-serif; }
 
-        /* ПУЛЬСАЦИЯ ТЕКУЩЕЙ ТОЧКИ */
+        /* ПУЛЬСАЦИЯ ТЕКУЩЕЙ ТОЧКИ И ВИДЖЕТА КИЛОМЕТРАЖА */
         @keyframes scarletPulse { 0% { box-shadow: 0 0 0 0px rgba(255, 36, 0, 0.9); } 70% { box-shadow: 0 0 0 18px rgba(255, 36, 0, 0); } 100% { box-shadow: 0 0 0 0px rgba(255, 36, 0, 0); } }
         .last-point-pulse { animation: scarletPulse 3s infinite ease-in-out; border-color: #28a745 !important; z-index: 1000 !important; }
+
+        /* Красная пульсация для виджета (сохраняет его родную тень) */
+        @keyframes widgetRedPulse { 
+            0% { box-shadow: 0 4px 15px rgba(0,0,0,0.2), 0 0 0 0px rgba(255, 36, 0, 0.9); } 
+            70% { box-shadow: 0 4px 15px rgba(0,0,0,0.2), 0 0 0 18px rgba(255, 36, 0, 0); } 
+            100% { box-shadow: 0 4px 15px rgba(0,0,0,0.2), 0 0 0 0px rgba(255, 36, 0, 0); } 
+        }
+        .pulsing-widget { animation: widgetRedPulse 3s infinite ease-in-out; }
 
         /* АБСОЛЮТНО НОВАЯ ПУЛЬСАЦИЯ ДЛЯ ФОТО И КЛАСТЕРОВ */
         @keyframes markerPulseAnim {
