@@ -920,47 +920,49 @@
 
         window.flagHasBeenShown = window.flagHasBeenShown || false;
 
-        /* Эффект полета как в Google Планета к последней точке текущего трека */
+        /* Эффект полета к последней точке + Умное автоопределение страны */
         function focusOnCurrent() { 
             if (typeof myPoints !== 'undefined' && myPoints.length > 0) {
                 var last = myPoints[myPoints.length - 1];
                 var targetLat = last.lat || (last.from ? last.from[0] : 50);
                 var targetLng = last.lng || (last.from ? last.from[1] : 80);
                 
-                // 1. Летим к точке
+                // 1. Начинаем полет к точке
                 map.flyTo([targetLat, targetLng], 10, { animate: true, duration: 2.5 });
 
-                // Если флаг уже показывали за эту сессию - просто выходим, не показываем второй раз
+                // Если флаг уже показывали за эту сессию - выходим (не раздражаем зрителя)
                 if (window.flagHasBeenShown) return;
-                window.flagHasBeenShown = true; // Запоминаем, что флаг показан
+                window.flagHasBeenShown = true; 
 
-                // 2. Вычисляем текущую страну (по умолчанию Россия)
-                var currentCode = 'ru';
-                myPoints.forEach(function(p) {
-                    if (p.type === 'border' && p.country) {
-                        currentCode = p.country.toLowerCase().trim();
-                    }
-                });
+                // 2. Создаем параллельные процессы
+                // А: Таймер ждет ровно 2.5 секунды (пока летит карта)
+                var waitFlight = new Promise(resolve => setTimeout(resolve, 2500));
+                
+                // Б: В фоне моментально спрашиваем базу координат, что это за страна
+                var fetchCountry = fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${targetLat}&longitude=${targetLng}&localityLanguage=en`)
+                    .then(res => res.json())
+                    .then(data => {
+                        var code = (data.countryCode || 'ru').toLowerCase();
+                        // Как только база ответила (через 0.1 сек), сразу ставим флаг на предзагрузку, пока карта еще летит!
+                        new Image().src = `https://flagcdn.com/w80/${code}.png`;
+                        return code;
+                    })
+                    .catch(() => 'ru'); // Защита от ошибок интернета
 
-                // 3. ПРЕДЗАГРУЗКА: заставляем браузер качать картинку ПРЯМО СЕЙЧАС (пока карта летит)
-                var flagUrl = `https://flagcdn.com/w80/${currentCode}.png`;
-                var preloadImg = new Image();
-                preloadImg.src = flagUrl;
-
-                // 4. Ждем 2.5 сек, чтобы карта долетела, и выводим УЖЕ ЗАГРУЖЕННЫЙ флаг
-                setTimeout(function() {
-                    var flagHtml = `<img src="${flagUrl}" class="simple-flag-anim">`;
+                // 3. Как только карта долетела:
+                Promise.all([waitFlight, fetchCountry]).then(values => {
+                    var currentCode = values[1];
+                    var flagHtml = `<img src="https://flagcdn.com/w80/${currentCode}.png" class="simple-flag-anim">`;
                     
                     var flagMarker = L.marker([targetLat, targetLng], {
                         icon: L.divIcon({ className: '', html: flagHtml, iconSize: [0, 0] })
                     }).addTo(map);
 
-                    // 5. Удаляем через 4.5 секунды
+                    // 4. Плавно удаляем флаг через 4.5 секунды
                     setTimeout(function() {
                         if (map.hasLayer(flagMarker)) map.removeLayer(flagMarker);
                     }, 4500);
-
-                }, 2500);
+                });
             } 
         }
 
