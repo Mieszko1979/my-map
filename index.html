@@ -368,7 +368,6 @@
             /* Анимация: 4 секунды от начала до конца */
             animation: fadeFlagInOut 4s ease-in-out forwards;
         }
-        }
         @keyframes fadeFlagInOut {
             0% { opacity: 0; transform: translateY(15px); }
             15% { opacity: 1; transform: translateY(0); }
@@ -847,13 +846,8 @@
 
                 if (p.type === 'start') {
                     var startIcon = L.divIcon({ className: 'start-marker', html: '<i class="fa-solid fa-flag-checkered"></i>', iconSize: [30, 30], iconAnchor: [15, 15] });
-                    L.marker([p.lat, p.lng], {icon: startIcon}).addTo(target).bindPopup(createPopup(p, folder));
+                    L.marker([p.lat, p.lng], {icon: startIcon}).addTo(target).bindPopup(() => createPopup(p, folder));
                 } else if (p.type === 'border') {
-                // ПЛЮСУЕМ ТОЛЬКО ВЕЛОСИПЕДНЫЕ ДНИ (тип day или без типа)
-                if (p.dist && p.type !== 'transfer') runningTotal += parseFloat(p.dist);
-                p.computedTotal = runningTotal;
-
-                if (p.type === 'border') {
                     var flagHtml = `<div class="flag-stuck"><div style="width:4px; height:50px; background:#444; position:relative;"><img src="https://flagcdn.com/w80/${p.country.toLowerCase().trim()}.png" style="position:absolute; top:0; left:4px; width:45px; border:1.5px solid #fff; box-shadow: 3px 3px 7px rgba(0,0,0,0.5);"></div></div>`;
                     L.marker([p.lat, p.lng], {icon: L.divIcon({ className: '', html: flagHtml, iconSize: [50, 50], iconAnchor: [2, 50] })}).addTo(borderClusterGroup).bindPopup(() => createPopup(p, folder));
                 } else if (!p.type || p.type === 'day') {
