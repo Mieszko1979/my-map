@@ -920,6 +920,8 @@
 
         window.flagHasBeenShown = window.flagHasBeenShown || false;
 
+        window.flagHasBeenShown = window.flagHasBeenShown || false;
+
         /* Эффект полета к последней точке + Безопасное автоопределение страны */
         function focusOnCurrent() { 
             if (typeof myPoints !== 'undefined' && myPoints.length > 0) {
@@ -930,19 +932,19 @@
                 // 1. Начинаем полет к точке
                 map.flyTo([targetLat, targetLng], 10, { animate: true, duration: 2.5 });
 
-                // Если флаг уже показывали при открытии сайта - просто выходим (чтобы не бесил при переключении галочек)
+                // Если флаг уже показывали при открытии сайта - просто выходим
                 if (window.flagHasBeenShown) return;
                 window.flagHasBeenShown = true; 
 
                 // Россия по умолчанию (сработает, если интернет внезапно пропал)
                 var countryCode = 'ru'; 
 
-                // 2. В фоне спрашиваем страну по координатам
-                fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${targetLat}&longitude=${targetLng}&localityLanguage=en`)
+                // 2. В фоне спрашиваем страну строго по координатам (OpenStreetMap)
+                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${targetLat}&lon=${targetLng}&zoom=3`)
                     .then(res => res.json())
                     .then(data => {
-                        if (data.countryCode) {
-                            countryCode = data.countryCode.toLowerCase();
+                        if (data && data.address && data.address.country_code) {
+                            countryCode = data.address.country_code.toLowerCase();
                             // Моментальная предзагрузка картинки
                             new Image().src = `https://flagcdn.com/w80/${countryCode}.png`; 
                         }
