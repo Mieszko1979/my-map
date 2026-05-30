@@ -920,65 +920,67 @@
 
         window.flagHasBeenShown = window.flagHasBeenShown || false;
 
-        /* Эффект полета к последней точке + МГНОВЕННОЕ ожидание */
+        /* Эффект полета + Умное автоматическое определение (база + файл) */
         function focusOnCurrent() { 
             if (typeof myPoints !== 'undefined' && myPoints.length > 0) {
                 var last = myPoints[myPoints.length - 1];
                 var targetLat = last.lat || (last.from ? last.from[0] : 50);
                 var targetLng = last.lng || (last.from ? last.from[1] : 80);
                 
-                // 1. Начинаем полет к точке (занимает ровно 2.5 секунды)
+                // 1. Полетели!
                 map.flyTo([targetLat, targetLng], 10, { animate: true, duration: 2.5 });
 
                 if (window.flagHasBeenShown) return;
                 window.flagHasBeenShown = true; 
 
-                // 2. Ищем страну в твоих точках (на всякий случай, если нет интернета)
-                var codeFromPoints = null;
+                var countryCode = null;
+
+                // 2. ЗАПРОС В БАЗУ (BigDataCloud - самая быстрая для этого)
+                var apiPromise = fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${targetLat}&longitude=${targetLng}&localityLanguage=en`)
+                    .then(res => res.json())
+                    .then(data => {
+                        // Если база вернула Россию для координат в Лаосе (глюк IP) - игнорируем такой ответ
+                        if (data.countryCode === 'RU' && targetLng > 65) return null; 
+                        return data.countryCode ? data.countryCode.toLowerCase() : null;
+                    })
+                    .catch(() => null);
+
+                // 3. ПРОВЕРКА ТВОЕГО ФАЙЛА (Параллельно, на случай если база тупит)
+                var fileCode = null;
                 for (var i = myPoints.length - 1; i >= 0; i--) {
                     if (myPoints[i].country) {
-                        codeFromPoints = myPoints[i].country.toLowerCase().trim();
+                        fileCode = myPoints[i].country.toLowerCase().trim();
                         break;
                     }
                 }
 
-                // 3. Запрос в быструю базу
-                var fetchApi = fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${targetLat}&longitude=${targetLng}&localityLanguage=en`)
-                    .then(res => res.json())
-                    .then(data => data.countryCode ? data.countryCode.toLowerCase() : null)
-                    .catch(() => null);
-
-                // 4. ЖЕСТКИЙ ЛИМИТ ВРЕМЕНИ: Если база тупит больше 2 секунд - обрываем!
-                var apiWithTimeout = Promise.race([
-                    fetchApi,
-                    new Promise(resolve => setTimeout(() => resolve(null), 2000))
-                ]);
-
-                // Таймер самого полета карты (2.5 секунды)
+                // Таймер полета (2.5 сек)
                 var flightTimer = new Promise(resolve => setTimeout(resolve, 2500));
 
-                // 5. Как только карта долетела (ровно 2.5 секунды) - показываем результат
-                Promise.all([flightTimer, apiWithTimeout]).then(values => {
-                    var codeFromApi = values[1];
+                // 4. ЖДЕМ ЗАВЕРШЕНИЯ
+                Promise.all([flightTimer, apiPromise]).then(values => {
+                    var apiCode = values[1];
                     
-                    // Приоритет: 1. База интернета | 2. Твои точки | 3. Ничего
-                    var finalCode = codeFromApi || codeFromPoints;
-                    
-                    // Если страну узнать не удалось вообще - просто выходим, не показываем ложный флаг
-                    if (!finalCode) return; 
+                    // Приоритет: 1. База (если не врет) | 2. Твой файл | 3. Россия (крайний случай)
+                    var finalCode = apiCode || fileCode || 'ru';
 
-                    var flagHtml = `<img src="https://flagcdn.com/w80/${finalCode}.png" class="simple-flag-anim">`;
+                    // Предзагрузка и показ
+                    var flagUrl = `https://flagcdn.com/w80/${finalCode}.png`;
+                    new Image().src = flagUrl; // Подгружаем в память
+
+                    var flagHtml = `<img src="${flagUrl}" class="simple-flag-anim">`;
                     var flagMarker = L.marker([targetLat, targetLng], {
                         icon: L.divIcon({ className: '', html: flagHtml, iconSize: [0, 0] })
                     }).addTo(map);
 
-                    // Плавно удаляем флаг через 4.5 секунды
+                    // Удаляем флаг через 4.5 секунды
                     setTimeout(function() {
                         if (map.hasLayer(flagMarker)) map.removeLayer(flagMarker);
                     }, 4500);
                 });
             } 
         }
+        
         function toggleDistanceWidget(event) {
             event.stopPropagation(); // Чтобы клик не передавался на карту
             var widget = document.getElementById('distance-widget');
