@@ -923,49 +923,45 @@
 
         window.flagHasBeenShown = window.flagHasBeenShown || false;
 
-        /* Эффект полета + Определение страны СТРОГО по файлу points.js */
         function focusOnCurrent() { 
-            if (typeof myPoints !== 'undefined' && myPoints.length > 0) {
-                var last = myPoints[myPoints.length - 1];
-                var targetLat = last.lat || (last.from ? last.from[0] : 50);
-                var targetLng = last.lng || (last.from ? last.from[1] : 80);
-                
-                // 1. Полетели!
-                map.flyTo([targetLat, targetLng], 10, { animate: true, duration: 2.5 });
+            if (typeof myPoints === 'undefined' || myPoints.length === 0) return;
+            var last = myPoints[myPoints.length - 1];
+            var targetLat = last.lat || (last.from ? last.from[0] : 50);
+            var targetLng = last.lng || (last.from ? last.from[1] : 80);
+            
+            // Летим к точке
+            map.flyTo([targetLat, targetLng], 10, { animate: true, duration: 2.5 });
 
-                // Если флаг уже показывали или это не текущий маршрут - выходим
-                if (window.flagHasBeenShown) return;
-                window.flagHasBeenShown = true; 
+            // Показываем флаг только один раз при загрузке
+            if (window.flagHasBeenShown) return;
+            window.flagHasBeenShown = true; 
 
-                // 2. Ищем последнюю указанную страну в массиве myPoints
-                var currentCode = null;
-                for (var i = myPoints.length - 1; i >= 0; i--) {
-                    // Проверяем поле 'country' (у старта и границ) или 'newCountry' (у трансферов)
-                    var code = myPoints[i].country || myPoints[i].newCountry;
-                    if (code) {
-                        currentCode = code.toLowerCase().trim();
-                        break; 
-                    }
+            // Ищем последнюю указанную страну в твоем файле (с конца к началу)
+            var currentCode = null;
+            for (var i = myPoints.length - 1; i >= 0; i--) {
+                var code = myPoints[i].country || myPoints[i].newCountry;
+                if (code) {
+                    currentCode = code.toLowerCase().trim();
+                    break; 
                 }
+            }
 
-                if (!currentCode) return; // Если нигде в файле не указали страну - флаг не выводим
-
-                // 3. Предзагрузка
+            // Если страну нашли - показываем флаг ровно через 2.5 секунды
+            if (currentCode) {
                 var flagUrl = `https://flagcdn.com/w80/${currentCode}.png`;
+                // Предзагрузка картинки в память пока летит карта
                 new Image().src = flagUrl; 
 
-                // 4. Показ флага через 2.5 сек (ровно при приземлении)
                 setTimeout(function() {
-                    var flagHtml = `<img src="${flagUrl}" class="simple-flag-anim">`;
                     var flagMarker = L.marker([targetLat, targetLng], {
-                        icon: L.divIcon({ className: '', html: flagHtml, iconSize: [0, 0] })
+                        icon: L.divIcon({ className: '', html: `<img src="${flagUrl}" class="simple-flag-anim">`, iconSize: [0, 0] })
                     }).addTo(map);
 
                     setTimeout(function() {
                         if (map.hasLayer(flagMarker)) map.removeLayer(flagMarker);
                     }, 4500);
                 }, 2500);
-            } 
+            }
         }
         
         function toggleDistanceWidget(event) {
