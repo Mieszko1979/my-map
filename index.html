@@ -947,8 +947,23 @@
                     L.marker([p.lat, p.lng], {icon: L.divIcon({ className: 'day-marker ' + colorClass + (isLast ? ' last-point-pulse' : ''), html: html, iconSize: [24, 24], iconAnchor: [12, 12] })}).addTo(target).bindPopup(() => createPopup(p, folder));
                 } else if (p.type === 'transfer') {
                     var line = L.polyline([p.from, p.to], { color: hex, weight: 3, dashArray: '8, 12', opacity: 0.8 }).addTo(target);
-                    L.circleMarker(p.from, {radius: 5, color: hex, fillColor: 'white', fillOpacity: 1, weight: 2}).addTo(target);
-                    L.circleMarker(p.to, {radius: 5, color: hex, fillColor: 'white', fillOpacity: 1, weight: 2}).addTo(target);
+                    
+                    // Флаг вылета (если указан), иначе обычный кружок
+                    if (p.fromCountry) {
+                        var fHtml = `<div class="flag-stuck"><div style="width:4px; height:50px; background:#444; position:relative;"><img src="https://flagcdn.com/w80/${p.fromCountry.toLowerCase().trim()}.png" style="position:absolute; top:0; left:4px; width:45px; border:1.5px solid #fff; box-shadow: 3px 3px 7px rgba(0,0,0,0.5);"></div></div>`;
+                        L.marker(p.from, {icon: L.divIcon({ className: '', html: fHtml, iconSize: [50, 50], iconAnchor: [2, 50] })}).addTo(borderClusterGroup).bindPopup(() => createPopup(p, folder));
+                    } else {
+                        L.circleMarker(p.from, {radius: 5, color: hex, fillColor: 'white', fillOpacity: 1, weight: 2}).addTo(target);
+                    }
+
+                    // Флаг прилета (если указан), иначе обычный кружок
+                    if (p.toCountry) {
+                        var tHtml = `<div class="flag-stuck"><div style="width:4px; height:50px; background:#444; position:relative;"><img src="https://flagcdn.com/w80/${p.toCountry.toLowerCase().trim()}.png" style="position:absolute; top:0; left:4px; width:45px; border:1.5px solid #fff; box-shadow: 3px 3px 7px rgba(0,0,0,0.5);"></div></div>`;
+                        L.marker(p.to, {icon: L.divIcon({ className: '', html: tHtml, iconSize: [50, 50], iconAnchor: [2, 50] })}).addTo(borderClusterGroup).bindPopup(() => createPopup(p, folder));
+                    } else {
+                        L.circleMarker(p.to, {radius: 5, color: hex, fillColor: 'white', fillOpacity: 1, weight: 2}).addTo(target);
+                    }
+
                     var tIcons = { 'plane':'✈️','train':'🚂','bus':'🚌','car':'🚗','truck':'🚚' };
                     var p1 = map.project(p.from, 0), p2 = map.project(p.to, 0);
                     var midLatLng = map.unproject([(p1.x + p2.x) / 2, (p1.y + p2.y) / 2], 0);
@@ -1042,7 +1057,7 @@
             // Ищем последнюю указанную страну в твоем файле (с конца к началу)
             var currentCode = null;
             for (var i = myPoints.length - 1; i >= 0; i--) {
-                var code = myPoints[i].country || myPoints[i].newCountry;
+                var code = myPoints[i].country || myPoints[i].newCountry || myPoints[i].toCountry;
                 if (code) {
                     currentCode = code.toLowerCase().trim();
                     break; 
