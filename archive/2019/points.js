@@ -83,7 +83,7 @@ var points2019 = [
   { day: "95-99", lat: 40.409414, lng: 49.940242, title: "09.10.2019 - 13.09.2019", desc: "Перелет в Баку. Warmshowers", link: "", vk: "https://vk.com/wall-171082824_921" },
   { type: "border",   country: "uz", lat: 41.262714, lng: 69.26619, title: "Ташкент", desc: "Международный аэропорт имени Ислама Каримова", dzen: "" },
   { type: "transfer",   transport: "plane", from: [41.262714, 69.26619], to: [40.46278, 50.04972], title: "09.11.2019", desc: "Перелет Ташкент - Баку", link: "", vk: "https://vk.com/wall-171082824_921" },
-  { type: "border",   country: "az", lat: 40.46278, lng: 50.04972, title: "Баку", desc: "Международный аэропорт Баку имени Гейдара Алиева", dzen: "" },
+  { type: "border",   country: "az", lat: 40.46278, lng: 50.04972, title: "Баку", desc: "Международный аэропорт имени Гейдара Алиева", dzen: "" },
   { day: "100", lat: 40.163173, lng: 49.470368, title: "14.11.2019", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_940" },
   { day: "101", lat: 39.965559, lng: 49.407394, title: "15.11.2019", desc: "Кафе", link: "", vk: "https://vk.com/wall-171082824_952" },
   { day: "102", lat: 39.475884, lng: 48.741848, title: "16.11.2019", desc: "Палатка", link: "", vk: "https://vk.com/wall-171082824_953" },
