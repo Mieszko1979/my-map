@@ -40,8 +40,8 @@ const aboutData = {
         ],
         // КРИПТОВАЛЮТА (в конце списка оплаты)
         crypto: [
-            { name: "USDT (TRC-20)", address: "TAxPGZAEb7mjacpaqgt8k8299Dvc6UrX9i" },
-            { name: "USDC (ERC-20)", address: "0x95dF5539430154F833e5455272a422A794D2aCb6" }
+            { name: "USDT (TRC-20)", address: "TEd4rwny77MMax1G7LCYXgDNW2qBPAqCgh" },
+            { name: "USDC (ERC-20)", address: "0x56200d712538FD5116788ED3c9079eeE1b6D5a47" }
         ]
     }
 };
