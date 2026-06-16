@@ -5,6 +5,7 @@ var myPoints = [
   { day: "3", lat: 55.835543, lng: 48.958946, title: "12.06.2026", dist: 71.03, desc: "Палатка", link: "2026_06_12.gpx", vk: "" },
   { day: "4", lat: 55.378927, lng: 49.935949, title: "13.06.2026", dist: 90.82, desc: "Палатка", link: "2026_06_13.gpx", vk: "https://vk.ru/wall-171082824_1689" },
   { day: "5", lat: 55.408386, lng: 50.891459, title: "14.06.2026", dist: 73.41, desc: "Палатка", link: "2026_06_14.gpx", vk: "https://vk.ru/wall-171082824_1701" },
+  { day: "6", lat: 55.334897, lng: 51.974385, title: "15.06.2026", dist: 84.8, desc: "Палатка", link: "2026_06_15.gpx", vk: "https://vk.ru/wall-171082824_1707" },
   
  
 ];
