@@ -13,6 +13,6 @@ var myPoints = [
   { day: "12", lat: 53.257223, lng: 55.540426, title: "21.06.2026", dist: 92.74, desc: "Палатка", link: "2026_06_21.gpx", vk: "https://vk.ru/wall-171082824_1738" },
   { day: "13", lat: 52.837705, lng: 55.925995, title: "22.06.2026", dist: 73.20, desc: "Палатка", link: "2026_06_22.gpx", vk: "https://vk.ru/wall-171082824_1741" },
   { day: "14", lat: 52.84184, lng: 55.917835, title: "23.06.2026", dist: 0.50, desc: "Гостиница", link: "", vk: "https://vk.ru/wall-171082824_1748" },
-
+  { day: "15", lat: 52.138513, lng: 56.708947, title: "24.06.2026", dist: 126.70, desc: "Палатка", link: "2026_06_24.gpx", vk: "https://vk.ru/wall-171082824_1750" },
  
 ];
