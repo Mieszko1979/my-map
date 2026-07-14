@@ -148,21 +148,24 @@
                 var g = e.target; map.fitBounds(g.getBounds(), {padding: [50, 50]});
                 
                 var rawElevationData = g.get_elevation_data();
-                var maxAlt = g.get_elevation_max();
                 var cleanGain = 0;
+                var maxAlt = 0;
                 
-                // ПРОБЛЕМА БЫЛА ЗДЕСЬ: Проверяем, есть ли вообще данные о высоте (у авто их часто нет)
-                if (!rawElevationData || rawElevationData.length < 2 || !maxAlt) {
-                    // ЕСЛИ ЭТО ЗАБРОСКА БЕЗ ВЫСОТ:
+                // 1. УМНАЯ ПРОВЕРКА: Если в файле нет высот, get_elevation_max() вызывает ошибку, мы ее ловим
+                try { maxAlt = g.get_elevation_max(); } catch(err) { maxAlt = 0; }
+                
+                var hasElevation = rawElevationData && rawElevationData.length > 0 && maxAlt > 0;
+
+                if (!hasElevation) {
+                    // ЭТО ЗАБРОСКА (ИЛИ ТРЕК БЕЗ ВЫСОТ): Прячем высоты и график
                     document.getElementById('gain').innerText = "--";
                     document.getElementById('max-alt').innerText = "--";
                     
-                    // Прячем график и кнопки графика
                     document.getElementById('chart-box').style.display = 'none';
                     document.getElementById('btn-chart').style.display = 'none';
                     document.getElementById('res-chart').style.display = 'none';
                 } else {
-                    // ЕСЛИ ЭТО ОБЫЧНЫЙ ВЕЛОТРЕК С ВЫСОТАМИ:
+                    // ЭТО ОБЫЧНЫЙ ВЕЛОТРЕК: Считаем высоту и рисуем график
                     var validEleData = rawElevationData.filter(d => d[1] > 10);
                     if (validEleData.length > 0) {
                         var currentTrough = validEleData[0][1];
@@ -184,8 +187,9 @@
 
                 document.getElementById('dist').innerText = (g.get_distance()/1000).toFixed(1) + " км"; 
                 
+                // 2. Скрываем время и скорость, если это заброска или скорость аномальная (>60)
                 var speed = g.get_moving_speed(); 
-                if (!(folder.includes('2018') || speed > 60 || g.get_distance() < 2000)) { 
+                if (hasElevation && !folder.includes('2018') && speed <= 60 && g.get_distance() >= 2000) { 
                     var ms = g.get_moving_time(); 
                     document.getElementById('time').innerText = Math.floor(ms/3600000)+"ч "+Math.floor((ms%3600000)/60000)+"м"; 
                     document.getElementById('avg-speed').innerText = speed.toFixed(1) + " км/ч"; 
@@ -202,7 +206,6 @@
                 
                 loadPhotos(folder);
 
-    
                 // --- ЧТЕНИЕ ИДЕАЛЬНЫХ ДАННЫХ ИЗ TCX ---
                 var tcxFile = file.replace(/\.gpx$/i, '.tcx');
                 fetch(folder + tcxFile).then(r => {
@@ -221,16 +224,14 @@
                     }
                     
                     if (exactDist > 0) {
-                        // Подменяем расстояние на точное из TCX
                         document.getElementById('dist').innerText = (exactDist / 1000).toFixed(1) + " км";
                         
-                        if (exactTime > 0 && !folder.includes('2018') && speed <= 60 && g.get_distance() >= 2000) {
+                        // Меняем время только если это велотрек
+                        if (exactTime > 0 && hasElevation && !folder.includes('2018') && speed <= 60 && g.get_distance() >= 2000) {
                             var h = Math.floor(exactTime / 3600);
                             var m = Math.floor((exactTime % 3600) / 60);
-                            // Подменяем время
                             document.getElementById('time').innerText = h + "ч " + m + "м";
                             
-                            // Подменяем среднюю скорость (Дистанция / Время)
                             var speedKmH = (exactDist / 1000) / (exactTime / 3600);
                             document.getElementById('avg-speed').innerText = speedKmH.toFixed(1) + " км/ч";
                         }
