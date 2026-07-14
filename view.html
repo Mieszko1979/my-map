@@ -147,34 +147,44 @@
             }).on('loaded', function(e) {
                 var g = e.target; map.fitBounds(g.getBounds(), {padding: [50, 50]});
                 
-                // --- ИСПРАВЛЕННЫЙ "БАРОМЕТРИЧЕСКИЙ" ФИЛЬТР ВЫСОТЫ ---
                 var rawElevationData = g.get_elevation_data();
+                var maxAlt = g.get_elevation_max();
                 var cleanGain = 0;
                 
-                // 1. Отрезаем стартовые глюки GPS (когда высота 0)
-                var validEleData = rawElevationData.filter(d => d[1] > 10);
-
-                if (validEleData.length > 0) {
-                    var currentTrough = validEleData[0][1]; // Берем первую РЕАЛЬНУЮ высоту
-                    var threshold = 2.0; // Порог чувствительности (игнорируем ямы меньше 2 метров)
+                // ПРОБЛЕМА БЫЛА ЗДЕСЬ: Проверяем, есть ли вообще данные о высоте (у авто их часто нет)
+                if (!rawElevationData || rawElevationData.length < 2 || !maxAlt) {
+                    // ЕСЛИ ЭТО ЗАБРОСКА БЕЗ ВЫСОТ:
+                    document.getElementById('gain').innerText = "--";
+                    document.getElementById('max-alt').innerText = "--";
                     
-                    for (var i = 1; i < validEleData.length; i++) {
-                        var ele = validEleData[i][1];
-                        if (ele < currentTrough) {
-                            currentTrough = ele; // Идем вниз — обновляем "дно"
-                        } else if (ele - currentTrough >= threshold) {
-                            cleanGain += (ele - currentTrough); // Поднялись выше порога — засчитываем!
-                            currentTrough = ele; // Сброс
+                    // Прячем график и кнопки графика
+                    document.getElementById('chart-box').style.display = 'none';
+                    document.getElementById('btn-chart').style.display = 'none';
+                    document.getElementById('res-chart').style.display = 'none';
+                } else {
+                    // ЕСЛИ ЭТО ОБЫЧНЫЙ ВЕЛОТРЕК С ВЫСОТАМИ:
+                    var validEleData = rawElevationData.filter(d => d[1] > 10);
+                    if (validEleData.length > 0) {
+                        var currentTrough = validEleData[0][1];
+                        var threshold = 2.0; 
+                        for (var i = 1; i < validEleData.length; i++) {
+                            var ele = validEleData[i][1];
+                            if (ele < currentTrough) {
+                                currentTrough = ele; 
+                            } else if (ele - currentTrough >= threshold) {
+                                cleanGain += (ele - currentTrough); 
+                                currentTrough = ele; 
+                            }
                         }
                     }
+                    document.getElementById('gain').innerText = cleanGain.toFixed(0) + " м"; 
+                    document.getElementById('max-alt').innerText = maxAlt.toFixed(0) + " м";
+                    buildChart(rawElevationData); 
                 }
 
                 document.getElementById('dist').innerText = (g.get_distance()/1000).toFixed(1) + " км"; 
-                document.getElementById('gain').innerText = cleanGain.toFixed(0) + " м"; // Выводим чистый результат
-                document.getElementById('max-alt').innerText = g.get_elevation_max().toFixed(0) + " м";
                 
                 var speed = g.get_moving_speed(); 
-                // Скрываем время и скорость для старых треков или откровенных трансферов
                 if (!(folder.includes('2018') || speed > 60 || g.get_distance() < 2000)) { 
                     var ms = g.get_moving_time(); 
                     document.getElementById('time').innerText = Math.floor(ms/3600000)+"ч "+Math.floor((ms%3600000)/60000)+"м"; 
@@ -190,9 +200,9 @@
                 L.marker(trackPoints[0], {icon: L.divIcon({className: 'marker-ab', html: 'A', iconSize: [24, 24], iconAnchor: [12, 12]})}).addTo(map);
                 L.marker(trackPoints[trackPoints.length - 1], {icon: L.divIcon({className: 'marker-ab', html: 'B', iconSize: [24, 24], iconAnchor: [12, 12]})}).addTo(map);
                 
-                buildChart(rawElevationData); 
                 loadPhotos(folder);
 
+    
                 // --- ЧТЕНИЕ ИДЕАЛЬНЫХ ДАННЫХ ИЗ TCX ---
                 var tcxFile = file.replace(/\.gpx$/i, '.tcx');
                 fetch(folder + tcxFile).then(r => {
