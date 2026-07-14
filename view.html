@@ -165,7 +165,7 @@
                     document.getElementById('btn-chart').style.display = 'none';
                     document.getElementById('res-chart').style.display = 'none';
                 } else {
-                    // ЭТО ОБЫЧНЫЙ ВЕЛОТРЕК: Считаем высоту и рисуем график
+                    // ЭТО ОБЫЧНЫЙ ВЕЛОТРЕК: Считаем высоту и рисуем график 
                     var validEleData = rawElevationData.filter(d => d[1] > 10);
                     if (validEleData.length > 0) {
                         var currentTrough = validEleData[0][1];
