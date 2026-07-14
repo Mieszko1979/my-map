@@ -967,14 +967,21 @@
                     var isLast = isCurrent && i === data.length - 1;
                     L.marker([p.lat, p.lng], {icon: L.divIcon({ className: 'day-marker ' + colorClass + (isLast ? ' last-point-pulse' : ''), html: html, iconSize: [24, 24], iconAnchor: [12, 12] })}).addTo(target).bindPopup(() => createPopup(p, folder));
                 } else if (p.type === 'transfer') {
-                    var line = L.polyline([p.from, p.to], { color: hex, weight: 3, dashArray: '8, 12', opacity: 0.8 }).addTo(target);
-                    L.circleMarker(p.from, {radius: 5, color: hex, fillColor: 'white', fillOpacity: 1, weight: 2}).addTo(target);
-                    L.circleMarker(p.to, {radius: 5, color: hex, fillColor: 'white', fillOpacity: 1, weight: 2}).addTo(target);
-                    var tIcons = { 'plane':'✈️','train':'🚂','bus':'🚌','car':'🚗','truck':'🚚' };
-                    var p1 = map.project(p.from, 0), p2 = map.project(p.to, 0);
-                    var midLatLng = map.unproject([(p1.x + p2.x) / 2, (p1.y + p2.y) / 2], 0);
-                    L.marker(midLatLng, {icon: L.divIcon({ className: 'trans-center-marker ' + colorClass, html: tIcons[p.transport] || '🚀', iconSize:[24, 24], iconAnchor:[12, 12] })}).addTo(target).bindPopup(() => createPopup(p, folder));
-                    L.polylineDecorator(line, { patterns: [{ offset: '20%', repeat: '40%', symbol: L.Symbol.arrowHead({pixelSize: 12, pathOptions: {color: hex, fillOpacity: 1, stroke: false, className: 'trans-arrow'}}) }] }).addTo(target);
+                    var drawTransfer = function() {
+                        var line = L.polyline([p.from, p.to], { color: hex, weight: 3, dashArray: '8, 12', opacity: 0.8 }).addTo(target);
+                        L.circleMarker(p.from, {radius: 5, color: hex, fillColor: 'white', fillOpacity: 1, weight: 2}).addTo(target);
+                        L.circleMarker(p.to, {radius: 5, color: hex, fillColor: 'white', fillOpacity: 1, weight: 2}).addTo(target);
+                        var tIcons = { 'plane':'✈️','train':'🚂','bus':'🚌','car':'🚗','truck':'🚚' };
+                        var p1 = map.project(p.from, 0), p2 = map.project(p.to, 0);
+                        var midLatLng = map.unproject([(p1.x + p2.x) / 2, (p1.y + p2.y) / 2], 0);
+                        L.marker(midLatLng, {icon: L.divIcon({ className: 'trans-center-marker ' + colorClass, html: tIcons[p.transport] || '🚀', iconSize:[24, 24], iconAnchor:[12, 12] })}).addTo(target).bindPopup(() => createPopup(p, folder));
+                        // Вернули твои адаптивные 20% и 40%
+                        L.polylineDecorator(line, { patterns: [{ offset: '20%', repeat: '40%', symbol: L.Symbol.arrowHead({pixelSize: 12, pathOptions: {color: hex, fillOpacity: 1, stroke: false}}) }] }).addTo(target);
+                    };
+                    
+                    // Если карта летит при старте, ждем 2.6 сек, иначе рисуем сразу
+                    if (window.isMapFlying) setTimeout(drawTransfer, 2600);
+                    else drawTransfer();
                 }
             });
         }
@@ -1047,12 +1054,16 @@
 
         window.flagHasBeenShown = window.flagHasBeenShown || false;
 
-        function focusOnCurrent() { 
+       function focusOnCurrent() { 
             if (typeof myPoints === 'undefined' || myPoints.length === 0) return;
             var last = myPoints[myPoints.length - 1];
             var targetLat = last.lat || (last.from ? last.from[0] : 50);
             var targetLng = last.lng || (last.from ? last.from[1] : 80);
             
+            // Запоминаем, что карта в полете на 2.6 сек
+            window.isMapFlying = true;
+            setTimeout(function() { window.isMapFlying = false; }, 2600);
+
             // Летим к точке
             map.flyTo([targetLat, targetLng], 10, { animate: true, duration: 2.5 });
 
