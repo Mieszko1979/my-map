@@ -55,7 +55,7 @@ var myPoints = [
   { type: "border",   country: "ru", lat: 49.710347, lng: 89.20175, title: "Россия - МАПП Ташанта", desc: "", dzen: "" },
   { type: "border",   country: "mn", lat: 49.607947, lng: 89.467522, title: "Монголия - МАПП Цагааннуур Цогцолбор", desc: "", dzen: "" },
   { day: "54", lat: 49.24271, lng: 89.84441, title: "01.08.2026", dist: 92.67, desc: "Палатка", link: "2026_08_01.gpx", vk: "" },
-  { day: "55", lat: 48.776907, lng: 89.94027, title: "02.08.2026", dist: 62.23, desc: "Палатка", link: "2026_08_02.gpx", vk: "" },
+  { day: "55", lat: 48.776907, lng: 89.94027, title: "02.08.2026", dist: 61.23, desc: "Палатка", link: "2026_08_02.gpx", vk: "" },
 
   
 ];
