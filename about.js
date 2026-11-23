@@ -11,7 +11,7 @@ const aboutData = {
     socials: [
         { id: 'vk', url: "https://vk.com/mieszko_travel" },
         { id: 'dzen', url: "https://dzen.ru/mieszko_travel" },
-        { id: 'odnoklassniki', url: "https://ok.ru/mieszkotravel" },
+        { id: 'odnoklassniki', url: "https://ok.ru/group/70000011283725" },
         { id: 'youtube', url: "https://www.youtube.com/@map9" },
         { id: 'telegram', url: "https://t.me/mieszko_travel" },
         { id: 'instagram', url: "https://www.instagram.com/mieszko_9/" },
